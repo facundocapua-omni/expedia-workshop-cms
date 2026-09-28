@@ -1,21 +1,31 @@
 # Astro workshop site — design
 
-Date: 2026-09-28 · Branch: `feat/astro-site` · Status: awaiting review
+Date: 2026-09-28 · Branch: `feat/astro-site` · Status: awaiting review (rev. 2)
 
 ## 1. Goal
 
-Replace the three hand-written deliverables in `docs/*.html` with one Astro site that
-presents the pilot's ideas at a joint Expedia Group (EG) / Contentful (CF) / Globant (GL)
-workshop, and stays usable as a reference before and after it.
+Replace the hand-written HTML deliverables with one Astro site for a joint Expedia Group (EG)
+/ Contentful (CF) / Globant (GL) workshop. The workshop has two jobs: **present ideas** and
+**take decisions**. The site stays usable as a reference before and after it.
+
+**Backlog work is out of scope.** It is too early to shape a backlog, so the pilot backlog
+document (`docs/01-pilot-backlog.html`) is dropped entirely. Only its open questions survive,
+as decisions pending with EG.
 
 ### What was agreed
 
-- **Astro replaces the HTML deliverables.** Content lives in the Astro project; the three
-  `docs/*.html` files are deleted (git history keeps them).
+- **Astro replaces the HTML deliverables.** UC1 and UC2 content moves into the Astro project.
+  All three `docs/*.html` files are deleted (git history keeps them).
+- **Dropped from doc 01:** the 43 user stories (`US-*`), the build-versus-configure split, the
+  evidence track, the seven contradictions in the brief, and "What I'd do next".
+- **Kept from doc 01:** questions Q1–Q26 and Q6b, including their long-form reasoning, in the
+  question data (§3.2).
 - **One content, two views.** *Consult mode* is the long-form document. *Presentation mode*
   (key `P`) shows one numbered section per screen.
-- **Ideas are extensible.** Today: pilot backlog, UC1 architecture, UC2 content model. Adding
-  an idea means adding one MDX file.
+- **Ideas are extensible.** Today: UC1 solution architecture and UC2 content model. Adding an
+  idea means adding one MDX file.
+- **A decision agenda** (`/decide`) lists what the workshop needs to settle, generated from
+  the question data (§5).
 - **Static and local.** `astro build` output, run with `pnpm preview` or `npx serve dist`.
   Opening from `file://` is not a requirement.
 - **v1 consult features:** linked IDs with tooltips, global search, register pages
@@ -32,11 +42,14 @@ workshop, and stays usable as a reference before and after it.
 
 ### Success criteria
 
-1. No visible text from the original documents is lost. The fidelity diff (§8.1) is empty, or
-   every remaining difference is explained and approved.
-2. Every number that has a data source is computed from it.
-3. Adding an idea means creating one MDX file with no other code changes.
-4. Every linked ID resolves to an existing anchor, and the build fails otherwise.
+1. No visible text from the UC1 and UC2 documents is lost. The fidelity diff (§9.3) is empty,
+   or every remaining difference is explained and approved.
+2. The `detail` of every Q question matches its reasoning block in doc 01.
+3. Every number that has a data source is computed from it.
+4. Adding an idea means creating one MDX file with no other code changes.
+5. Every linked ID resolves to an existing anchor, and the build fails otherwise.
+6. Recording a decision after the workshop takes one data edit, and the agenda and registers
+   update on the next build.
 
 ## 2. Architecture
 
@@ -46,27 +59,26 @@ framework.
 
 ```
 src/
-  content/ideas/            pilot-backlog.mdx · uc1-solution-architecture.mdx · uc2-content-model.mdx
-  components/               Section, Story, StoryList, Question, QuestionList, Chip, Fact,
-                            Linked, IdLink, ContentTypeTable, diagrams/*
+  content/ideas/            uc1-solution-architecture.mdx · uc2-content-model.mdx
+  components/               Section, Question, QuestionList, Chip, Fact, Linked, IdLink,
+                            ContentTypeTable, diagrams/*
   layouts/                  Base.astro (tokens, theme, top bar) · Idea.astro (masthead, index, sections)
   lib/                      sources.ts (fs loaders) · registry.ts · linkify.ts · facts.ts
-                            · inventory.ts (markdown table parser) · rehype-idrefs.ts
+                            · agenda.ts · inventory.ts (markdown table parser) · rehype-idrefs.ts
   scripts/                  present.ts · tooltips.ts · search.ts
   styles/                   tokens.css · prose.css
-  pages/                    index.astro · ideas/[slug].astro
+  pages/                    index.astro · ideas/[slug].astro · decide.astro
                             · registers/{questions,decisions,inventory}.astro
   content.config.ts         collections + zod schemas
 data/
   questions.yaml            Q1–Q26, Q6b, DQ-1–DQ-10
-  stories.yaml              43 stories
 decisions/                  D-01.md … D-25.md (one per decision)
 model/uc2-matrix.json       unchanged except the open_questions additions in §3.3
 sources/                    untouched
 tests/                      Vitest unit tests + scripts/verify-* build checks
 ```
 
-Routes: `/`, `/ideas/<slug>/`, `/registers/questions/`, `/registers/decisions/`,
+Routes: `/`, `/ideas/<slug>/`, `/decide/`, `/registers/questions/`, `/registers/decisions/`,
 `/registers/inventory/`. Search is a modal, not a route. Idea slugs drop the numeric prefix;
 order comes from frontmatter.
 
@@ -82,33 +94,38 @@ blocks. The masthead is slide 0, and each `Section` is one slide.
 
 ### 3.2 Questions (`data/questions.yaml`)
 
-One record per backlog or UC1 design question:
+One record per EG question or UC1 design question:
 
 | Field | Type | Notes |
 | --- | --- | --- |
 | `id` | string | `Q1`…`Q26`, `Q6b`, `DQ-1`…`DQ-10` |
 | `group` | enum | `blocking`, `scope`, `inputs`, `commercial`, `uc1-design` (the register's headings) |
 | `question` | string | short form, from the register |
-| `detail` | string, optional | long reasoning, from doc 01's `.qb` blocks |
+| `detail` | string, optional | long reasoning, extracted from doc 01's `.qb` blocks before deletion |
 | `owner` | string, optional | |
 | `status` | enum | `open`, `assumed`, `answered`, `closed` |
-| `assumption` | string, optional | DQ working assumption |
+| `position` | string, optional | GL's proposed answer: the DQ working assumption, or the design position for `assumed` and `answered` items |
 | `answer` | string, optional | from "Answered — kept for the record" |
-| `source` | enum | `01`, `02`, `03` |
+| `confirmedByEG` | bool | default `false`. `true` only once EG has accepted the answer |
+| `idea` | slug, optional | where the question is discussed. Q1, Q2, Q3 and Q6b point to `uc1-solution-architecture`, and every DQ does too |
 
-Doc 01's questions section and `/registers/questions/` both render from this file.
+`status` records whether an answer exists. `confirmedByEG` records whether the client has
+accepted it. Q1–Q3 are `answered` by the UC1 design positions but not confirmed, as the
+register states. Q8's confirmation state is not stated anywhere, so it starts as `false` and
+goes into the discrepancy file (§9.2) for the owner to settle.
 
 ### 3.3 UC2 questions (`model/uc2-matrix.json → open_questions`)
 
-UC2 questions stay in the JSON because they feed the workbook. Each entry gains `id` and
-`status`. The register and the JSON currently disagree, and this is resolved as agreed on
-2026-09-28 by taking the union and keeping the register's IDs:
+UC2 questions stay in the JSON because they feed the workbook. Each entry gains `id`,
+`status`, `confirmedByEG` and optionally `position`, and its `idea` is implicitly
+`uc2-content-model`. The register and the JSON currently disagree, and this is resolved as
+agreed on 2026-09-28 by taking the union and keeping the register's IDs:
 
 | ID | Question (short) | Origin |
 | --- | --- | --- |
 | U1 | Recommended-for-you grid: author-picked or query-driven | JSON #1 |
 | U2 | Lead capture form: endpoint, fields, consent | JSON #2 |
-| U3 | Calculator formula authorable or in the front end | **register only.** Added to the JSON as `assumed` (doc 03: formula in the front end, copy in the CMS) |
+| U3 | Calculator formula authorable or in the front end | **register only.** Added to the JSON as `assumed`, with `position` taken from doc 03 (formula in the front end, copy in the CMS) |
 | U4 | Comparison table on mobile | JSON #3 |
 | U5 | Localised URL slugs | JSON #4 |
 | U6 | Per-locale imagery | JSON #5 |
@@ -120,45 +137,38 @@ UC2 questions stay in the JSON because they feed the workbook. Each entry gains 
 
 This brings the total to **48 questions** (27 + 10 + 11). The JSON gains one entry, so the
 workbook is regenerated (`make xlsx`). Before that, confirm that `build_xlsx.py` ignores the
-new `id`/`status` keys, and that the only workbook change is the added row and the
-open-questions count.
+new keys, and that the only workbook change is the added row and the open-questions count.
 
-### 3.4 Stories (`data/stories.yaml`)
+### 3.4 Decisions (`decisions/D-NN.md`)
 
-`id` (`US-A1`…), `useCase` (A–H group as in doc 01), `title`, `caps` (list of `CMS-NN`),
-`blockedBy` (list of question IDs), `dependent` (bool, the current `story dep` class),
-`delivery` (1–5, from doc 01 §04 "Build versus configure"), `narrative`, `acceptance`
-(list). The delivery tiers are 1 = configuration only, 2 = configuration with the right
-licence, 3 = custom development on the Contentful side, 4 = custom development outside
-Contentful, and 5 = no build.
+Frontmatter: `id`, `title`, `useCase` (`uc1` or `uc2`), and optionally `resolves` (list of
+question IDs). The body is the existing prose (*Why*, *Consequence*, *Reopens if*, *Cost*,
+*Open*). The log stays append-only: a new decision means a new file, and past files are never
+rewritten.
 
-### 3.5 Decisions (`decisions/D-NN.md`)
-
-Frontmatter: `id`, `title`, `useCase` (`uc1` or `uc2`). The body is the existing prose
-(*Why*, *Consequence*, *Reopens if*, *Cost*, *Open*). The log stays append-only: a new
-decision means a new file, and past files are never rewritten.
-
-### 3.6 Inventory
+### 3.5 Inventory
 
 `lib/inventory.ts` parses the "Approved components (internal)" table in
 `sources/component-inventory.md` at build time, so the source file is never copied or
 edited. The C→CT mapping is derived from `components[].consolidates` in the JSON (entries
 starting with a `C0NN` ID).
 
-### 3.7 Facts (`lib/facts.ts`)
+### 3.6 Facts (`lib/facts.ts`)
 
 Named counts computed from the data, used as `<Fact k="…"/>` in MDX and frontmatter:
-`stories`, `storiesConfiguration` (tiers 1+2), `storiesDevelopment` (tiers 3+4),
-`storiesNoBuild`, `backlogQuestions`, `questionsTotal`, `questionsByStatus.*`,
-`designQuestions`, `uc2Questions`, `contentTypes`, `inventoryComponents`, `decisions`.
+`egQuestions`, `designQuestions`, `uc2Questions`, `questionsTotal`, `questionsByStatus.*`,
+`agendaToConfirm`, `agendaToDecide`, `contentTypes`, `inventoryComponents`, `decisions`.
 Numbers without a data source ("46 capabilities", sizing arithmetic, `CMS-47`, example
 values such as `"views": 47`) stay as text.
 
-### 3.8 Validation
+### 3.7 Validation
 
-Zod schemas in `content.config.ts` fail the build on a duplicate ID, an unknown enum value, a
-`caps` entry that doesn't match `CMS-\d{2}`, or a `blockedBy` entry that isn't a known
-question ID. `make check` stays as it is.
+Zod schemas in `content.config.ts` fail the build on a duplicate ID, an unknown enum value, an
+`idea` slug that doesn't exist, a `resolves` entry that isn't a known question ID, or an
+`assumed` question without a `position`. That last rule keeps an assumed item from falling
+into the agenda's "to decide" block. If extraction finds no position for an assumed item
+(Q5 is the likely case), the item goes into the discrepancy file. `make check` stays as it
+is.
 
 ## 4. ID registry and linking
 
@@ -171,7 +181,6 @@ question ID. `make check` stays as it is.
 | `Q*`, `DQ-*` | `data/questions.yaml` | `/registers/questions/#dq-9` |
 | `U*` | JSON `open_questions` | `/registers/questions/#u3` |
 | `D-*` | `decisions/*.md` | `/registers/decisions/#d-05` |
-| `US-*` | `data/stories.yaml` | `/ideas/pilot-backlog/#us-a1` |
 | `CT*` | JSON `components` | `/ideas/uc2-content-model/#ct01` |
 | `C0**` | inventory table | `/registers/inventory/#c021` |
 
@@ -202,27 +211,56 @@ render `id="<anchor>" data-def="<ID>"`.
 
 ### 4.4 Tooltips
 
-Each page embeds the registry once as JSON (about 150 entries, about 15 KB).
+Each page embeds the registry once as JSON (about 120 entries, about 13 KB).
 `scripts/tooltips.ts` shows a popover on hover and on keyboard focus with the ID, the short
 label and a status chip. Without JavaScript the link still works.
 
-## 5. Layout
+## 5. Decision agenda (`/decide`)
 
-- `styles/tokens.css` merges the three documents' tokens (`--paper --card --ink --ink-soft
-  --rule --rule-soft --accent --flag --ok --warm` plus `-soft`), with dark mode through
+`/decide` is a view of the question data. It adds no content of its own.
+
+- **What it includes (`lib/agenda.ts`):** every question that is `open` or `assumed`, plus
+  every `answered` question with `confirmedByEG: false`. Questions that are `closed`, or
+  `answered` and confirmed, drop out.
+- **How it's grouped:** one `Section` per group, in the register's order: blocking, scope,
+  inputs, commercial, UC1 design, UC2 content model. Empty groups are omitted. Within each
+  group there are two blocks:
+  - **To confirm:** the item has a `position` or an `answer`, so the discussion is yes or no.
+  - **To decide:** the item has no position yet, and EG needs to answer it.
+- **Each item** shows the ID as an idref to the register, the question, the `detail` as
+  context, the owner, the proposed position if there is one, and a link to the `idea` section
+  where it is discussed. Agenda items are not definition sites.
+- **Masthead:** `<Fact k="agendaToConfirm"/>` to confirm and `<Fact k="agendaToDecide"/>` to
+  decide, in total and per group.
+- **In presentation mode** each group is one slide.
+- **After the workshop:** update `status`, `confirmedByEG` and `answer` in the data, and add a
+  `decisions/D-NN.md` with `resolves: [Q…]` for every decision taken. On the next build the
+  agenda shrinks, and the registers show the outcome. This procedure is written into
+  `README.md` and `CLAUDE.md`.
+
+The questions register at `/registers/questions/` keeps every question, including the settled
+ones, and it is where each ID is defined for linking. The agenda's IDs therefore link to the
+register, which is what makes the tooltip and the full record reachable from a slide.
+
+## 6. Layout
+
+- `styles/tokens.css` merges the documents' tokens (`--paper --card --ink --ink-soft --rule
+  --rule-soft --accent --flag --ok --warm` plus `-soft`), with dark mode through
   `prefers-color-scheme` and the existing `data-theme` override.
 - Fonts are self-hosted through `@fontsource/ibm-plex-sans` and `@fontsource/ibm-plex-mono`,
   so the workshop doesn't depend on network access.
 - `Idea.astro` renders the masthead from frontmatter and the sticky index from the
-  `Section` headings. The index is generated, never hand-written.
-- Home lists ideas by `order` and links to the three registers and to search. The top bar
-  has home, ideas, registers and search.
-- Component-specific CSS (story, question, trap, figure, pill) lives with its component.
-  Shared prose styles live in `prose.css`, which ends today's triple copy.
+  `Section` headings. The index is generated, never hand-written. `/decide` uses the same
+  layout.
+- Home lists ideas by `order`, gives the decision agenda a prominent link with its counts,
+  and links to the three registers and to search. The top bar has home, ideas, decide,
+  registers and search.
+- Component-specific CSS (question, trap, figure, pill) lives with its component. Shared
+  prose styles live in `prose.css`, which ends today's per-document copies.
 - Layouts must work at 390 px with no horizontal page scroll. Wide tables scroll inside their
   own container, as they do today.
 
-## 6. Presentation mode (`scripts/present.ts`)
+## 7. Presentation mode (`scripts/present.ts`)
 
 - `P` or the masthead button toggles `data-mode="present"` on `<html>`. Slides are the
   masthead plus each `Section`. The index and top bar are hidden, the base type scales to
@@ -237,11 +275,11 @@ label and a status chip. Without JavaScript the link still works.
   sections only get the larger type. `sessionStorage` access is wrapped so that a failure
   falls back to consult mode.
 
-## 7. Search
+## 8. Search
 
 - Pagefind indexes `dist/` after `astro build`. Only `data-pagefind-body` content is indexed
-  (not the nav or the tooltip JSON), and a `data-pagefind-filter` of `idea` or `register`
-  distinguishes the two kinds of result.
+  (not the nav or the tooltip JSON), and a `data-pagefind-filter` of `idea`, `agenda` or
+  `register` distinguishes the kinds of result.
 - The modal opens with `/` or from the top bar.
 - **ID shortcut:** a query that exactly matches a registry ID puts "Go to DQ-9" first,
   resolved from the embedded registry. Pagefind tokenises `DQ-9` into `dq` and `9`, so a
@@ -249,56 +287,69 @@ label and a status chip. Without JavaScript the link still works.
 - Under `astro dev` there is no index, and the modal says to run `pnpm build && pnpm
   preview`.
 
-## 8. Migration and verification
+## 9. Migration and verification
 
-### 8.1 Steps
+### 9.1 Steps
 
 1. Scaffold Astro, MDX, Pagefind, `@fontsource`, Vitest and `yaml` with pnpm.
-2. Extract data with one-off scripts (not committed): stories and `.q` blocks from doc 01
-   into `stories.yaml` and `questions.yaml`, merged with the register's
-   status/owner/assumption/answer; `decision-log.md` split into `D-*.md`; and the §3.3
-   changes to the JSON.
-3. Convert the prose to MDX section by section: escape the five `{variable}` literals, turn
-   HTML comments into `{/* */}`, self-close void tags, and replace hand-written counts that
-   have a data source with `<Fact>`. The three SVGs in doc 02 become components under
-   `components/diagrams/`.
-4. Tables that have a full data source render from data: doc 01 stories and questions, and
-   doc 03 "The 23 content types". Every other table stays in MDX, with IDs auto-linked.
+2. Extract data with one-off scripts (not committed):
+   - The Q1–Q26/Q6b `.q` blocks from doc 01 become `detail`, merged with the register's
+     status, owner, assumption and answer into `questions.yaml`.
+   - `decision-log.md` is split into `D-*.md`.
+   - The §3.3 changes are applied to the JSON.
+   - Nothing else is extracted from doc 01.
+3. Convert the UC1 and UC2 prose to MDX section by section: escape the five `{variable}`
+   literals, turn HTML comments into `{/* */}`, self-close void tags, and replace hand-written
+   counts that have a data source with `<Fact>`. The three SVGs in doc 02 become components
+   under `components/diagrams/`.
+4. Doc 03 "The 23 content types" renders from the JSON. Every other table stays in MDX, with
+   IDs auto-linked.
 
-### 8.2 Discrepancy rule
+### 9.2 Discrepancy rule
 
-When data and document text disagree (known case: CT23's `purpose` is "formula in code" in
-doc 03 and "authorable inputs" in the JSON), the migration **does not choose**. Each case goes
-into `docs/superpowers/migration-discrepancies.md` with both texts. The owner decides, and
-the chosen text is written into the data source before merge. The same applies when a
-computed `<Fact>` differs from the number the original document had hard-coded.
+When data and document text disagree, the migration **does not choose**. Each case goes into
+`docs/superpowers/migration-discrepancies.md` with both texts and, where useful, a proposed
+wording. The owner decides, and the chosen text is written into the source before merge. The
+same applies when a computed `<Fact>` differs from the number the original document had
+hard-coded. Known cases:
 
-### 8.3 Checks
+- CT23's `purpose` is "formula in code, copy in the CMS" in doc 03 but "authorable inputs and
+  copy" in the JSON.
+- Doc 02 refers to "the backlog" twice (in the content model section note and in the authoring
+  flow), and the backlog no longer exists on the site.
+- Q8's `confirmedByEG` state is not recorded anywhere.
+
+### 9.3 Checks
 
 - **Fidelity diff** (`scripts/verify-fidelity.ts`): extracts visible text per section from
-  each original through `git show <base>:docs/…html` and from `dist/ideas/*/index.html`,
-  normalises whitespace, and diffs. The target is no difference, and any remaining
-  difference must be explained in the discrepancy file.
+  docs 02 and 03 through `git show <base>:docs/…html` and from `dist/ideas/*/index.html`,
+  normalises whitespace, and diffs. The target is no difference, and any remaining difference
+  must be explained in the discrepancy file. For Q questions, the same script checks each
+  `detail` against its `.qb` block in doc 01.
 - **Anchor check** (`scripts/verify-anchors.ts`): every `a.idref[href]` and index link in
   `dist/` points to an anchor that exists.
 - **Unit tests (Vitest):** `linkify` (boundaries, `DQ-1` vs `DQ-10`, unknown IDs, ranges,
-  self-skip), `registry` (all families present, no duplicates, hrefs well-formed), the
-  inventory parser, and `facts` (values match the data).
+  self-skip), `registry` (all families present, no duplicates, hrefs well-formed), `agenda`
+  (inclusion rule, confirm/decide split, group order, confirmed items drop out), the inventory
+  parser, and `facts` (values match the data).
 - **`astro check`** for types, and **`astro build`** for schema validation.
-- **Visual:** Playwright screenshots of each idea in consult and presentation mode, light and
-  dark, at 1440 px and 390 px.
+- **Visual:** Playwright screenshots of both ideas and `/decide` in consult and presentation
+  mode, light and dark, at 1440 px and 390 px.
 
-### 8.4 Cleanup
+### 9.4 Cleanup
 
-- Delete `docs/01-…html`, `docs/02-…html`, `docs/03-…html`, `decisions/decision-log.md` and
+- Delete `docs/01-pilot-backlog.html`, `docs/02-uc1-solution-architecture.html`,
+  `docs/03-uc2-content-model.html`, `decisions/decision-log.md` and
   `decisions/open-questions.md`.
 - Add `pnpm dev`, `pnpm build` (Astro plus Pagefind), `pnpm preview` and `pnpm test`, and
   keep the `make` targets.
-- Update `README.md` and `CLAUDE.md`: structure, commands, how to add an idea, and the new
-  single place to update when an answer arrives (`data/questions.yaml` or the JSON).
+- Update `README.md` and `CLAUDE.md`. Remove the backlog workstream and the story counts, and
+  add the structure, the commands, how to add an idea, and how to record a workshop decision
+  (§5).
 
-## 9. Out of scope (v1)
+## 10. Out of scope (v1)
 
-Filterable tables, a `CMS-NN` capability registry, `file://` support, hosting or
-authentication, a curated slide deck separate from the documents, collaborative features, PDF
-or print export, and self-contained HTML exports per document.
+Anything backlog-related (user stories, build versus configure, estimation), filterable
+tables, a `CMS-NN` capability registry, live decision capture in the browser, `file://`
+support, hosting or authentication, a curated slide deck separate from the documents,
+collaborative features, PDF or print export, and self-contained HTML exports per document.
