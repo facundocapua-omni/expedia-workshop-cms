@@ -10,8 +10,6 @@
   status: answered
   answer: Template with named variables in Contentful; value injected at resolution time
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: position
 - id: Q2
   group: blocking
   question: Who resolves the variant — NBA or Contentful?
@@ -21,8 +19,6 @@
   status: answered
   answer: NBA selects from a variant index; Contentful never decides
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: position
 - id: Q3
   group: blocking
   question: One content ID across channels, or one per channel rendering?
@@ -32,8 +28,6 @@
   status: answered
   answer: One reference; channel is a fetch parameter
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: position
 - id: Q4
   group: blocking
   question: What mechanism produces the channel-specific rendering automatically?
@@ -67,8 +61,6 @@
   owner: EG
   status: open
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: position
 - id: Q7
   group: scope
   question: Are UC1 and UC2 one pilot or two tracks?

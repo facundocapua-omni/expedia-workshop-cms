@@ -1,0 +1,35 @@
+  <div data-origin="uc1:position:5" class="decide">
+    <h4><span class="stamp">Q6b</span>Tone belongs to the partner; register belongs to the surface</h4>
+    <p>Tone — educational, familiar, data-led — is a <strong>selection criterion</strong>. NBA chooses it per partner from engagement history, and it stays constant as the partner moves from the email to the portal to a conversation with their Market Manager. That persistence is the benefit EG's own step 5 describes.</p>
+    <p>Register is the opposite: length, formality, and who is being addressed. It is <strong>fixed per surface and identical for every partner</strong>, so it lives on the channel rendering and is never selected. Alongside it sits <code>audience</code> — partner or internal — because the CRM rendering does not address the partner at all. It briefs a Market Manager on what the partner has already seen, which is a different piece of writing with different review criteria.</p>
+    <p>Channel therefore never enters variant selection. It is supplied on the fetch, picks a rendering, and acts as an availability filter on the index — a constraint, not a criterion. The table below sets the four dimensions out side by side.</p>
+  </div>
+
+  <h3 data-origin="uc1:ref:3">Segment, tone and channel are not the same kind of thing</h3>
+  <p data-origin="uc1:ref:4">The source document uses "channel-specific variant" in one place and "variant dimension" in another, which makes channel look like a peer of segment and tone. It isn't. The three sit in different halves of the system, and conflating them is the most expensive modelling mistake available here.</p>
+  <div data-origin="uc1:ref:5" class="scroll">
+  <table>
+    <thead><tr><th style="width:16%">Dimension</th><th style="width:16%">Role</th><th style="width:22%">Decided by</th><th>What it changes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Segment</strong></td><td>Selection criterion</td><td>NBA, from partner attributes</td><td>Which message wins. Remove it and every partner receives identical copy — the personalisation thesis collapses.</td></tr>
+      <tr><td><strong>Tone</strong></td><td>Selection criterion</td><td>NBA, from engagement history</td><td>How the same point is framed for this partner — educational, familiar, data-led. A peer of segment; both are inputs to one decision, and it has to survive the move from one channel to the next.</td></tr>
+      <tr><td><strong>Register</strong></td><td>Property of the rendering</td><td>Inherited from the channel</td><td>Length, formality, and who is being addressed. Never selected and never varies by partner.</td></tr>
+      <tr><td><strong>Channel</strong></td><td>Rendering parameter, and an availability constraint</td><td>The requester — it already knows</td><td>What shape the winning message arrives in. Remove it and nothing breaks logically; copy simply doesn't fit its surface.</td></tr>
+      <tr><td><strong>Locale</strong></td><td>Rendering parameter</td><td>The partner record</td><td>Which translation of the winning message is served. Never selects between variants.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p data-origin="uc1:ref:6">Tone and register are the pair most easily conflated, and the source document uses the word "tone" for both. They pull in opposite directions: tone is chosen per partner and must stay constant across surfaces, while register is fixed per surface and identical for every partner. Keeping them as one field would mean a partner's voice changing every time they move between the email, the portal and a conversation with their Market Manager.</p>
+  <p data-origin="uc1:ref:7">Register carries a second thing the source document implies without stating: the CRM rendering does not address the partner at all. It briefs a Market Manager on what the partner has already seen, so it has to carry the partner's copy <em>and</em> be usable as a talking point. That is why <code>audience</code> sits on the rendering as <code>partner</code> or <code>internal</code> — email and VMC are partner-facing, CRM is not, and generation prompts and review criteria differ accordingly.</p>
+  <p data-origin="uc1:ref:8">Channel constrains without being a criterion: if a variant has no email rendering, NBA shouldn't dispatch it to email — but that absence never makes a different variant a better fit for the partner. It is a filter on the index, not an input to the choice.</p>
+  <p data-origin="uc1:ref:9">Channel still earns its place in the pilot, for a different reason. Without it, cross-channel consistency is trivially true — one string fetched three times proves nothing. With it, the claim becomes that one authored source yields three differently-shaped outputs carrying the same message, which is CMS-01 and CMS-06 tested together. That is why <code>consistencyKey</code> covers variant, version, locale and parameters but deliberately excludes the channel shaping.</p>
+
+<h3>Alternatives considered</h3>
+
+  <div data-origin="uc1:alternatives:0" class="decide risk">
+    <h4>Tone and channel as a single dimension</h4>
+    <p>The argument for it is real: the channel does determine the voice of a communication, so a separate tone dimension could look redundant. Collapsing the two would simplify the model and cut the variant count by roughly a third.</p>
+    <p>Not adopted, because it works against the source document's thesis rather than simplifying it. Step 5 states that the CRM shows the Market Manager the same tone of voice the partner already received, and the partner walkthrough presents persistent, persona-matched framing as the benefit being tested. If tone is a property of the channel, a partner's voice changes every time they move between the email, the portal and a call — the drift the pilot exists to eliminate.</p>
+    <p>It would also cost three capability results at once: CMS-19 loses half its pass condition because tone stops being decisioning metadata, CMS-31's criterion collapses from segment plus tone to segment alone, and CMS-06 becomes trivially satisfiable since no cross-channel constant remains.</p>
+    <p>The observation underneath it is kept: channel does carry a voice, and that voice is modelled as <code>register</code> on the rendering, alongside <code>audience</code>. Should EG's operating model genuinely treat tone as channel-determined, the change is one field plus a re-scoping of those three capabilities — an explicit client decision, which is why it is raised as a question rather than assumed either way.</p>
+  </div>

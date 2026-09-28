@@ -55,7 +55,7 @@ describe('the build refuses bad data (Review Focus 4)', { timeout: 120_000 }, ()
   });
 
   it('fails when a question points at a section that does not exist', () => {
-    const { status, output } = buildWith(() => edit('data/questions.yaml', 'section: position', 'section: nowhere'));
+    const { status, output } = buildWith(() => edit('data/questions.yaml', '- id: Q4\n', '- id: Q4\n  idea: uc1-solution-architecture\n  section: nowhere\n'));
     expect(status).not.toBe(0);
     expect(output).toContain('no #nowhere');
   });

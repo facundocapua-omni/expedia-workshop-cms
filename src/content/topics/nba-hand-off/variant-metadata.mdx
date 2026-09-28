@@ -1,0 +1,41 @@
+import uc1Fragment1 from '../../fragments/uc1-1.html?raw';
+
+  <div data-origin="uc1:position:2" class="decide">
+    <h4><span class="stamp">Q2</span>NBA selects the variant; Contentful never decides</h4>
+    <p>NBA reads a <strong>variant index</strong> published out of Contentful — every variant with its segment tags, tone, available channels and translated locales — and picks one. The content platform is asked for a specific thing by identifier and returns it. No audience rules, no conditional blocks, no personalisation engine inside the CMS.</p>
+    <p>This matches the pilot parameters as written, keeps the personalisation licence out of the critical path, and makes the fetch deterministic and cacheable. The cost is a new obligation the source document doesn't mention: NBA cannot choose between variants it has never been told about, so the index feed is a first-class deliverable, not plumbing.</p>
+  </div>
+
+<h3>Content model</h3>
+
+<div data-origin="uc1:model:*">
+  <p class="sec-note">Four content types plus taxonomy. Variants are modelled as referenced entries rather than a variant dimension, because core entries have no such dimension — this is the hand-modelled route, and it is deliberate here rather than a fallback.</p>
+
+  <div class="fig">
+    <Fragment set:html={uc1Fragment1} />
+  </div>
+  <p class="cap">Figure 1 — Content model. The variant is the addressable unit: it is what NBA chooses and what the content reference points at.</p>
+
+  <h3>Why the variant is the addressable unit</h3>
+  <p>NBA's decision is "this segment, this tone" — so the thing it selects has to be the thing identified. Making the base proof point addressable would force a second resolution step somewhere, and the only candidates are Contentful (ruled out by Q2) or each channel independently (which is the drift problem the pilot exists to solve). Channel and locale are narrower: they don't change <em>which</em> message is being told, only how it is dressed, so they belong as parameters on the fetch rather than in the identity.</p>
+
+  <h3>Approval state on the entry</h3>
+  <p>The <code>approvals[]</code> field records who signed off on what and when — variant copy, per-locale translation, channel rendering. It exists because the audit requirement is about editorial accountability, not just field history: "who approved the Japanese version of the familiar-tone variant" is the question that gets asked, and version history alone answers it awkwardly.</p>
+</div>
+
+<h3>Alternatives considered</h3>
+
+  <div data-origin="uc1:alternatives:3" class="decide risk">
+    <h4>Contentful resolving segment and tone to a variant</h4>
+    <p>Fewer round trips and closer to how personalisation products work. Not taken because it contradicts the stated parameter that NBA decides, pulls a licensed personalisation capability onto the critical path, and makes the fetch non-deterministic and harder to cache. Worth revisiting after the pilot if EG wants decisioning closer to the content.</p>
+  </div>
+
+<h3>Risks carried by this design</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
+  <tbody>
+      <tr data-origin="uc1:risks:5"><td><strong>NBA cannot consume the variant index within pilot constraints</strong></td><td>Variant selection becomes hardcoded and the decisioning hand-off is simulated.</td><td>Acceptable for a POC if declared up front. Not acceptable if discovered at the readout — it would invalidate the tagging and taxonomy result.</td></tr>
+  </tbody>
+</table>
+</div>

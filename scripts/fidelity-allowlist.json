@@ -94,5 +94,16 @@
     "from": "Decides the cache topology in section 08",
     "to": "Decides the cache topology set out in Performance at production volume",
     "reason": "Section numbers are gone: the section is now a topic of Session 1"
+  },
+  {
+    "origin": "uc1:position:5",
+    "from": "Section 03 sets the four dimensions out side by side.",
+    "to": "The table below sets the four dimensions out side by side.",
+    "reason": "The dimensions table now follows this block in the same topic"
+  },
+  {
+    "origin": "uc1:position:0",
+    "retire": true,
+    "reason": "The six positions now sit with the session topic each one answers, so a note introducing them together no longer applies"
   }
 ]
