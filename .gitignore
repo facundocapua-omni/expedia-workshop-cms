@@ -7,3 +7,11 @@ __pycache__/
 
 # the workbook is committed deliberately so the client copy is versioned;
 # regenerate with `make xlsx` rather than editing it
+
+# astro
+node_modules/
+dist/
+.astro/
+
+# one-off migration scripts, never committed
+.migrate/
