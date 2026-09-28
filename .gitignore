@@ -1,0 +1,9 @@
+# generated
+__pycache__/
+*.pyc
+.DS_Store
+~$*
+*.tmp
+
+# the workbook is committed deliberately so the client copy is versioned;
+# regenerate with `make xlsx` rather than editing it

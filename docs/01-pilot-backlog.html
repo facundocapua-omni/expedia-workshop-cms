@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EG CMS Pilot (Contentful) — Requirements &amp; Open Questions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f8fc;
+    --card:#ffffff;
+    --ink:#131a2c;
+    --ink-soft:#4e5872;
+    --rule:#d3d9e8;
+    --rule-soft:#e5e9f3;
+    --accent:#2148b8;
+    --accent-soft:#e7edfc;
+    --flag:#9d1c2e;
+    --flag-soft:#fbe9ec;
+    --ok:#1d6a4f;
+    --ok-soft:#e3f2ec;
+    --sans:"IBM Plex Sans",ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0e1220; --card:#161c2e; --ink:#e7ebf5; --ink-soft:#9aa5bf;
+      --rule:#2b3349; --rule-soft:#222a3d;
+      --accent:#7fa0ff; --accent-soft:#1c2542;
+      --flag:#ff8d9e; --flag-soft:#33202a;
+      --ok:#6fd1a8; --ok-soft:#162c26;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0e1220; --card:#161c2e; --ink:#e7ebf5; --ink-soft:#9aa5bf;
+    --rule:#2b3349; --rule-soft:#222a3d;
+    --accent:#7fa0ff; --accent-soft:#1c2542;
+    --flag:#ff8d9e; --flag-soft:#33202a;
+    --ok:#6fd1a8; --ok-soft:#162c26;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:16px; line-height:1.55;
+    font-weight:400;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px 96px}
+
+  /* ---- masthead ---- */
+  header.mast{border-bottom:2px solid var(--ink);padding:40px 0 22px;margin-bottom:34px}
+  .kicker{font-size:13px;color:var(--ink-soft);margin:0 0 10px}
+  h1{font-size:clamp(28px,4.4vw,44px);line-height:1.12;margin:0 0 14px;font-weight:700;letter-spacing:-.02em;max-width:22ch}
+  .lede{max-width:70ch;font-size:17px;color:var(--ink-soft);margin:0}
+  .meta{margin-top:20px;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:6px 22px}
+
+  /* ---- layout ---- */
+  .cols{display:grid;grid-template-columns:200px minmax(0,1fr);gap:48px;align-items:start}
+  @media (max-width:900px){.cols{grid-template-columns:1fr;gap:0}}
+  nav.index{position:sticky;top:24px;font-size:14px}
+  @media (max-width:900px){nav.index{position:static;margin-bottom:40px;border:1px solid var(--rule);border-radius:4px;padding:16px 18px;background:var(--card)}}
+  nav.index ol{list-style:none;margin:0;padding:0}
+  nav.index li{margin:0 0 9px}
+  nav.index a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid transparent}
+  nav.index a:hover,nav.index a:focus-visible{color:var(--accent);border-bottom-color:var(--accent)}
+  nav.index .n{font-family:var(--mono);font-size:11.5px;color:var(--accent);margin-right:7px}
+
+  section{margin:0 0 64px;scroll-margin-top:24px}
+  h2{font-size:24px;line-height:1.2;margin:0 0 6px;font-weight:700;letter-spacing:-.01em}
+  h2 .h-n{font-family:var(--mono);font-size:14px;color:var(--accent);display:block;margin-bottom:6px;font-weight:500}
+  .sec-note{max-width:72ch;color:var(--ink-soft);margin:0 0 24px;font-size:15.5px}
+  h3{font-size:16.5px;margin:34px 0 14px;font-weight:600;padding-bottom:7px;border-bottom:1px solid var(--rule)}
+
+  /* ---- conflicts table ---- */
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--rule);border-radius:4px;background:var(--card)}
+  table{border-collapse:collapse;width:100%;min-width:660px;font-size:14.5px}
+  th,td{text-align:left;padding:13px 16px;vertical-align:top;border-bottom:1px solid var(--rule-soft)}
+  thead th{background:var(--accent-soft);color:var(--ink);font-weight:600;font-size:13px;border-bottom:1px solid var(--rule)}
+  tbody tr:last-child td{border-bottom:0}
+  td.ref{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);white-space:nowrap}
+
+  /* ---- story rows ---- */
+  .story{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:3px;padding:16px 18px;margin:0 0 10px}
+  .story.dep{border-left-color:var(--flag)}
+  .story-head{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline;margin-bottom:8px}
+  .sid{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--accent)}
+  .story.dep .sid{color:var(--flag)}
+  .stitle{font-weight:600;font-size:15.5px;flex:1 1 240px;min-width:0}
+  .chip{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:3px;background:var(--accent-soft);color:var(--ink-soft);white-space:nowrap}
+  .chip.warn{background:var(--flag-soft);color:var(--flag)}
+  .narr{margin:0 0 10px;max-width:74ch;font-size:15px}
+  .narr em{font-style:normal;color:var(--ink-soft)}
+  .ac{margin:0;padding-left:19px;font-size:14.5px;color:var(--ink-soft);max-width:78ch}
+  .ac li{margin:0 0 4px}
+  .ac li::marker{color:var(--accent)}
+
+  /* ---- questions ---- */
+  .q{display:grid;grid-template-columns:52px minmax(0,1fr);gap:16px;padding:16px 0;border-top:1px solid var(--rule-soft)}
+  .q:first-of-type{border-top:1px solid var(--rule)}
+  .qid{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-soft);padding-top:1px}
+  .q.block .qid{color:var(--flag)}
+  .qt{font-weight:600;margin:0 0 6px;font-size:15.5px}
+  .qb{margin:0;color:var(--ink-soft);font-size:15px;max-width:76ch}
+  .qb + .qb{margin-top:6px}
+  .why{display:block;margin-top:7px;font-size:13.5px;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:11px}
+  .tag{font-family:var(--mono);font-size:10.5px;padding:2px 6px;border-radius:3px;background:var(--flag-soft);color:var(--flag);margin-left:8px;vertical-align:2px;white-space:nowrap}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px 20px;font-size:13.5px;color:var(--ink-soft);margin:0 0 22px;padding:12px 16px;border:1px dashed var(--rule);border-radius:4px}
+  .swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:7px;vertical-align:1px}
+  .sw-a{background:var(--accent)} .sw-f{background:var(--flag)}
+
+  .bhead{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline;margin:36px 0 8px;padding-bottom:7px;border-bottom:1px solid var(--rule)}
+  .bhead h3{margin:0;border:0;padding:0;flex:1 1 auto}
+  .count{font-family:var(--mono);font-size:11.5px;padding:2px 8px;border-radius:3px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+  .count.f{background:var(--flag-soft);color:var(--flag)}
+  .count.o{background:var(--ok-soft);color:var(--ok)}
+  .bsub{margin:0 0 14px;color:var(--ink-soft);font-size:14.5px;max-width:78ch}
+  .trap{border:1px solid var(--rule);border-left:3px solid var(--flag);background:var(--card);border-radius:3px;padding:18px 20px;margin:0 0 28px}
+  .trap h4{margin:0 0 10px;font-size:16px;font-weight:600}
+  .trap ol{margin:0;padding-left:20px;font-size:14.5px;color:var(--ink-soft);max-width:80ch}
+  .trap li{margin:0 0 9px}
+  .trap strong{color:var(--ink);font-weight:600}
+  td.us{font-family:var(--mono);font-size:12.5px;color:var(--accent);white-space:nowrap;font-weight:600}
+  footer{border-top:1px solid var(--rule);padding-top:20px;color:var(--ink-soft);font-size:14px;max-width:74ch}
+  a{color:var(--accent)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <p class="kicker">Working analysis — Globant DXP / Martech Studio</p>
+  <h1>Expedia Group CMS Pilot (Contentful): requirements and open questions</h1>
+  <p class="lede">Read of <em>EG_CMS_Pilot_Use_Cases_Contentful_9_11_2026.docx</em>. Three things came out of it: a backlog of 43 user stories that can be written as-is, a build-versus-configure split across them, and 27 questions that need an answer from EG before the pilot can be sized or scheduled. Seven of those questions exist because the document contradicts itself — those are listed first.</p>
+  <p class="meta"><span>Source dated 11 Sep 2026</span><span>2 use cases</span><span>43 user stories</span><span>15 configuration</span><span>24 development</span><span>27 open questions</span></p>
+</header>
+
+<div class="cols">
+<nav class="index" aria-label="Contents">
+  <ol>
+    <li><a href="#conflicts"><span class="n">00</span>Contradictions</a></li>
+    <li><a href="#uc1"><span class="n">01</span>UC1 — Proof points</a></li>
+    <li><a href="#uc2"><span class="n">02</span>UC2 — Web content</a></li>
+    <li><a href="#evidence"><span class="n">03</span>Demo &amp; docs track</a></li>
+    <li><a href="#build"><span class="n">04</span>Build vs. configure</a></li>
+    <li><a href="#questions"><span class="n">05</span>Open questions</a></li>
+    <li><a href="#next"><span class="n">06</span>What I'd do next</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ================= CONFLICTS ================= -->
+<section id="conflicts">
+  <h2><span class="h-n">00</span>Seven places where the document argues with itself</h2>
+  <p class="sec-note">These aren't nitpicks. Each one moves the content model, the integration pattern, or the effort by a meaningful amount, and each one has to be settled before a credible estimate exists.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:23%">Where</th><th>The conflict</th><th style="width:26%">Why it matters</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="ref">Pilot parameters ↔ CMS-10</td>
+        <td>Scale note anticipates <strong>a unique proof point per partner at ~1M partner records</strong>, while CMS-10 models the proof-point value as a typed field inside the Contentful entry. Those are different systems: one is a template with a value injected at render time, the other is a per-partner entry.</td>
+        <td>Decides entry volume, content model, licensing tier, and whether Contentful is even in the per-recipient path.</td>
+      </tr>
+      <tr>
+        <td class="ref">Parameters ↔ CMS-31/38/37</td>
+        <td>"NBA does the deciding — not Contentful" sits next to pass criteria that read "the correct variant <strong>resolves</strong> for a given segment/tone" and a variant + locale <strong>resolution order</strong>. Meanwhile CMS-37 (variant-to-audience mapping) is marked out of scope.</td>
+        <td>Either channels fetch a fully-resolved ID, or they fetch base ID + parameters and Contentful resolves. Different API contract, different pilot.</td>
+      </tr>
+      <tr>
+        <td class="ref">Flow step 5 ↔ step 6</td>
+        <td>Step 5: all channels fetch <strong>the same content ID</strong>. Step 6: the same base ID, but <strong>a channel-specific variant of every proof point should be possible</strong>.</td>
+        <td>One lookup key versus a composite key shared across NBA, SFMC and CRM/VMC.</td>
+      </tr>
+      <tr>
+        <td class="ref">Pilot parameters ↔ CMS-06/18/39</td>
+        <td>No email is sent and no CRM/VMC view is built — yet the pass criteria say the proof point "renders with the same wording", that RTL <strong>layout</strong> is previewed, and that content ID is recorded on a <strong>send/render event</strong>.</td>
+        <td>Without a rendering target, these are unverifiable. The evidence artifact has to be agreed up front.</td>
+      </tr>
+      <tr>
+        <td class="ref">Web-specific table</td>
+        <td>CMS-22 (DAM), CMS-23 (renditions) and CMS-24 (visual authoring) are marked <strong>"Yes — in this pilot"</strong>, but the How column for each says the opposite ("no images are part of this pilot's test content"), and all three Pass Results read "To be confirmed" — while UC2 is entirely about images and video.</td>
+        <td>Three capabilities with no pass criteria, in or out depending on which column you read.</td>
+      </tr>
+      <tr>
+        <td class="ref">Step 5 ↔ step 6 ↔ CMS-01</td>
+        <td>Step 5 has the CRM showing the Market Manager <strong>the same tone of voice</strong> the partner already received — tone persisting across channels. Step 6 and CMS-01 then describe a <strong>channel-specific variant</strong> and <strong>channel-specific content models</strong>, which makes channel read as a peer of tone and segment.</td>
+        <td>Tone and channel end up sounding like the same dimension. They are opposites: tone is chosen per partner and must stay constant across surfaces, channel is fixed per surface and identical for every partner.</td>
+      </tr>
+      <tr>
+        <td class="ref">Capability list</td>
+        <td>Stated as "46 capabilities in total (numbered CMS-01 through CMS-47)". CMS-01→CMS-47 is 47 numbers, and <strong>CMS-27 appears nowhere</strong> in the document.</td>
+        <td>If the pilot is scored against a fixed list, a missing item is a missing requirement.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ================= UC1 ================= -->
+<section id="uc1">
+  <h2><span class="h-n">01</span>Use case 1 — Cross-channel proof point consistency</h2>
+  <p class="sec-note">Everything here is written from what the document states unambiguously. Where a story depends on one of the contradictions above, it's marked and the dependency is named in the acceptance criteria rather than assumed away.</p>
+
+  <div class="legend">
+    <span><span class="swatch sw-a"></span>Clear — write it as-is</span>
+    <span><span class="swatch sw-f"></span>Clear in intent, blocked on a decision (see Q-refs)</span>
+  </div>
+
+  <h3>Epic A — Content modelling and authoring</h3>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-A1</span><span class="stitle">Channel-specific content models from one base entry</span><span class="chip">CMS-01</span></div>
+    <p class="narr">As a <em>content modeller</em>, I want the proof point modelled as channel-specific renderings derived from a single base entry, so that email and CRM/Field each get the structure they need without the copy being written twice.</p>
+    <ul class="ac">
+      <li>At least two channel renderings exist (Email, CRM/Field) for the same base entry.</li>
+      <li>The channel rendering is produced from the base entry plus channel parameters; every step still requiring manual authoring is listed.</li>
+      <li>Generated output is diffed against a hand-authored reference supplied by EG; differences are documented, not waved through.</li>
+      <li>The mechanism used (field-level conditions, referenced types, app) is documented with its limits.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-A2</span><span class="stitle">Typed, validated proof-point value</span><span class="chip">CMS-10</span><span class="chip warn">blocked: Q1</span></div>
+    <p class="narr">As a <em>content author</em>, I want the proof-point value held in a typed, validated field rather than free text, so that a malformed or out-of-range number is caught before publish.</p>
+    <ul class="ac">
+      <li>The field is typed (numeric/date), not a string.</li>
+      <li>Locale-aware number formatting is applied per locale.</li>
+      <li>A malformed or out-of-range value is rejected or flagged by validation, never silently accepted.</li>
+      <li>Validation rules are configurable by an author without a code change.</li>
+      <li>Scope depends on Q1: if the value is injected at render time, this story applies to the template placeholder, not to a stored value.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-A3</span><span class="stitle">Segment and tone taxonomy on every variant</span><span class="chip">CMS-19</span></div>
+    <p class="narr">As <em>NBA</em>, I need each content variant to carry the segment and tone metadata my decisioning reads, so that I can select a variant without a human in the loop.</p>
+    <ul class="ac">
+      <li>Every variant carries an NBS segment tag and a tone tag; both are selection criteria, not presentation.</li>
+      <li>Tags come from a controlled vocabulary, not free-text entry.</li>
+      <li>Tags are returned in the Delivery API response and are filterable by query.</li>
+      <li>NBA correctly filters and selects variants using those tags against the pilot content set.</li>
+      <li>Channel is <em>not</em> among the selection tags — it is supplied on the fetch and selects a rendering after the variant has been chosen (see US-A9).</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-A4</span><span class="stitle">Named variants on a single entry</span><span class="chip">CMS-31</span><span class="chip warn">blocked: Q2, Q23</span></div>
+    <p class="narr">As a <em>content author</em>, I want to author multiple named variants on top of a mandatory default entry, so that segment and tone variations live on one entry rather than as separate duplicated entries.</p>
+    <ul class="ac">
+      <li>One entry carries a mandatory default plus at least two named variants.</li>
+      <li>A new variant can be added without altering the content type.</li>
+      <li>For a given segment + tone, exactly one variant is returned, deterministically. Channel plays no part in that resolution.</li>
+      <li>The document records which system performed the resolution (Contentful or NBA) — see Q2.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-A5</span><span class="stitle">Shared proof-point block reused across surfaces</span><span class="chip">CMS-42</span></div>
+    <p class="narr">As a <em>content author</em>, I want the proof-point block referenced by each surface rather than copied into it, so that one edit reaches every channel.</p>
+    <ul class="ac">
+      <li>Email and CRM/Field reference the same block; no duplicate is created.</li>
+      <li>An edit to the block is reflected in both surfaces without re-authoring.</li>
+      <li>A where-used view shows every surface consuming the block.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-A6</span><span class="stitle">Inventory and coverage view across variants and locales</span><span class="chip">CMS-20</span></div>
+    <p class="narr">As a <em>content operations owner</em>, I want a view of entry × variant × locale with lifecycle status, so that I can see which combinations have bespoke copy and which fall back to default.</p>
+    <ul class="ac">
+      <li>The view lists every segment/locale combination with its status.</li>
+      <li>Custom variant versus default fallback is distinguishable at a glance.</li>
+      <li>The view is exportable.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-A7</span><span class="stitle">Authoring and retagging with no developer involvement</span><span class="chip">test goal</span></div>
+    <p class="narr">As an <em>EG content author</em>, I want to create, update, retag and republish content entirely in the UI, so that routine changes don't queue behind an engineering release.</p>
+    <ul class="ac">
+      <li>An EG author (not the delivery team) completes the full cycle unaided.</li>
+      <li>No deployment or code change is required.</li>
+      <li>Adding one new field and one new tag dimension is performed live; effort, role required and any code impact are recorded.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-A8</span><span class="stitle">Metric composed inside a localised sentence</span><span class="chip">CMS-47</span><span class="chip warn">blocked: Q5</span></div>
+    <p class="narr">As a <em>partner</em>, I want the number to read naturally inside the sentence in my language, so that the message doesn't read like a template with a value dropped into it.</p>
+    <ul class="ac">
+      <li>Plural/singular, gender inflection, word order and ordinals are correct in each of the five locales.</li>
+      <li>A native reviewer per locale signs off on the composed output.</li>
+      <li>The composition mechanism and where it executes (CMS, channel, or intermediate service) is documented.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-A9</span><span class="stitle">Channel rendering carries its own register and audience</span><span class="chip">CMS-01</span><span class="chip">CMS-19</span></div>
+    <p class="narr">As a <em>content author</em>, I want each channel rendering to declare who it addresses and in what register, so that an email speaking to a partner and a CRM card briefing a Market Manager are not written as if they were the same thing.</p>
+    <ul class="ac">
+      <li>Every channel rendering carries an <code>audience</code> value of partner or internal, and a register appropriate to that surface.</li>
+      <li>The partner-facing tone selected by NBA is preserved across every channel rendering of the same variant; the register changes with the surface, the tone does not.</li>
+      <li>Register and audience are declared on the rendering and never on the variant, so they cannot be mistaken for selection criteria.</li>
+      <li>Generation prompts and review criteria differ by audience — a briefing for an internal user is reviewed against different standards from copy sent to a partner.</li>
+    </ul>
+  </div>
+
+  <h3>Epic B — Localisation</h3>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-B1</span><span class="stitle">Locale as a native variant dimension</span><span class="chip">CMS-32</span></div>
+    <p class="narr">As a <em>localisation owner</em>, I want each locale to publish independently, so that one pending translation doesn't hold back the locales that are ready.</p>
+    <ul class="ac">
+      <li>A locale publishes on its own; other locales are unaffected.</li>
+      <li>Publication status is visible per locale.</li>
+      <li>All five locales (EN-US, AR, TH, DE, JA) are exercised.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-B2</span><span class="stitle">Deterministic variant + locale resolution</span><span class="chip">CMS-38</span><span class="chip warn">blocked: Q2</span></div>
+    <p class="narr">As a <em>consuming channel</em>, I need variant and locale to resolve in a documented, repeatable order, so that the same request always returns the same content.</p>
+    <ul class="ac">
+      <li>The same segment + locale request returns the same variant on repeated fetches.</li>
+      <li>Precedence is documented: variant selected first, locale applied as its rendering.</li>
+      <li>Behaviour is identical across both consuming channels.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-B3</span><span class="stitle">Fallback when a translation is missing</span><span class="chip">CMS-33</span></div>
+    <p class="narr">As a <em>consuming channel</em>, I want a missing translation to fall back to source copy, so that a partner never receives a blank or broken field.</p>
+    <ul class="ac">
+      <li>A locale simulated without translation returns default-locale copy.</li>
+      <li>Only that locale is affected.</li>
+      <li>Fallback granularity (field-level or entry-level) is documented.</li>
+      <li>The payload flags that a fallback occurred, so it can be reported on.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-B4</span><span class="stitle">Translation pipeline for the five pilot locales</span><span class="chip">CMS-03</span><span class="chip warn">blocked: Q19</span></div>
+    <p class="narr">As a <em>localisation owner</em>, I want translation initiated from the CMS and returned to the same entry, so that translated copy stays tied to its source version.</p>
+    <ul class="ac">
+      <li>Translation is triggered from the CMS for all five locales and lands back on the entry.</li>
+      <li>The route used (native, Babel Prime connector, or mixed) is agreed and demonstrated.</li>
+      <li>Behaviour when source copy changes after translation is demonstrated.</li>
+      <li>Send-time versus pre-translated capability is documented, with latency figures if send-time is supported.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-B5</span><span class="stitle">Per-locale preview including right-to-left</span><span class="chip">CMS-18</span><span class="chip warn">blocked: Q14</span></div>
+    <p class="narr">As a <em>content reviewer</em>, I want to preview each locale before publishing, so that Arabic RTL is verified rather than assumed.</p>
+    <ul class="ac">
+      <li>Preview is available per locale prior to publish.</li>
+      <li>Arabic renders right-to-left correctly.</li>
+      <li>The preview target is agreed in advance, given UC1 builds no rendered email or CRM surface — see Q14.</li>
+    </ul>
+  </div>
+
+  <h3>Epic C — Identity, integration and delivery</h3>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-C1</span><span class="stitle">Stable content ID per entry, variant, locale and version</span><span class="chip">CMS-02</span></div>
+    <p class="narr">As <em>NBA, SFMC and CRM/VMC</em>, we need one identifier that means "this exact content", so that all three systems can be proven to be talking about the same thing.</p>
+    <ul class="ac">
+      <li>An ID is issued per entry + variant + locale + version.</li>
+      <li>The ID is stable across repeated fetches and its format is documented.</li>
+      <li>A version change is addressable — the previous version remains retrievable.</li>
+      <li>All three systems reference the identical ID for a given decision, with no divergence.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-C2</span><span class="stitle">Single central content store</span><span class="chip">CMS-04</span></div>
+    <p class="narr">As an <em>EG content owner</em>, I want both channels drawing on one entry, so that no channel keeps its own copy to drift out of step.</p>
+    <ul class="ac">
+      <li>Both channels pull from the single Contentful entry.</li>
+      <li>Neither channel stores a separate editable copy.</li>
+      <li>Any caching that creates a de facto copy is documented with its invalidation behaviour.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-C3</span><span class="stitle">Fetch by ID returns a fully resolved object</span><span class="chip">CMS-05</span></div>
+    <p class="narr">As a <em>consuming channel</em>, I want one call by content ID to return locale-correct, fully resolved content, so that I don't have to assemble anything client-side.</p>
+    <ul class="ac">
+      <li>A single fetch returns the resolved, locale-correct object — no client-side assembly.</li>
+      <li>Response shape is documented and version-stable.</li>
+      <li>Authentication model, rate limits and expected latency are stated.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-C4</span><span class="stitle">SFMC fetches by content ID at send time</span><span class="chip">test goal</span><span class="chip warn">blocked: Q6, Q22</span></div>
+    <p class="narr">As <em>SFMC</em>, I want to fetch resolved copy from Contentful by ID once NBA hands me the decision, so that the email carries the same content every other channel will show.</p>
+    <ul class="ac">
+      <li>The integration runs against the SFMC future-state instance, not Marketo.</li>
+      <li>The integration method is documented (AMPscript HTTPGet, SSJS, API integration, or pre-send data-extension hydration) with its limits.</li>
+      <li>Content populates the message at send time in a preview or seed send.</li>
+      <li>Failure behaviour is defined for timeout, unknown ID and retired variant.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-C5</span><span class="stitle">Payload validated for non-integrated channels</span><span class="chip">test goal</span></div>
+    <p class="narr">As a <em>CRM/VMC/EPC owner</em>, I want the emitted payload field-mapped against my ingest requirements, so that I know what integration would actually cost before committing.</p>
+    <ul class="ac">
+      <li>The payload for a given content ID is captured and published.</li>
+      <li>Each consuming system's required fields, structure and identifiers are mapped against it.</li>
+      <li>Gaps are listed explicitly rather than reported as "compatible".</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-C6</span><span class="stitle">Cross-channel consistency for one ID</span><span class="chip">CMS-06</span><span class="chip warn">blocked: Q14</span></div>
+    <p class="narr">As a <em>partner</em>, I want the email and the conversation with my Market Manager to tell me the same thing, so that the story doesn't change depending on where I meet it.</p>
+    <ul class="ac">
+      <li>For one content ID, wording and translation are identical in both outputs.</li>
+      <li>Verification is by automated diff of the two payloads, not visual inspection.</li>
+      <li>The evidence artifact is agreed in advance — see Q14.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-C7</span><span class="stitle">Consumers detect new and changed content</span><span class="chip">CMS-36</span></div>
+    <p class="narr">As a <em>consuming channel</em>, I want to pick up newly published or changed content without anyone telling me, so that a correction reaches every surface.</p>
+    <ul class="ac">
+      <li>Both channels detect and fetch changed content with no manual step.</li>
+      <li>The mechanism is documented (webhook, CDN purge, polling) with propagation time.</li>
+      <li>Behaviour on unpublish or variant retirement is demonstrated.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-C8</span><span class="stitle">Real NBA payload ingested and mapped</span><span class="chip">CMS-46</span><span class="chip warn">blocked: Q16</span></div>
+    <p class="narr">As the <em>pilot team</em>, I want to work against NBA's real Travel Corridors payload rather than a stub, so that the result says something about the production path.</p>
+    <ul class="ac">
+      <li>The real payload structure is ingested and maps to a resolved content ID.</li>
+      <li>The mapping is documented field by field.</li>
+      <li>Error paths are handled: unknown ID, retired variant, missing locale.</li>
+      <li>Depends on EG supplying the payload spec and sample — see Q16.</li>
+    </ul>
+  </div>
+
+  <h3>Epic D — Traceability and reporting</h3>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-D1</span><span class="stitle">Audit trail and lookup by content ID</span><span class="chip">CMS-11</span></div>
+    <p class="narr">As an <em>EG operations owner</em>, I want to give a content ID and get back the exact content it maps to, so that "what did we actually say" is answerable after the fact.</p>
+    <ul class="ac">
+      <li>Given an ID, the exact content and version is retrievable on demand.</li>
+      <li>Change history shows author and timestamp per version.</li>
+      <li>Retrieval works for superseded versions, not only the current one.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-D2</span><span class="stitle">Content ID and locale recorded on the send/render event</span><span class="chip">CMS-39</span><span class="chip warn">blocked: Q14, Q15</span></div>
+    <p class="narr">As an <em>analyst</em>, I want the content ID and locale actually served persisted on the event record, so that engagement can be traced back to a specific variant.</p>
+    <ul class="ac">
+      <li>Content ID and locale are recorded on the simulated send/render record.</li>
+      <li>The record is retrievable after the event.</li>
+      <li>The event owner is named — see Q15.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-D3</span><span class="stitle">Served variant signalled back to NBA</span><span class="chip">CMS-40</span><span class="chip warn">blocked: Q15</span></div>
+    <p class="narr">As <em>NBA</em>, I need to know which variant was actually served, so that the decision loop closes and the model can learn.</p>
+    <ul class="ac">
+      <li>A signal identifying the served variant reaches NBA in a structure it can consume.</li>
+      <li>Transport and format are agreed.</li>
+      <li>Build ownership is named, given the stated "no dev work from the NBA team" — see Q15.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-D4</span><span class="stitle">Content data available for engagement reporting</span><span class="chip">CMS-41</span><span class="chip warn">blocked: Q15</span></div>
+    <p class="narr">As an <em>analyst</em>, I want content ID, variant and locale served available in reporting, so that engagement can be compared by variant.</p>
+    <ul class="ac">
+      <li>All three attributes are emitted in a form that supports engagement-by-variant reporting.</li>
+      <li>Destination and format are agreed with the reporting owner.</li>
+    </ul>
+  </div>
+
+  <h3>Epic E — Non-functional and enabling</h3>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-E1</span><span class="stitle">Documented scale evidence beyond pilot volume</span><span class="chip">parameters</span></div>
+    <p class="narr">As <em>EG architecture</em>, I want evidence about behaviour at real volume, so that we know what still needs proving before leaning on this pattern.</p>
+    <ul class="ac">
+      <li>Lookup and indexing performance for fetch-by-ID is documented.</li>
+      <li>Concurrent-request handling for a post-newsletter burst is documented, with published limits.</li>
+      <li>Content-model limits at high variant × locale counts are stated.</li>
+      <li>A written position is given on partner-level records at roughly 1M scale — see Q1.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-E2</span><span class="stitle">Measured efficiency against today's per-channel effort</span><span class="chip">test goal</span></div>
+    <p class="narr">As an <em>EG sponsor</em>, I want authoring effort measured rather than asserted, so that "faster" is a number and not a claim.</p>
+    <ul class="ac">
+      <li>Effort to author, tag and translate once is recorded during the pilot.</li>
+      <li>EG supplies a comparable baseline for the current per-channel process.</li>
+      <li>The comparison states what is and isn't included (review cycles, translation wait time).</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-E3</span><span class="stitle">Environments, access and connectivity in place</span><span class="chip">enabler</span></div>
+    <p class="narr">As the <em>delivery team</em>, I need environments and credentials provisioned before day one, so that the pilot window isn't spent on access.</p>
+    <ul class="ac">
+      <li>Contentful org, space, environments and roles are provisioned for both EG and delivery staff.</li>
+      <li>Delivery and Preview API tokens are issued.</li>
+      <li>Outbound connectivity from SFMC and Salesforce to Contentful is allow-listed and security-reviewed.</li>
+      <li>Named EG owners exist for each dependency.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= UC2 ================= -->
+<section id="uc2">
+  <h2><span class="h-n">02</span>Use case 2 — Partner web content</h2>
+  <p class="sec-note">Three pages rebuilt from Figma, previewed, translated into German, French, Japanese and Swedish, and published. The acceptance criteria in the document are already close to story-ready; what's missing is who provides the rendering layer. That gap sits under Q8 and it is the largest single effort variable in this use case.</p>
+
+  <h3>Epic F — Authoring</h3>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-F1</span><span class="stitle">Page-specific properties authored per page</span></div>
+    <p class="narr">As a <em>web author</em>, I want page-level properties authorable per page and per locale, so that metadata doesn't depend on a developer.</p>
+    <ul class="ac">
+      <li>Title, description, canonical and social metadata are authorable per page.</li>
+      <li>Properties are maintained independently per locale.</li>
+      <li>They render into the published page head.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-F2</span><span class="stitle">Body authored from existing components without engineering</span><span class="chip warn">blocked: Q8, Q9</span></div>
+    <p class="narr">As a <em>web author</em>, I want to build the page body from pre-existing components and layouts, so that a new page doesn't require a release.</p>
+    <ul class="ac">
+      <li>All three target pages are rebuilt using the component library.</li>
+      <li>No code change is required to author them.</li>
+      <li>Components used are listed; any component missing from the library is flagged with the effort to add it.</li>
+      <li>Depends on confirming whether the library exists or must be built — see Q9.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-F3</span><span class="stitle">Images embedded from an integrated asset repository</span><span class="chip">CMS-22</span></div>
+    <p class="narr">As a <em>web author</em>, I want images available from an integrated asset repository, so that assets are reused rather than re-uploaded per page.</p>
+    <ul class="ac">
+      <li>Images are embedded from the repository, not local upload only.</li>
+      <li>Asset metadata and alt text are authorable.</li>
+      <li>Replacing an asset propagates to every page referencing it.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-F4</span><span class="stitle">Video embedded and playable; images served responsively</span><span class="chip">CMS-23</span></div>
+    <p class="narr">As a <em>partner visiting the page</em>, I want video to play and images to load at a sensible size for my device, so that the page performs on mobile as well as desktop.</p>
+    <ul class="ac">
+      <li>Video embeds from the asset repository or an external source such as YouTube, and plays in the published page.</li>
+      <li>Image renditions are generated for each agreed breakpoint.</li>
+      <li>Pass criteria for CMS-22/23 are defined, since the source document leaves them "To be confirmed" — see Q12.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-F5</span><span class="stitle">Multi-breakpoint preview while authoring</span><span class="chip">CMS-18 / 24</span></div>
+    <p class="narr">As a <em>web author</em>, I want to preview in-progress work at each breakpoint, so that I can validate against the design before sending anything for review.</p>
+    <ul class="ac">
+      <li>Preview is available at the agreed breakpoints during authoring.</li>
+      <li>Preview output matches the Figma design within an agreed tolerance.</li>
+      <li>Unpublished changes are previewable.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-F6</span><span class="stitle">Translation workflow for the four web locales</span></div>
+    <p class="narr">As a <em>localisation owner</em>, I want to send a page for translation and have the result return into the CMS, so that translated pages don't get assembled by hand.</p>
+    <ul class="ac">
+      <li>Workflow sends the page for translation into German, French, Japanese and Swedish from an EN-US source.</li>
+      <li>Translated content returns to the CMS and populates the localised page.</li>
+      <li>The locale set difference against UC1 is confirmed as intentional — see Q18.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-F7</span><span class="stitle">Review workflow</span><span class="chip">CMS-12</span></div>
+    <p class="narr">As a <em>content owner</em>, I want to send a page for review with visible states, so that approval is tracked rather than chased over email.</p>
+    <ul class="ac">
+      <li>A page can be routed for review with an assignee.</li>
+      <li>Review state is visible on the page and in a list view.</li>
+      <li>Note: the capability matrix marks CMS-12 as demo-only while UC2 requires it — see Q7.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-F8</span><span class="stitle">Scheduled publish and unpublish</span><span class="chip">CMS-25</span></div>
+    <p class="narr">As a <em>content owner</em>, I want to schedule a page to publish or unpublish, so that campaign timing doesn't depend on someone being at a keyboard.</p>
+    <ul class="ac">
+      <li>A publish and an unpublish are scheduled and execute at the set time.</li>
+      <li>A scheduled action can be cancelled or amended before it runs.</li>
+      <li>Scheduling behaviour per locale is demonstrated.</li>
+    </ul>
+  </div>
+
+  <h3>Epic G — Delivery</h3>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-G1</span><span class="stitle">Header and footer render as designed</span><span class="chip warn">blocked: Q8</span></div>
+    <p class="narr">As a <em>partner visiting the page</em>, I want the standard header and footer, so that the page belongs to the site rather than floating on its own.</p>
+    <ul class="ac">
+      <li>Header and footer match the Figma design at each breakpoint.</li>
+      <li>Navigation is authorable, not hard-coded.</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-G2</span><span class="stitle">Site-level and page-level properties applied</span><span class="chip warn">blocked: Q8</span></div>
+    <p class="narr">As a <em>site owner</em>, I want CSS, JS, the GTM container and breakpoints configured at site level and metadata at page level, so that global changes happen once.</p>
+    <ul class="ac">
+      <li>CSS, JS, GTM container and display breakpoints are configurable at site level.</li>
+      <li>Page-level metadata renders into the page head.</li>
+      <li>GTM fires on the published page.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-G3</span><span class="stitle">Body content matches the design</span></div>
+    <p class="narr">As a <em>design owner</em>, I want the published page to match Figma at each breakpoint, so that authoring flexibility hasn't cost design fidelity.</p>
+    <ul class="ac">
+      <li>All body content renders as designed at every agreed breakpoint.</li>
+      <li>A visual tolerance is agreed before review, not argued afterwards.</li>
+      <li>All three pilot pages are assessed.</li>
+    </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-G4</span><span class="stitle">Translated pages render and route correctly</span></div>
+    <p class="narr">As a <em>partner in a non-English market</em>, I want the localised page to load in my language at a sensible URL, so that translation is reachable rather than merely stored.</p>
+    <ul class="ac">
+      <li>Translated content is populated and rendered on each locale page.</li>
+      <li>Locale URL structure is defined and implemented.</li>
+      <li>Behaviour for an untranslated page is defined (fallback or hidden).</li>
+    </ul>
+  </div>
+
+  <div class="story dep">
+    <div class="story-head"><span class="sid">US-G5</span><span class="stitle">Published output matches preview</span><span class="chip warn">blocked: Q10</span></div>
+    <p class="narr">As a <em>web author</em>, I want what I previewed to be what publishes, so that preview is trustworthy.</p>
+    <ul class="ac">
+      <li>The published page renders identically to preview at every breakpoint.</li>
+      <li>The publication target environment and domain are agreed — see Q10.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= EVIDENCE ================= -->
+<section id="evidence">
+  <h2><span class="h-n">03</span>Evidence track — capabilities covered by demo or documentation</h2>
+  <p class="sec-note">The document asks for roughly nineteen capabilities to be shown rather than built. That's reasonable, but as written it has no owner, no format and no pass criteria, which means it will either be skipped or will consume unplanned time.</p>
+
+  <div class="story">
+    <div class="story-head"><span class="sid">US-H1</span><span class="stitle">Consolidated demo and documentation package</span><span class="chip">CMS-07, 08, 12, 13, 14, 15, 16, 21, 25, 26, 28, 29, 30, 34, 35, 37, 43, 44, 45</span></div>
+    <p class="narr">As an <em>EG evaluator</em>, I want the non-built capabilities covered in one scheduled package, so that they are assessed on the same footing as the built ones instead of being lost.</p>
+    <ul class="ac">
+      <li>Each capability is assigned a format: live demo, recorded walkthrough, or documentation.</li>
+      <li>Each has a named presenter and a scheduled slot.</li>
+      <li>Each has a written pass/fail note captured at the time, replacing the current "to be defined".</li>
+      <li>Items duplicated between the built scope and this track (CMS-12, CMS-25, CMS-18) are assigned to one or the other, not both.</li>
+      <li>CMS-09 and CMS-17 are excluded as EG-side concerns, as the document states.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= BUILD VS CONFIGURE ================= -->
+<section id="build">
+  <h2><span class="h-n">04</span>Build versus configure</h2>
+  <p class="sec-note">Every story classified by what it actually takes to satisfy it. Five buckets rather than two, because a straight development/configuration split hides the two things that matter most here: capabilities that are configuration only if the right licence is in place, and capabilities where the CMS side is trivial but all the work sits in a system that isn't Contentful.</p>
+
+  <div class="trap">
+    <h4>Six places where "out of the box" quietly isn't</h4>
+    <ol>
+      <li><strong>An ID per entry + variant + locale + version (US-C1).</strong> Contentful issues an ID per entry. Locale is a query parameter, version is a revision counter, and variant isn't a core concept at all. The identifier the whole use case depends on has to be defined as a composite key and built — it isn't handed to us.</li>
+      <li><strong>Independent publishing per locale (US-B1).</strong> Publishing acts on the entry, and all locales go together. "A pending translation doesn't block another locale" needs either entry-per-locale modelling or a release-based workaround, both of which change the content model.</li>
+      <li><strong>Named variants on one entry (US-A4).</strong> Core entries have no variant dimension. This is either the personalisation add-on or hand-modelled as referenced entries with tags — and the second option is what makes CMS-45's variant-explosion concern real.</li>
+      <li><strong>Channel rendering generated from a base entry (US-A1).</strong> There is no "clone this entry per channel parameter" behaviour to configure. Field-level conditions, a custom app, or a transform in the delivery layer — all of them code.</li>
+      <li><strong>Locale-aware number formatting and sentence composition (US-A2, US-A8).</strong> The CMS stores strings and validates them. Plural, gender, ordinal and word-order handling executes in whatever renders the message. If EG wants a composed sentence returned from the API, that implies a service between Contentful and the channel.</li>
+      <li><strong>Coverage view by segment and locale (US-A6).</strong> The entry list filters by status and content type, not by which segment/locale combinations have bespoke copy. That view is a custom app or a scheduled export.</li>
+    </ol>
+  </div>
+
+  <div class="bhead"><h3>1 — Out of the box, configuration only</h3><span class="count o">12 stories</span></div>
+  <p class="bsub">No code. An author or a solution consultant does this in the UI, and it is the part of the pilot that should go quickly.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:9%">Story</th><th style="width:30%">What it is</th><th>What gets configured</th></tr></thead>
+    <tbody>
+      <tr><td class="us">US-A2</td><td>Typed, validated proof-point field</td><td>Field type, required flag, range and pattern validations on the content type. Caveat: locale-aware <em>formatting</em> of the value is not a CMS behaviour — see trap 5.</td></tr>
+      <tr><td class="us">US-A9</td><td>Channel register and audience on the rendering</td><td>Two fields plus a controlled vocabulary on the channel rendering type. The generation prompts that use them sit in US-A1.</td></tr>
+      <tr><td class="us">US-A3</td><td>Segment and tone taxonomy</td><td>Taxonomy concepts and tags defined centrally, applied to entries, returned and filterable through the delivery API.</td></tr>
+      <tr><td class="us">US-A5</td><td>Shared block reused by reference</td><td>Reference field on the consuming types; the where-used panel is native.</td></tr>
+      <tr><td class="us">US-A7</td><td>Authoring without developers</td><td>Nothing to build — this is a validation exercise run by an EG author against the configured model.</td></tr>
+      <tr><td class="us">US-B3</td><td>Fallback when a translation is missing</td><td>Fallback locale set per locale; empty fields fall back natively. Flagging the fallback in the payload is a small code addition.</td></tr>
+      <tr><td class="us">US-C2</td><td>Single central content store</td><td>An architectural assertion validated by inspection, not a build.</td></tr>
+      <tr><td class="us">US-C3</td><td>Fetch by ID returns a resolved object</td><td>Delivery API with locale parameter and link resolution. Already the platform's default behaviour — subject to Q2 on what "resolved" includes.</td></tr>
+      <tr><td class="us">US-D1</td><td>Audit trail and lookup by ID</td><td>Native version history and API retrieval. Depth of version comparison varies by tier.</td></tr>
+      <tr><td class="us">US-E3</td><td>Environments, access, connectivity</td><td>Space, environments, roles, API keys. Multiple environments and SSO are tier-dependent.</td></tr>
+      <tr><td class="us">US-F3</td><td>Images from an integrated asset repository</td><td>Native asset library covers this. An external DAM instead means a marketplace connector, or custom work if EG's DAM has none.</td></tr>
+      <tr><td class="us">US-F8</td><td>Scheduled publish and unpublish</td><td>Native scheduled actions. Quota of concurrent scheduled actions is tier-dependent.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bhead"><h3>2 — Configuration, but only with the right licence</h3><span class="count f">3 stories</span></div>
+  <p class="bsub">These are configuration if the entitlement exists and custom development if it doesn't. Q23 decides which. Worth pricing both ways before the estimate goes out.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:9%">Story</th><th style="width:30%">What it is</th><th>The dependency</th></tr></thead>
+    <tbody>
+      <tr><td class="us">US-A4</td><td>Named variants on one entry</td><td>Personalisation product: configuration. Without it: referenced entries plus tags, hand-modelled, with the selection logic living outside the CMS.</td></tr>
+      <tr><td class="us">US-B4</td><td>Translation pipeline</td><td>A marketplace TMS connector is configuration. Babel Prime has none, so if EG keeps it, this becomes a custom connector — that's Q19, and it's the difference between a day and a sprint.</td></tr>
+      <tr><td class="us">US-F7</td><td>Review workflow</td><td>Workflows and tasks are a premium-tier feature. Below that tier it's manual process or custom app.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bhead"><h3>3 — Custom development, Contentful side</h3><span class="count">11 stories</span></div>
+  <p class="bsub">Apps, connectors, middleware and model workarounds. This is where our engineering effort concentrates on the CMS itself.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:9%">Story</th><th style="width:30%">What it is</th><th>What has to be built</th></tr></thead>
+    <tbody>
+      <tr><td class="us">US-A1</td><td>Channel-specific rendering from one base entry</td><td>Content types are configuration; the derivation mechanism is a custom app or a transform in the delivery layer. Unknown until Q4 is answered.</td></tr>
+      <tr><td class="us">US-A6</td><td>Coverage view across segment and locale</td><td>Custom app or scheduled export against the management API.</td></tr>
+      <tr><td class="us">US-A8</td><td>Metric composed into a localised sentence</td><td>A composition service handling plural, gender and ordinal rules per locale. Depends on Q5 for where it runs.</td></tr>
+      <tr><td class="us">US-B1</td><td>Independent publish per locale</td><td>Model workaround, because publishing is entry-level. Changes the content model, so decide before authoring starts.</td></tr>
+      <tr><td class="us">US-B2</td><td>Deterministic variant and locale resolution</td><td>Nothing here if NBA resolves. If Contentful resolves, this is the resolution layer itself — Q2.</td></tr>
+      <tr><td class="us">US-B5</td><td>Per-locale preview including RTL</td><td>Preview URL configuration is trivial; the preview target has to exist. UC1 builds no rendered surface, so this needs a harness — Q14.</td></tr>
+      <tr><td class="us">US-C1</td><td>Stable composite content ID</td><td>Define and implement the identifier contract, plus resolution of that key back to content. See trap 1.</td></tr>
+      <tr><td class="us">US-C6</td><td>Cross-channel consistency verified by diff</td><td>Small automated comparison harness over the two payloads.</td></tr>
+      <tr><td class="us">US-C7</td><td>Consumers detect new and changed content</td><td>Webhook configuration is native; the receiving endpoint and propagation handling are built.</td></tr>
+      <tr><td class="us">US-C8</td><td>NBA payload ingested and mapped</td><td>Integration layer between the NBA payload and the content ID contract, with error paths.</td></tr>
+      <tr><td class="us">US-F4</td><td>Video embed and responsive renditions</td><td>Images API handles renditions natively; the video field and player embed are a custom field or marketplace app, and responsive delivery lives in the front end.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bhead"><h3>4 — Custom development, outside Contentful</h3><span class="count f">13 stories</span></div>
+  <p class="bsub">The CMS contributes little or nothing to these. They land on SFMC, the Salesforce/CRM side, NBA, or the UC2 front end — and most of them sit with teams the pilot parameters currently exclude from doing development.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:9%">Story</th><th style="width:30%">What it is</th><th>Where the work lands</th></tr></thead>
+    <tbody>
+      <tr><td class="us">US-C4</td><td>SFMC fetches by ID at send time</td><td>SFMC — AMPscript, SSJS or a pre-send data-extension hydration job. Q6.</td></tr>
+      <tr><td class="us">US-D2</td><td>Content ID recorded on the send/render event</td><td>SFMC and CRM/VMC event models.</td></tr>
+      <tr><td class="us">US-D3</td><td>Served variant signalled back to NBA</td><td>NBA ingestion — explicitly excluded from pilot development today. Q15.</td></tr>
+      <tr><td class="us">US-D4</td><td>Content data available for reporting</td><td>EG reporting stack.</td></tr>
+      <tr><td class="us">US-F1</td><td>Page properties authored and rendered</td><td>Content model is configuration; rendering the metadata into the page head is front end.</td></tr>
+      <tr><td class="us">US-F2</td><td>Body authored from existing components</td><td>Front end. Each component needs a content type and a matching rendered component. Q9.</td></tr>
+      <tr><td class="us">US-F5</td><td>Multi-breakpoint preview while authoring</td><td>Live preview integration inside the front-end application.</td></tr>
+      <tr><td class="us">US-F6</td><td>Translation workflow for web locales</td><td>Same dependency as US-B4, plus localised routing in the front end.</td></tr>
+      <tr><td class="us">US-G1</td><td>Header and footer as designed</td><td>Front end.</td></tr>
+      <tr><td class="us">US-G2</td><td>Site-level CSS, JS, GTM and breakpoints</td><td>Front end, with a site-configuration content model behind it.</td></tr>
+      <tr><td class="us">US-G3</td><td>Body content matches the design</td><td>Front end.</td></tr>
+      <tr><td class="us">US-G4</td><td>Translated pages render and route</td><td>Front end routing and locale strategy.</td></tr>
+      <tr><td class="us">US-G5</td><td>Published output matches preview</td><td>Front end, hosting and publication pipeline. Q10.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bhead"><h3>5 — No build: analysis, evidence and coordination</h3><span class="count o">4 stories</span></div>
+  <p class="bsub">Real effort, but consultancy rather than engineering. Easy to leave out of a plan and then absorb unplanned.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:9%">Story</th><th style="width:30%">What it is</th><th>What it takes</th></tr></thead>
+    <tbody>
+      <tr><td class="us">US-C5</td><td>Payload validated for non-integrated channels</td><td>Field-level mapping workshop with the CRM, VMC and EPC owners, and a written gap list.</td></tr>
+      <tr><td class="us">US-E1</td><td>Scale evidence beyond pilot volume</td><td>Vendor documentation plus a written architectural position. A load test would move this into development.</td></tr>
+      <tr><td class="us">US-E2</td><td>Efficiency measured against today</td><td>Time tracking during the pilot and a baseline supplied by EG.</td></tr>
+      <tr><td class="us">US-H1</td><td>Demo and documentation package</td><td>Scheduling, attendance and captured pass notes across roughly nineteen capabilities.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>What the split says about the pilot</h3>
+  <p class="sec-note" style="margin-bottom:0">Twelve stories are pure configuration and three more become configuration with the right licence — so the CMS evaluation proper is a small piece of work. The remaining twenty-four are development, and thirteen of those sit outside Contentful entirely, in SFMC, CRM/VMC, NBA and a UC2 front end. Read together with the parameters that rule out development from the NBA, VMC and Salesforce teams, the pilot as scoped is largely an integration project with a CMS evaluation inside it. That's worth saying out loud early, because it decides who staffs it and who is accountable when a capability can't be demonstrated.</p>
+</section>
+
+<!-- ================= QUESTIONS ================= -->
+<section id="questions">
+  <h2><span class="h-n">05</span>Open questions for EG</h2>
+  <p class="sec-note">Ordered by how much the answer changes the shape of the work. The first six are the ones I'd want closed before quoting anything.</p>
+
+  <h3>Architecture — answer these before estimating</h3>
+
+  <div class="q block">
+    <div class="qid">Q1</div>
+    <div>
+      <p class="qt">Where does the personalised value actually live?<span class="tag">blocking</span></p>
+      <p class="qb">Is the proof-point value stored in Contentful per partner, or does Contentful hold a templated sentence with the value injected at render time from NBA or an SFMC data extension?</p>
+      <span class="why">CMS-10 describes a typed value field in the entry; the scale note anticipates a unique proof point across ~1M partner records. Those can't both be true in the same design. The answer sets the entry count, the content model, the licensing tier and whether Contentful sits in the per-recipient path at all.</span>
+    </div>
+  </div>
+
+  <div class="q block">
+    <div class="qid">Q2</div>
+    <div>
+      <p class="qt">Who resolves the variant — NBA or Contentful?<span class="tag">blocking</span></p>
+      <p class="qb">Do the channels fetch a fully-resolved variant ID that NBA has already chosen, or a base ID plus segment/locale parameters that Contentful resolves on the way out?</p>
+      <span class="why">The parameters say NBA decides and mark CMS-37 out of scope, but CMS-31 and CMS-38 are scored on content "resolving" for a segment/tone combination. If Contentful resolves, audience mapping is in scope and the pilot is larger than described. Segment and tone are the only inputs to that resolution; channel is not one, and Q6b settles why.</span>
+    </div>
+  </div>
+
+  <div class="q block">
+    <div class="qid">Q3</div>
+    <div>
+      <p class="qt">One content ID across channels, or one per channel rendering?<span class="tag">blocking</span></p>
+      <p class="qb">Step 5 says every channel fetches the same ID; step 6 says a channel-specific variant of every proof point should be possible under the same base ID. Is the shared contract <span style="font-family:var(--mono);font-size:13px">base_id</span>, or <span style="font-family:var(--mono);font-size:13px">base_id + channel</span>?</p>
+      <span class="why">It determines what NBA hands off, what SFMC and CRM store on their records, and what "the same ID everywhere" is actually being proved.</span>
+    </div>
+  </div>
+
+  <div class="q block">
+    <div class="qid">Q4</div>
+    <div>
+      <p class="qt">What mechanism produces the channel-specific rendering automatically?<span class="tag">blocking</span></p>
+      <p class="qb">CMS-01 passes only if the channel rendering is generated from one base entry plus channel parameters. What is the expected mechanism, and what hand-authored reference will the output be compared against?</p>
+      <span class="why">There's no native "clone this entry by channel parameter" behaviour to point at. This becomes field-level conditions, referenced content types, or a custom app — each with different effort and different governance.</span>
+    </div>
+  </div>
+
+  <div class="q block">
+    <div class="qid">Q5</div>
+    <div>
+      <p class="qt">Where is the localised sentence assembled?<span class="tag">blocking</span></p>
+      <p class="qb">Should the API return a fully composed localised sentence with the metric inside it, or the message pattern plus parameters for the channel to compose?</p>
+      <span class="why">CMS-47 is the capability the document calls out as a genuine capability gain, not just efficiency. Plural, gender and ordinal handling normally resolves in the renderer, not the store — so if EG expects a composed sentence back, something has to inject and translate at request time, and that is a design decision, not a configuration one.</span>
+    </div>
+  </div>
+
+  <div class="q block">
+    <div class="qid">Q6</div>
+    <div>
+      <p class="qt">How does SFMC fetch at send time?<span class="tag">blocking</span></p>
+      <p class="qb">Per-recipient outbound calls from SFMC at send time, or a data extension hydrated before the send? Which SFMC modules are in play — Content Builder, Journey Builder — and are outbound calls permitted under EG's SFMC configuration?</p>
+      <span class="why">Per-recipient external calls at send time carry hard platform limits and are the usual failure point in this pattern at volume. Worth settling now rather than discovering it in the pilot.</span>
+    </div>
+  </div>
+
+  <h3>Scope boundaries</h3>
+
+  <div class="q block">
+    <div class="qid">Q6b</div>
+    <div>
+      <p class="qt">Is tone a property of the partner or of the channel?<span class="tag">blocking</span></p>
+      <p class="qb">Step 5 has the CRM continuing the conversation in the same tone of voice the partner already received, which makes tone a partner attribute that persists across surfaces. CMS-01's "channel-specific content models" and step 6's "channel-specific variant" pull the other way. Which is it?</p>
+      <span class="why">If tone belongs to the partner, it is a selection criterion alongside segment and channel is only a rendering parameter. If tone belongs to the channel, CMS-19 loses half its pass condition because tone stops being decisioning metadata, CMS-31 collapses to segment alone, and CMS-06 becomes trivially satisfiable since no cross-channel constant remains. Three capability results move on this one answer.</span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q7</div>
+    <div>
+      <p class="qt">Are UC1 and UC2 one pilot or two tracks?</p>
+      <p class="qb">The capability matrix is written entirely from UC1's perspective and marks page-building capabilities as belonging to "the separate marketing-page CMS / replatform track" — while UC2, in the same document, is exactly that track. Same window, same team, same readout, or separate?</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q8</div>
+    <div>
+      <p class="qt">Who builds the rendering layer for UC2?</p>
+      <p class="qb">"Publish the page and it renders as designed" implies a front-end application, hosting, routing, CSS/JS and GTM wiring. Is EG providing an existing head to point at Contentful, or is building it part of the pilot?</p>
+      <span class="why">This is the single largest effort variable in the document. A pilot that includes building a head is a different order of work from one that authors into an existing one.</span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q9</div>
+    <div>
+      <p class="qt">Does the component library already exist, or does it have to be built?</p>
+      <p class="qb">The acceptance criteria say pages are authored from "pre-existing components or layouts" — pre-existing where? If it means the Figma library, the corresponding content types and components have to be built first. How many components does the library contain, and do the three pages stay inside it?</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q10</div>
+    <div>
+      <p class="qt">Where are the three pilot pages published?</p>
+      <p class="qb">Target environment, domain and CDN. I'm assuming not live partner.expediagroup.com, but that needs confirming along with who owns the DNS and certificate work if it's a new host.</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q11</div>
+    <div>
+      <p class="qt">What is the current-state CMS, and is coexistence in scope?</p>
+      <p class="qb">The document offers current-state technical specifications and a site index "for reference", and marks migration tooling (CMS-30) as demo-only. Is any coexistence or content migration expected during the pilot, or purely greenfield pages?</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q12</div>
+    <div>
+      <p class="qt">Are CMS-22, CMS-23 and CMS-24 in the pilot?</p>
+      <p class="qb">All three are marked "Yes", their How column argues the opposite, and all three Pass Results read "To be confirmed". Given UC2 uses images and video, I'd propose scoping them to UC2 and writing pass criteria accordingly — confirm.</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q13</div>
+    <div>
+      <p class="qt">Is CMS-27 intentionally excluded?</p>
+      <p class="qb">The list is described as 46 capabilities numbered CMS-01 through CMS-47. CMS-27 doesn't appear anywhere in the document. Deliberate, or an omission?</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q14</div>
+    <div>
+      <p class="qt">What counts as evidence when nothing is rendered?</p>
+      <p class="qb">No email is sent and no CRM/VMC view is built, yet CMS-06 is scored on "renders with the same wording", CMS-18 on RTL layout, and CMS-39 on a send/render event. What is the agreed artifact — a payload diff, an SFMC preview or seed send to an internal list, a static render harness?</p>
+      <span class="why">Worth agreeing in writing. "Pattern matching" means different things to a content lead and to an engineer, and this is where a pass/fail argument would happen.</span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q15</div>
+    <div>
+      <p class="qt">Who builds the feedback loop?</p>
+      <p class="qb">CMS-39, CMS-40 and CMS-41 are all marked in scope, but the flow description says reporting "is a separate detail we're not solving in this document" and the parameters rule out NBA development. Who builds and validates it, and against what?</p>
+    </div>
+  </div>
+
+  <h3>Inputs and dependencies</h3>
+
+  <div class="q">
+    <div class="qid">Q16</div>
+    <div>
+      <p class="qt">Can we have the Travel Corridors payload spec and a sample?</p>
+      <p class="qb">CMS-46 requires the real payload, not a stub, while the parameters allow "minor tweaks" with no NBA development. Who makes the tweaks? Is there a sandbox endpoint, or will this be a static payload file?</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q17</div>
+    <div>
+      <p class="qt">How many variants, exactly?</p>
+      <p class="qb">"Multiple" and "enough real options that NBA is actually choosing between something" won't size the work. How many opportunity types × NBS segments × tone values — and separately, how many channel renderings per variant, since channel multiplies authoring and review volume without adding a selection dimension? Who authors the EN-US source copy and the tone guidelines?</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q18</div>
+    <div>
+      <p class="qt">Why do the two locale sets differ?</p>
+      <p class="qb">UC1 uses EN-US, Arabic, Thai, German and Japanese; UC2 uses EN-US, German, French, Japanese and Swedish. Intentional, or should one set align to the other? Is RTL relevant to the web pages too?</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q19</div>
+    <div>
+      <p class="qt">Contentful, Babel Prime, or both — and who builds the connector?</p>
+      <p class="qb">The document raises this itself. Extending it: does Babel Prime expose an API or a supported connector, and if the answer is "a mix", who owns building and maintaining that integration during the pilot?</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q20</div>
+    <div>
+      <p class="qt">Who owns the data contract, and by when?</p>
+      <p class="qb">Which SFMC and CRM/VMC identifiers tie a send or a view back to the same partner, who signs the contract, and what is the date? Also: are there masking rules for partner identifiers in a non-production pilot?</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q21</div>
+    <div>
+      <p class="qt">Which EG people are available, and for how long?</p>
+      <p class="qb">Several pass criteria can only be met by EG staff: an author for the no-developer-involvement test, a Market Manager or CRM owner for the ingest mapping, an SFMC engineer, and a native reviewer per locale for the sentence-composition sign-off.</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q22</div>
+    <div>
+      <p class="qt">Is the SFMC future-state environment ready within the pilot window?</p>
+      <p class="qb">The document is explicit that this pilots against future-state SFMC rather than Marketo. Is that instance provisioned and accessible, and has outbound connectivity to Contentful cleared security review?</p>
+    </div>
+  </div>
+
+  <h3>Commercial and evaluation</h3>
+
+  <div class="q">
+    <div class="qid">Q23</div>
+    <div>
+      <p class="qt">Which Contentful tier and add-ons are assumed?</p>
+      <p class="qb">Several requested capabilities sit outside a base platform entitlement — scheduled publishing, workflows and tasks, multiple environments, SSO and RBAC, and in particular variant dimensions on an entry (CMS-31) and audience mapping (CMS-37), which are typically delivered by Contentful's personalisation product rather than core entries. What is licensed for the pilot?</p>
+      <span class="why">If personalisation isn't licensed, CMS-31 gets modelled by hand and the variant-explosion concern in CMS-45 becomes real during the pilot rather than after it.</span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q24</div>
+    <div>
+      <p class="qt">Is this a comparative evaluation against other CMS vendors?</p>
+      <p class="qb">The 46-capability list is described as "Expedia's consolidated CMS list". If other vendors are being assessed against it, are the pass criteria and evidence formats identical across vendors, and who scores?</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q25</div>
+    <div>
+      <p class="qt">What is the timeline and the definition of done?</p>
+      <p class="qb">Start, end, readout date, who signs pass or fail, and what happens to the pass criteria currently marked "to be confirmed" or "to be defined".</p>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qid">Q26</div>
+    <div>
+      <p class="qt">How is a demo-only capability weighted against a built one?</p>
+      <p class="qb">Roughly nineteen capabilities are assessed by demo or documentation. Do they score the same as capabilities proven in the build, and is a "documented but unproven" answer a pass?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NEXT ================= -->
+<section id="next">
+  <h2><span class="h-n">06</span>What I'd do next</h2>
+  <p class="sec-note">A suggested sequence, not a plan — adjust to how you want to play it with the client.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:8%">Step</th><th style="width:38%">Action</th><th>Reason</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">1</td><td>Send Q1–Q6 back as a short architecture note, not a question list</td><td>They're design decisions EG hasn't made yet. Framing them as options with consequences gets a faster answer than a questionnaire, and positions us as the architect rather than the order-taker.</td></tr>
+      <tr><td class="ref">2</td><td>Ask EG to split UC1 and UC2 formally (Q7, Q8)</td><td>UC2 needs a rendering layer and a component library. Keeping them fused makes the whole pilot look expensive and makes UC1's timeline hostage to front-end work.</td></tr>
+      <tr><td class="ref">3</td><td>Agree the evidence artifact in writing (Q14)</td><td>"Pattern matching" with no rendered surface is where a pass/fail dispute lands at the readout. Settle it while everyone is still agreeable.</td></tr>
+      <tr><td class="ref">4</td><td>Confirm Contentful entitlements before committing to CMS-31 and CMS-37 (Q23)</td><td>If personalisation isn't licensed, the variant model is hand-built and the estimate changes.</td></tr>
+      <tr><td class="ref">5</td><td>Lock the data contract owner and date (Q20), plus EG participants (Q21)</td><td>Both are on the critical path and neither has a name against it today.</td></tr>
+      <tr><td class="ref">6</td><td>Re-baseline the backlog once Q1–Q6 are answered</td><td>Roughly a third of the stories change shape depending on those six answers. Estimating before then produces a number we'd have to withdraw.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<footer>
+  <p>Prepared from the source document only. Nothing here assumes intent EG hasn't stated — where the document is ambiguous it appears as a question rather than as a requirement.</p>
+</footer>
+
+</main>
+</div>
+</div>
+</body>
+</html>

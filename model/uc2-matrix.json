@@ -1,0 +1,2337 @@
+{
+  "project": "Expedia Group Partner - UC2 Contentful Content Model",
+  "cms_target": "Contentful",
+  "basis": "Sample of 3 pilot templates - as-is migration - free to consolidate",
+  "assumptions": [
+    "As-is applies to the rendered page, not to the content model: consolidation is free provided every observed instance is reproducible pixel-for-pixel.",
+    "Scope is the three pilot pages only. The model is not designed to absorb the remaining 83 components of the historical matrix.",
+    "Historical matrix (86 components) is reference only; no ID traceability obligation.",
+    "Source inventory is inventario-vivo-de-componentes (35 components, C001-C035, internal approval 35/35, client approval PENDING).",
+    "Locales: en-US source, translated to de-DE, fr-FR, ja-JP, sv-SE.",
+    "A Next.js and Tailwind front end is built as part of this user story: each content type has a matching React component, blocks resolve through a registry keyed on content type."
+  ],
+  "container_decision": "Theme, background, spacing, width, section heading and anchor all live on the Section container (CT01). This removes 4-6 properties from every content block and absorbs three inventory components (C005 Headline, C019 Background Section, C020 Separator). Cost: one extra nesting level in the entry editor - page > section > blocks.",
+  "sources": [
+    {
+      "url": "https://partner.expediagroup.com/en-us/landing-pages/introducing-enhanced-travelads-experience",
+      "status": "fetched",
+      "notes": "P01 Campaign landing page - inventory Scenario D, inference from live site"
+    },
+    {
+      "url": "https://partner.expediagroup.com/en-us/join-us/eg-advertising",
+      "status": "fetched",
+      "notes": "P02 Join us with form"
+    },
+    {
+      "url": "https://partner.expediagroup.com/en-us/resources/blog/top-of-search-top-of-mind-guide-to-vrbo-sponsored-listings",
+      "status": "fetched",
+      "notes": "P03 Blog article"
+    }
+  ],
+  "components": [
+    {
+      "id": "CT01",
+      "name": "section",
+      "layer": "Structural",
+      "purpose": "Wrapping container that carries all presentation and the section heading; holds the blocks placed inside it",
+      "complexity": "M",
+      "instances": 34,
+      "reuse": 34,
+      "consolidates": [
+        "C019 Background Section",
+        "C005 Headline",
+        "C020 Separator"
+      ],
+      "observed_on": [
+        "P01",
+        "P02",
+        "P03"
+      ],
+      "notes": "The single highest-leverage decision in the model. C005 Headline appears ~10 times as a standalone block purely to title the block below it; as a container property it stops being an authorable component and the heading can never be orphaned from its content.",
+      "properties": [
+        {
+          "name": "internalName",
+          "label": "Internal name",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 80 chars",
+          "localizable": "No",
+          "notes": "Entry title in the CMS only - never rendered"
+        },
+        {
+          "name": "eyebrow",
+          "label": "Eyebrow",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 40 chars",
+          "localizable": "Yes",
+          "notes": "Context line above the heading"
+        },
+        {
+          "name": "heading",
+          "label": "Section heading",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 80 chars; longest observed 61",
+          "localizable": "Yes",
+          "notes": "Absorbs C005 Headline. Empty for sections that open with a block carrying its own title"
+        },
+        {
+          "name": "headingLevel",
+          "label": "Heading level",
+          "group": "SEO / Accessibility",
+          "type": "enum",
+          "required": "Yes",
+          "default": "h2",
+          "validation": "h2, h3, h4 - never h1; h1 belongs to the page",
+          "localizable": "No",
+          "notes": "Exposed so the document outline survives reordering"
+        },
+        {
+          "name": "blocks",
+          "label": "Blocks",
+          "group": "Content",
+          "type": "componentList",
+          "required": "Yes",
+          "default": "",
+          "validation": "1-8 items; allow-list of CT07-CT23; nesting depth 1",
+          "localizable": "No",
+          "notes": "Allow-list is the authoring governance mechanism"
+        },
+        {
+          "name": "background",
+          "label": "Background",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "none",
+          "validation": "none, light, dark, brand, image",
+          "localizable": "No",
+          "notes": "image requires backgroundImage; dark constrains contrast on child media"
+        },
+        {
+          "name": "backgroundImage",
+          "label": "Background image",
+          "group": "Presentation",
+          "type": "mediaImage",
+          "required": "Conditional",
+          "default": "",
+          "validation": ">=2400x1200, JPG/WebP, <=500KB; required when background=image",
+          "localizable": "No",
+          "notes": "Decorative by definition - no alt text"
+        },
+        {
+          "name": "width",
+          "label": "Content width",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "contained",
+          "validation": "contained, wide, fullBleed",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "spacing",
+          "label": "Vertical spacing",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "normal",
+          "validation": "none, compact, normal, generous",
+          "localizable": "No",
+          "notes": "Absorbs C020 Separator, which had no visual of its own"
+        },
+        {
+          "name": "showDivider",
+          "label": "Show divider rule",
+          "group": "Presentation",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "false",
+          "validation": "",
+          "localizable": "No",
+          "notes": "The visible half of C020"
+        },
+        {
+          "name": "anchorId",
+          "label": "Anchor ID",
+          "group": "Behaviour",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Lowercase, hyphens, no spaces; unique per page",
+          "localizable": "No",
+          "notes": "Target for CT17 anchorNav; must not be localised or in-page links break per locale"
+        }
+      ],
+      "variants": [
+        {
+          "name": "Plain band",
+          "values": "background=none, width=contained",
+          "seen_on": "P01, P03"
+        },
+        {
+          "name": "Tinted band with heading",
+          "values": "background=light, heading set",
+          "seen_on": "P01, P02, P03"
+        },
+        {
+          "name": "Full-bleed image band",
+          "values": "background=image, width=fullBleed",
+          "seen_on": "P01"
+        }
+      ]
+    },
+    {
+      "id": "CT02",
+      "name": "page",
+      "layer": "Structural",
+      "purpose": "Composed marketing page - campaign landing pages and form pages",
+      "complexity": "M",
+      "instances": 2,
+      "reuse": 2,
+      "consolidates": [
+        "P01 template",
+        "P02 template"
+      ],
+      "observed_on": [
+        "P01",
+        "P02"
+      ],
+      "notes": "P02 is structurally a subset of P01 - hero, a form section, a promo band. A separate formPage type would differ in zero fields, so one type with a blocks array covers both.",
+      "properties": [
+        {
+          "name": "title",
+          "label": "Page title",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 70 chars",
+          "localizable": "Yes",
+          "notes": "Renders as the page H1 when the hero does not supply one"
+        },
+        {
+          "name": "slug",
+          "label": "URL slug",
+          "group": "SEO / Accessibility",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Lowercase, hyphens; unique per locale",
+          "localizable": "Yes",
+          "notes": "Localised slugs are a deliberate SEO choice - confirm with EG"
+        },
+        {
+          "name": "seoTitle",
+          "label": "SEO title",
+          "group": "SEO / Accessibility",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 60 chars",
+          "localizable": "Yes",
+          "notes": "Falls back to title"
+        },
+        {
+          "name": "seoDescription",
+          "label": "Meta description",
+          "group": "SEO / Accessibility",
+          "type": "textMultiline",
+          "required": "No",
+          "default": "",
+          "validation": "Max 160 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "socialImage",
+          "label": "Social share image",
+          "group": "SEO / Accessibility",
+          "type": "mediaImage",
+          "required": "No",
+          "default": "",
+          "validation": "1200x630, JPG/PNG",
+          "localizable": "Yes",
+          "notes": "Localisable because it often carries text"
+        },
+        {
+          "name": "sections",
+          "label": "Sections",
+          "group": "Content",
+          "type": "componentList",
+          "required": "Yes",
+          "default": "",
+          "validation": "1-20 items; CT01 only",
+          "localizable": "No",
+          "notes": "Pages compose sections, never blocks directly"
+        },
+        {
+          "name": "showBreadcrumb",
+          "label": "Show breadcrumb",
+          "group": "Presentation",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "false",
+          "validation": "",
+          "localizable": "No",
+          "notes": "Breadcrumb itself is derived from the URL path, not authored"
+        },
+        {
+          "name": "noIndex",
+          "label": "Hide from search engines",
+          "group": "SEO / Accessibility",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "false",
+          "validation": "",
+          "localizable": "Yes",
+          "notes": "Per-locale, so an untranslated page can be hidden in that locale only"
+        }
+      ],
+      "variants": [
+        {
+          "name": "Campaign landing page",
+          "values": "showBreadcrumb=false",
+          "seen_on": "P01"
+        },
+        {
+          "name": "Join-us form page",
+          "values": "showBreadcrumb=true",
+          "seen_on": "P02"
+        }
+      ]
+    },
+    {
+      "id": "CT03",
+      "name": "articlePage",
+      "layer": "Structural",
+      "purpose": "Editorial article with author, date and taxonomy",
+      "complexity": "M",
+      "instances": 1,
+      "reuse": 1,
+      "consolidates": [
+        "P03 template",
+        "C026 Article Header",
+        "C033 Author Block"
+      ],
+      "observed_on": [
+        "P03"
+      ],
+      "notes": "C026 and C033 were logged as components; both render from page metadata and an author reference. Modelling them as placeable blocks lets an author publish an article with no header or two author blocks.",
+      "properties": [
+        {
+          "name": "title",
+          "label": "Article title",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 90 chars; longest observed 68",
+          "localizable": "Yes",
+          "notes": "Renders as the page H1 inside the article header region"
+        },
+        {
+          "name": "slug",
+          "label": "URL slug",
+          "group": "SEO / Accessibility",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Lowercase, hyphens; unique per locale",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "standfirst",
+          "label": "Standfirst",
+          "group": "Content",
+          "type": "textMultiline",
+          "required": "No",
+          "default": "",
+          "validation": "Max 220 chars",
+          "localizable": "Yes",
+          "notes": "Intro paragraph in the article header"
+        },
+        {
+          "name": "author",
+          "label": "Author",
+          "group": "Content",
+          "type": "reference",
+          "required": "Yes",
+          "default": "",
+          "validation": "CT06 author only",
+          "localizable": "No",
+          "notes": "Feeds both the header byline and the closing author block"
+        },
+        {
+          "name": "publishedDate",
+          "label": "Publication date",
+          "group": "Content",
+          "type": "date",
+          "required": "Yes",
+          "default": "",
+          "validation": "",
+          "localizable": "No",
+          "notes": "Not localised - the article is one piece of content in several languages"
+        },
+        {
+          "name": "readingTime",
+          "label": "Reading time (min)",
+          "group": "Content",
+          "type": "number",
+          "required": "No",
+          "default": "",
+          "validation": "1-60",
+          "localizable": "Yes",
+          "notes": "Localisable because translated copy changes length; or compute in the head"
+        },
+        {
+          "name": "heroImage",
+          "label": "Header image",
+          "group": "Content",
+          "type": "mediaImage",
+          "required": "No",
+          "default": "",
+          "validation": ">=1600x900, 16:9",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "topics",
+          "label": "Topics",
+          "group": "Content",
+          "type": "taxonomy",
+          "required": "No",
+          "default": "",
+          "validation": "0-5 terms from the Topics vocabulary; authors may not create terms",
+          "localizable": "No",
+          "notes": "Drives the tag row of C034 and the query behind related content"
+        },
+        {
+          "name": "sections",
+          "label": "Sections",
+          "group": "Content",
+          "type": "componentList",
+          "required": "Yes",
+          "default": "",
+          "validation": "1-30 items; CT01 only",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "showFeedback",
+          "label": "Show page feedback",
+          "group": "Behaviour",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "true",
+          "validation": "",
+          "localizable": "No",
+          "notes": "The per-page half of C035; the widget itself is meta info"
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT04",
+      "name": "metaInfo",
+      "layer": "Chrome",
+      "purpose": "Site-level meta and integration settings: scripts, analytics, breakpoints, and the global widgets that are not page components",
+      "complexity": "M",
+      "instances": 1,
+      "reuse": 1,
+      "consolidates": [
+        "C003 Cookie Banner",
+        "C034 Share bar",
+        "C035 Page Feedback"
+      ],
+      "observed_on": [
+        "P01",
+        "P02",
+        "P03"
+      ],
+      "notes": "Directly satisfies the UC2 acceptance criterion for site-level properties (CSS, JS, GTM container, breakpoints). One entry per locale-group, not per page.",
+      "properties": [
+        {
+          "name": "gtmContainerId",
+          "label": "GTM container ID",
+          "group": "Integration",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Pattern GTM-XXXXXXX",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "cookieConsentProvider",
+          "label": "Cookie consent",
+          "group": "Integration",
+          "type": "enum",
+          "required": "Yes",
+          "default": "oneTrust",
+          "validation": "oneTrust, none",
+          "localizable": "No",
+          "notes": "C003 stays an external script; open question 3 confirms"
+        },
+        {
+          "name": "breakpoints",
+          "label": "Display breakpoints",
+          "group": "Presentation",
+          "type": "json",
+          "required": "Yes",
+          "default": "",
+          "validation": "Named px values; technical authors only",
+          "localizable": "No",
+          "notes": "Drives preview breakpoints and image renditions"
+        },
+        {
+          "name": "shareChannels",
+          "label": "Share channels",
+          "group": "Integration",
+          "type": "enumMulti",
+          "required": "No",
+          "default": "",
+          "validation": "linkedin, x, facebook, email, copyLink",
+          "localizable": "No",
+          "notes": "The share half of C034"
+        },
+        {
+          "name": "feedbackEnabled",
+          "label": "Page feedback enabled",
+          "group": "Behaviour",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "true",
+          "validation": "",
+          "localizable": "No",
+          "notes": "Site-wide switch; CT03.showFeedback is the per-page override"
+        },
+        {
+          "name": "headerNavigation",
+          "label": "Header navigation",
+          "group": "Content",
+          "type": "reference",
+          "required": "Yes",
+          "default": "",
+          "validation": "CT05 only",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "footerNavigation",
+          "label": "Footer navigation",
+          "group": "Content",
+          "type": "referenceList",
+          "required": "Yes",
+          "default": "",
+          "validation": "CT05; 1-6 columns",
+          "localizable": "No",
+          "notes": ""
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT05",
+      "name": "navigation",
+      "layer": "Chrome",
+      "purpose": "Reusable, nestable link structure used for the header menu and each footer column",
+      "complexity": "M",
+      "instances": 7,
+      "reuse": 7,
+      "consolidates": [
+        "C001 Header (authorable part)",
+        "C002 Footer (authorable part)"
+      ],
+      "observed_on": [
+        "P01",
+        "P02",
+        "P03"
+      ],
+      "notes": "Header and footer markup is template code; only the link tree is authored. Kept out of the page-component count deliberately.",
+      "properties": [
+        {
+          "name": "internalName",
+          "label": "Internal name",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 60 chars",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "label",
+          "label": "Label",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 40 chars",
+          "localizable": "Yes",
+          "notes": "Column heading in the footer; menu label when nested"
+        },
+        {
+          "name": "items",
+          "label": "Links",
+          "group": "Content",
+          "type": "groupList",
+          "required": "Yes",
+          "default": "",
+          "validation": "1-12 items; {label <=40 chars, link, openInNewTab default false}",
+          "localizable": "Yes",
+          "notes": "Link text must be meaningful out of context"
+        },
+        {
+          "name": "children",
+          "label": "Sub-menus",
+          "group": "Content",
+          "type": "referenceList",
+          "required": "No",
+          "default": "",
+          "validation": "CT05; max depth 3",
+          "localizable": "No",
+          "notes": "Depth 3 observed in the header Solutions panel; open question on the mobile third level"
+        }
+      ],
+      "variants": [
+        {
+          "name": "Header menu",
+          "values": "children populated, depth up to 3",
+          "seen_on": "Global"
+        },
+        {
+          "name": "Footer column",
+          "values": "label set, children empty",
+          "seen_on": "Global"
+        }
+      ]
+    },
+    {
+      "id": "CT06",
+      "name": "author",
+      "layer": "Content",
+      "purpose": "Reusable author profile referenced by articles",
+      "complexity": "S",
+      "instances": 1,
+      "reuse": 1,
+      "consolidates": [
+        "C033 Author Block"
+      ],
+      "observed_on": [
+        "P03"
+      ],
+      "notes": "",
+      "properties": [
+        {
+          "name": "name",
+          "label": "Name",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 60 chars",
+          "localizable": "No",
+          "notes": "Personal names are not translated"
+        },
+        {
+          "name": "role",
+          "label": "Role",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 80 chars",
+          "localizable": "Yes",
+          "notes": "Job titles are translated"
+        },
+        {
+          "name": "bio",
+          "label": "Biography",
+          "group": "Content",
+          "type": "richText",
+          "required": "No",
+          "default": "",
+          "validation": "Max 400 chars; allows p, strong, em, a",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "photo",
+          "label": "Photo",
+          "group": "Content",
+          "type": "mediaImage",
+          "required": "No",
+          "default": "",
+          "validation": ">=400x400, 1:1",
+          "localizable": "No",
+          "notes": ""
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT07",
+      "name": "heroBanner",
+      "layer": "Content",
+      "purpose": "Page-opening statement with optional media, eyebrow and call to action",
+      "complexity": "M",
+      "instances": 2,
+      "reuse": 2,
+      "consolidates": [
+        "C004 Hero Banner",
+        "C022 Hero Banner with Breadcrumb"
+      ],
+      "observed_on": [
+        "P01",
+        "P02"
+      ],
+      "notes": "C022 differed from C004 only by the presence of a breadcrumb and an eyebrow. Breadcrumb is a page-level property (it is derived from the URL path, not authored), so what remains is an optional eyebrow - not grounds for a second content type.",
+      "properties": [
+        {
+          "name": "eyebrow",
+          "label": "Eyebrow",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 40 chars",
+          "localizable": "Yes",
+          "notes": "Answers inventory question on C022"
+        },
+        {
+          "name": "title",
+          "label": "Title",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 70 chars; longest observed 52; wraps to 3 lines above 70 at 375px",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "headingLevel",
+          "label": "Heading level",
+          "group": "SEO / Accessibility",
+          "type": "enum",
+          "required": "Yes",
+          "default": "h1",
+          "validation": "h1, h2 - only one h1 per page, enforced at template level",
+          "localizable": "No",
+          "notes": "h2 when the page title already supplies the h1"
+        },
+        {
+          "name": "body",
+          "label": "Intro text",
+          "group": "Content",
+          "type": "richText",
+          "required": "No",
+          "default": "",
+          "validation": "Max 300 chars; allows p, strong, em, a",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "media",
+          "label": "Background image",
+          "group": "Content",
+          "type": "mediaImage",
+          "required": "Conditional",
+          "default": "",
+          "validation": ">=2400x1000, JPG/WebP, <=500KB; required when layout=fullBleed",
+          "localizable": "No",
+          "notes": "Localisable only if a locale needs different imagery - default no"
+        },
+        {
+          "name": "isDecorative",
+          "label": "Image is decorative",
+          "group": "SEO / Accessibility",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "true",
+          "validation": "",
+          "localizable": "No",
+          "notes": "Background heroes are decorative; false makes altText required"
+        },
+        {
+          "name": "altText",
+          "label": "Alt text",
+          "group": "SEO / Accessibility",
+          "type": "text",
+          "required": "Conditional",
+          "default": "",
+          "validation": "Max 125 chars; required when isDecorative=false",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "cta",
+          "label": "Call to action",
+          "group": "Content",
+          "type": "group",
+          "required": "No",
+          "default": "",
+          "validation": "{label <=24 chars, link, style: primary|secondary}",
+          "localizable": "Yes",
+          "notes": "Absorbs C018 Button; label must describe the destination, never 'Read more'"
+        },
+        {
+          "name": "layout",
+          "label": "Layout",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "fullBleed",
+          "validation": "fullBleed, split, textOnly",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "theme",
+          "label": "Theme",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "dark",
+          "validation": "light, dark",
+          "localizable": "No",
+          "notes": "dark requires a contrast-safe image"
+        }
+      ],
+      "variants": [
+        {
+          "name": "Campaign hero",
+          "values": "layout=fullBleed, theme=dark, cta set",
+          "seen_on": "P01"
+        },
+        {
+          "name": "Section hero with eyebrow",
+          "values": "layout=split, eyebrow set",
+          "seen_on": "P02"
+        }
+      ]
+    },
+    {
+      "id": "CT08",
+      "name": "splitBanner",
+      "layer": "Content",
+      "purpose": "Media beside copy - the workhorse feature block",
+      "complexity": "M",
+      "instances": 7,
+      "reuse": 7,
+      "consolidates": [
+        "C008 Split Banner",
+        "C021 image on the right",
+        "C032 with CTA",
+        "C011 Split Banner + Accordion"
+      ],
+      "observed_on": [
+        "P01",
+        "P03"
+      ],
+      "notes": "Four inventory entries, one content model. C021 is mediaPosition=right - naming a component after CSS. C032 is a populated cta. C011 puts an accordion in the copy side, handled by an optional block slot rather than a fourth type.",
+      "properties": [
+        {
+          "name": "media",
+          "label": "Image",
+          "group": "Content",
+          "type": "mediaImage",
+          "required": "Yes",
+          "default": "",
+          "validation": ">=1200x900, JPG/WebP/PNG, <=350KB",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "isDecorative",
+          "label": "Image is decorative",
+          "group": "SEO / Accessibility",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "false",
+          "validation": "",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "altText",
+          "label": "Alt text",
+          "group": "SEO / Accessibility",
+          "type": "text",
+          "required": "Conditional",
+          "default": "",
+          "validation": "Max 125 chars; required when isDecorative=false",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "mediaPosition",
+          "label": "Image position",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "left",
+          "validation": "left, right",
+          "localizable": "No",
+          "notes": "Absorbs C021 entirely"
+        },
+        {
+          "name": "heading",
+          "label": "Heading",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 70 chars",
+          "localizable": "Yes",
+          "notes": "Empty when the section heading already titles the block"
+        },
+        {
+          "name": "headingLevel",
+          "label": "Heading level",
+          "group": "SEO / Accessibility",
+          "type": "enum",
+          "required": "Yes",
+          "default": "h3",
+          "validation": "h2, h3, h4",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "body",
+          "label": "Body copy",
+          "group": "Content",
+          "type": "richText",
+          "required": "Conditional",
+          "default": "",
+          "validation": "Max 700 chars; allows p, strong, em, ul, ol, li, a; required when bodyBlock is empty",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "bodyBlock",
+          "label": "Block in place of copy",
+          "group": "Content",
+          "type": "componentSlot",
+          "required": "No",
+          "default": "",
+          "validation": "CT13 accordion only",
+          "localizable": "No",
+          "notes": "Absorbs C011. Allow-list deliberately narrow - widen only on evidence"
+        },
+        {
+          "name": "cta",
+          "label": "Call to action",
+          "group": "Content",
+          "type": "group",
+          "required": "No",
+          "default": "",
+          "validation": "{label <=24 chars, link, style}",
+          "localizable": "Yes",
+          "notes": "Absorbs C032"
+        },
+        {
+          "name": "mediaWidth",
+          "label": "Image width",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "half",
+          "validation": "third, half",
+          "localizable": "No",
+          "notes": ""
+        }
+      ],
+      "variants": [
+        {
+          "name": "Image left",
+          "values": "mediaPosition=left",
+          "seen_on": "P01"
+        },
+        {
+          "name": "Image right",
+          "values": "mediaPosition=right",
+          "seen_on": "P01"
+        },
+        {
+          "name": "With accordion",
+          "values": "bodyBlock=CT13, body empty",
+          "seen_on": "P01"
+        },
+        {
+          "name": "With CTA",
+          "values": "cta set",
+          "seen_on": "P03"
+        }
+      ]
+    },
+    {
+      "id": "CT09",
+      "name": "promoBanner",
+      "layer": "Content",
+      "purpose": "Mid-page conversion band with a strong background and a single call to action",
+      "complexity": "S",
+      "instances": 2,
+      "reuse": 2,
+      "consolidates": [
+        "C012 Promo Banner with Background Image",
+        "C025 Promo Banner with Color Background"
+      ],
+      "observed_on": [
+        "P01",
+        "P02"
+      ],
+      "notes": "The inventory asks whether background is a property of C012 rather than a variation with its own ID. It is.",
+      "properties": [
+        {
+          "name": "heading",
+          "label": "Heading",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 70 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "headingLevel",
+          "label": "Heading level",
+          "group": "SEO / Accessibility",
+          "type": "enum",
+          "required": "Yes",
+          "default": "h2",
+          "validation": "h2, h3",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "body",
+          "label": "Body copy",
+          "group": "Content",
+          "type": "richText",
+          "required": "No",
+          "default": "",
+          "validation": "Max 300 chars; allows p, strong, em, a",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "cta",
+          "label": "Call to action",
+          "group": "Content",
+          "type": "group",
+          "required": "Yes",
+          "default": "",
+          "validation": "{label <=24 chars, link, style}",
+          "localizable": "Yes",
+          "notes": "Required - a promo band without a CTA is a section heading"
+        },
+        {
+          "name": "background",
+          "label": "Background",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "brand",
+          "validation": "brand, light, dark, image",
+          "localizable": "No",
+          "notes": "Absorbs C025"
+        },
+        {
+          "name": "backgroundImage",
+          "label": "Background image",
+          "group": "Presentation",
+          "type": "mediaImage",
+          "required": "Conditional",
+          "default": "",
+          "validation": ">=2000x800; required when background=image",
+          "localizable": "No",
+          "notes": "Decorative by definition"
+        },
+        {
+          "name": "align",
+          "label": "Alignment",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "center",
+          "validation": "left, center",
+          "localizable": "No",
+          "notes": ""
+        }
+      ],
+      "variants": [
+        {
+          "name": "Image background",
+          "values": "background=image",
+          "seen_on": "P01"
+        },
+        {
+          "name": "Colour background",
+          "values": "background=brand",
+          "seen_on": "P02"
+        }
+      ]
+    },
+    {
+      "id": "CT10",
+      "name": "infoBoxes",
+      "layer": "Content",
+      "purpose": "Grid of short informational boxes, each with an optional icon",
+      "complexity": "S",
+      "instances": 1,
+      "reuse": 1,
+      "consolidates": [
+        "C010 Info Boxes"
+      ],
+      "observed_on": [
+        "P01"
+      ],
+      "notes": "Kept separate from CT11 ctaCard - see consolidation decisions.",
+      "properties": [
+        {
+          "name": "items",
+          "label": "Boxes",
+          "group": "Content",
+          "type": "groupList",
+          "required": "Yes",
+          "default": "",
+          "validation": "2-6 items; {icon, title <=40 chars, body <=180 chars, link optional}",
+          "localizable": "Yes",
+          "notes": "Reorderable"
+        },
+        {
+          "name": "columns",
+          "label": "Columns",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "3",
+          "validation": "2, 3, 4",
+          "localizable": "No",
+          "notes": "4 columns wraps below 1024px"
+        },
+        {
+          "name": "iconStyle",
+          "label": "Icon style",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "outline",
+          "validation": "none, outline, filled",
+          "localizable": "No",
+          "notes": ""
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT11",
+      "name": "ctaCard",
+      "layer": "Content",
+      "purpose": "Single inline conversion prompt with an icon and a mandatory action",
+      "complexity": "S",
+      "instances": 3,
+      "reuse": 3,
+      "consolidates": [
+        "C029 CTA Card with Icon"
+      ],
+      "observed_on": [
+        "P03"
+      ],
+      "notes": "Appears three times in one article as a repeated conversion device. Merging it into infoBoxes was rejected on the required-field test.",
+      "properties": [
+        {
+          "name": "icon",
+          "label": "Icon",
+          "group": "Content",
+          "type": "enum",
+          "required": "No",
+          "default": "none",
+          "validation": "From the approved icon set",
+          "localizable": "No",
+          "notes": "Free icon upload is a governance failure - restrict to the set"
+        },
+        {
+          "name": "heading",
+          "label": "Heading",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 60 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "body",
+          "label": "Body copy",
+          "group": "Content",
+          "type": "textMultiline",
+          "required": "No",
+          "default": "",
+          "validation": "Max 200 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "cta",
+          "label": "Call to action",
+          "group": "Content",
+          "type": "group",
+          "required": "Yes",
+          "default": "",
+          "validation": "{label <=24 chars, link, style}",
+          "localizable": "Yes",
+          "notes": "Required - this is the whole purpose of the block"
+        },
+        {
+          "name": "theme",
+          "label": "Theme",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "light",
+          "validation": "light, brand",
+          "localizable": "No",
+          "notes": ""
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT12",
+      "name": "comparisonTable",
+      "layer": "Content",
+      "purpose": "Structured feature or plan comparison across columns",
+      "complexity": "M",
+      "instances": 1,
+      "reuse": 1,
+      "consolidates": [
+        "C009 Comparison Table"
+      ],
+      "observed_on": [
+        "P01"
+      ],
+      "notes": "Structured rather than free-form, so it can be made responsive and machine-readable. Mobile behaviour is an open question.",
+      "properties": [
+        {
+          "name": "columns",
+          "label": "Columns",
+          "group": "Content",
+          "type": "groupList",
+          "required": "Yes",
+          "default": "",
+          "validation": "2-4 items; {label <=30 chars, highlighted boolean}",
+          "localizable": "Yes",
+          "notes": "More than 4 columns cannot be made responsive"
+        },
+        {
+          "name": "rows",
+          "label": "Rows",
+          "group": "Content",
+          "type": "groupList",
+          "required": "Yes",
+          "default": "",
+          "validation": "1-20 items; {label <=60 chars, values: list matching column count}",
+          "localizable": "Yes",
+          "notes": "Value count must equal column count - enforce in the head"
+        },
+        {
+          "name": "caption",
+          "label": "Table caption",
+          "group": "SEO / Accessibility",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 120 chars",
+          "localizable": "Yes",
+          "notes": "Required for screen readers"
+        },
+        {
+          "name": "mobileBehaviour",
+          "label": "Mobile behaviour",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "scroll",
+          "validation": "scroll, stack",
+          "localizable": "No",
+          "notes": "Open question 6 - confirm against the live site"
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT13",
+      "name": "accordion",
+      "layer": "Content",
+      "purpose": "Collapsible question and answer list, used standalone and for FAQ",
+      "complexity": "S",
+      "instances": 3,
+      "reuse": 3,
+      "consolidates": [
+        "C015 Accordion"
+      ],
+      "observed_on": [
+        "P01",
+        "P03"
+      ],
+      "notes": "Also used as the bodyBlock of CT08. Feeds FAQ structured data when isFaq is true.",
+      "properties": [
+        {
+          "name": "items",
+          "label": "Rows",
+          "group": "Content",
+          "type": "groupList",
+          "required": "Yes",
+          "default": "",
+          "validation": "2-15 items; {label <=120 chars, body richText <=1200 chars}",
+          "localizable": "Yes",
+          "notes": "Reorderable"
+        },
+        {
+          "name": "firstOpen",
+          "label": "Open the first row by default",
+          "group": "Behaviour",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "false",
+          "validation": "",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "allowMultiple",
+          "label": "Allow several rows open",
+          "group": "Behaviour",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "true",
+          "validation": "",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "isFaq",
+          "label": "Emit FAQ structured data",
+          "group": "SEO / Accessibility",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "false",
+          "validation": "Only one FAQ accordion per page",
+          "localizable": "No",
+          "notes": "Changes the rendered schema.org output"
+        }
+      ],
+      "variants": [
+        {
+          "name": "FAQ",
+          "values": "isFaq=true",
+          "seen_on": "P01, P03"
+        },
+        {
+          "name": "Inside a split banner",
+          "values": "placed as CT08.bodyBlock",
+          "seen_on": "P01"
+        }
+      ]
+    },
+    {
+      "id": "CT14",
+      "name": "richTextBlock",
+      "layer": "Content",
+      "purpose": "Long-form authored copy, the backbone of article bodies",
+      "complexity": "S",
+      "instances": 4,
+      "reuse": 4,
+      "consolidates": [
+        "C027 Rich Text",
+        "C027 footnotes variant"
+      ],
+      "observed_on": [
+        "P03"
+      ],
+      "notes": "The inventory asks whether footnotes are a style variant or a separate component. Same content model, one presentation property - style variant.",
+      "properties": [
+        {
+          "name": "body",
+          "label": "Body",
+          "group": "Content",
+          "type": "richText",
+          "required": "Yes",
+          "default": "",
+          "validation": "Allows p, strong, em, ul, ol, li, a, blockquote, h3, h4; no embedded entries in pilot scope",
+          "localizable": "Yes",
+          "notes": "h1 and h2 excluded so the outline stays with the section and page"
+        },
+        {
+          "name": "style",
+          "label": "Style",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "default",
+          "validation": "default, footnote",
+          "localizable": "No",
+          "notes": "footnote renders small, muted, above a rule - answers the C027 question"
+        },
+        {
+          "name": "width",
+          "label": "Measure",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "reading",
+          "validation": "reading, full",
+          "localizable": "No",
+          "notes": "reading caps the line length for legibility"
+        }
+      ],
+      "variants": [
+        {
+          "name": "Body copy",
+          "values": "style=default",
+          "seen_on": "P03"
+        },
+        {
+          "name": "Footnotes",
+          "values": "style=footnote",
+          "seen_on": "P03"
+        }
+      ]
+    },
+    {
+      "id": "CT15",
+      "name": "statsBlock",
+      "layer": "Content",
+      "purpose": "Row of headline figures with labels",
+      "complexity": "S",
+      "instances": 2,
+      "reuse": 2,
+      "consolidates": [
+        "C028 Stats Block"
+      ],
+      "observed_on": [
+        "P03"
+      ],
+      "notes": "The inventory flags that historical ID 77 describes a stats strip inside a split banner; here it stands alone, so it is modelled standalone and can be placed inside a section like any other block.",
+      "properties": [
+        {
+          "name": "items",
+          "label": "Figures",
+          "group": "Content",
+          "type": "groupList",
+          "required": "Yes",
+          "default": "",
+          "validation": "2-4 items; {value <=10 chars, label <=60 chars, footnote optional}",
+          "localizable": "Yes",
+          "notes": "value is text not number - it carries units and symbols such as 3x or +48%"
+        },
+        {
+          "name": "align",
+          "label": "Alignment",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "center",
+          "validation": "left, center",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "source",
+          "label": "Source note",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 160 chars",
+          "localizable": "Yes",
+          "notes": "Attribution line beneath the figures"
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT16",
+      "name": "embeddedVideo",
+      "layer": "Integration",
+      "purpose": "Platform-hosted or asset video with poster and captions",
+      "complexity": "M",
+      "instances": 3,
+      "reuse": 3,
+      "consolidates": [
+        "C006 Embedded Video"
+      ],
+      "observed_on": [
+        "P01",
+        "P03"
+      ],
+      "notes": "Satisfies the UC2 criterion that video embeds from the asset repository or an external source and plays in the page. The inventory notes the actual player was never evaluated - confirm the provider.",
+      "properties": [
+        {
+          "name": "sourceKind",
+          "label": "Video source",
+          "group": "Integration",
+          "type": "enum",
+          "required": "Yes",
+          "default": "youTube",
+          "validation": "youTube, vimeo, asset",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "videoId",
+          "label": "Video ID or URL",
+          "group": "Integration",
+          "type": "text",
+          "required": "Conditional",
+          "default": "",
+          "validation": "Required unless sourceKind=asset",
+          "localizable": "Yes",
+          "notes": "Localisable - a locale may have its own cut"
+        },
+        {
+          "name": "videoAsset",
+          "label": "Video file",
+          "group": "Integration",
+          "type": "mediaVideo",
+          "required": "Conditional",
+          "default": "",
+          "validation": "MP4/WebM, <=100MB; required when sourceKind=asset",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "poster",
+          "label": "Poster image",
+          "group": "Content",
+          "type": "mediaImage",
+          "required": "No",
+          "default": "",
+          "validation": ">=1280x720, 16:9",
+          "localizable": "No",
+          "notes": "Falls back to the platform thumbnail"
+        },
+        {
+          "name": "caption",
+          "label": "Caption",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 160 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "captionsTrack",
+          "label": "Subtitles",
+          "group": "SEO / Accessibility",
+          "type": "mediaDocument",
+          "required": "No",
+          "default": "",
+          "validation": "VTT/SRT",
+          "localizable": "Yes",
+          "notes": "Omission must be an explicit accessibility decision, not an oversight"
+        },
+        {
+          "name": "transcript",
+          "label": "Transcript",
+          "group": "SEO / Accessibility",
+          "type": "richText",
+          "required": "No",
+          "default": "",
+          "validation": "",
+          "localizable": "Yes",
+          "notes": ""
+        }
+      ],
+      "variants": [
+        {
+          "name": "Standalone video",
+          "values": "placed directly in a section",
+          "seen_on": "P01, P03"
+        },
+        {
+          "name": "Inside a media card",
+          "values": "referenced by CT19",
+          "seen_on": "P01"
+        }
+      ]
+    },
+    {
+      "id": "CT17",
+      "name": "anchorNav",
+      "layer": "Utility",
+      "purpose": "Sticky in-page navigation to the sections of a long page",
+      "complexity": "M",
+      "instances": 2,
+      "reuse": 2,
+      "consolidates": [
+        "C007 Anchor Navbar"
+      ],
+      "observed_on": [
+        "P01",
+        "P03"
+      ],
+      "notes": "The inventory asks whether to register this as a variation of site Navbar (ID 57) or a new component. New: different source model (in-page anchors), different lifecycle (changes when the page changes, not when the site IA changes) - test 5 of the consolidation rules.",
+      "properties": [
+        {
+          "name": "source",
+          "label": "Item source",
+          "group": "Behaviour",
+          "type": "enum",
+          "required": "Yes",
+          "default": "auto",
+          "validation": "auto, manual",
+          "localizable": "No",
+          "notes": "auto derives items from sections that have an anchorId"
+        },
+        {
+          "name": "items",
+          "label": "Items",
+          "group": "Content",
+          "type": "groupList",
+          "required": "Conditional",
+          "default": "",
+          "validation": "2-8 items; {label <=30 chars, anchorId}; required when source=manual",
+          "localizable": "Yes",
+          "notes": "Labels localise; anchorIds do not"
+        },
+        {
+          "name": "sticky",
+          "label": "Stick to the top on scroll",
+          "group": "Behaviour",
+          "type": "boolean",
+          "required": "Yes",
+          "default": "true",
+          "validation": "",
+          "localizable": "No",
+          "notes": ""
+        }
+      ],
+      "variants": [
+        {
+          "name": "Sticky page nav",
+          "values": "sticky=true, source=auto",
+          "seen_on": "P01"
+        },
+        {
+          "name": "Article contents",
+          "values": "4 items",
+          "seen_on": "P03"
+        }
+      ]
+    },
+    {
+      "id": "CT18",
+      "name": "cardCollection",
+      "layer": "Collection",
+      "purpose": "Ordered set of cards rendered as a grid, a carousel or a list; author-picked or query-driven",
+      "complexity": "L",
+      "instances": 4,
+      "reuse": 4,
+      "consolidates": [
+        "C013 Card Carousel",
+        "C016 News Card Grid",
+        "C031 Testimonials"
+      ],
+      "observed_on": [
+        "P01",
+        "P03"
+      ],
+      "notes": "Three inventory containers with one content model. Grid versus carousel is presentation; testimonials differ only in which card type they hold. This answers the inventory's open questions on C013 and C031 and leaves the container/card split the analyst already approved intact.",
+      "properties": [
+        {
+          "name": "items",
+          "label": "Cards",
+          "group": "Content",
+          "type": "componentList",
+          "required": "Conditional",
+          "default": "",
+          "validation": "2-12 items; CT19, CT20 or CT21 - one type per collection; required when source=manual",
+          "localizable": "No",
+          "notes": "Mixing card types in one collection is not permitted"
+        },
+        {
+          "name": "source",
+          "label": "Card source",
+          "group": "Content",
+          "type": "enum",
+          "required": "Yes",
+          "default": "manual",
+          "validation": "manual, query",
+          "localizable": "No",
+          "notes": "query drives the Recommended-for-you grid; sort order and fallback are open question 1"
+        },
+        {
+          "name": "queryTopics",
+          "label": "Filter by topic",
+          "group": "Content",
+          "type": "taxonomy",
+          "required": "Conditional",
+          "default": "",
+          "validation": "0-3 terms; used when source=query",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "maxItems",
+          "label": "Maximum cards",
+          "group": "Content",
+          "type": "number",
+          "required": "Conditional",
+          "default": "3",
+          "validation": "2-12; used when source=query",
+          "localizable": "No",
+          "notes": "An unbounded query grid renders 3 in design and 40 in production"
+        },
+        {
+          "name": "layout",
+          "label": "Layout",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "grid",
+          "validation": "grid, carousel, list",
+          "localizable": "No",
+          "notes": "Absorbs the C013/C016 distinction entirely"
+        },
+        {
+          "name": "columns",
+          "label": "Columns",
+          "group": "Presentation",
+          "type": "enum",
+          "required": "Yes",
+          "default": "3",
+          "validation": "2, 3, 4; applies to grid only",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "emptyBehaviour",
+          "label": "When empty",
+          "group": "Behaviour",
+          "type": "enum",
+          "required": "Yes",
+          "default": "hide",
+          "validation": "hide, showMessage",
+          "localizable": "No",
+          "notes": "Query-driven collections must define this or pages break silently"
+        }
+      ],
+      "variants": [
+        {
+          "name": "Video carousel",
+          "values": "layout=carousel, items=CT19",
+          "seen_on": "P01"
+        },
+        {
+          "name": "Recommended for you",
+          "values": "layout=grid, source=query, items=CT20",
+          "seen_on": "P01, P03"
+        },
+        {
+          "name": "Testimonials",
+          "values": "layout=carousel, items=CT21",
+          "seen_on": "P03"
+        }
+      ]
+    },
+    {
+      "id": "CT19",
+      "name": "mediaCard",
+      "layer": "Collection",
+      "purpose": "Card whose payload is a video, with a caption",
+      "complexity": "S",
+      "instances": 1,
+      "reuse": 1,
+      "consolidates": [
+        "C014 Video Card"
+      ],
+      "observed_on": [
+        "P01"
+      ],
+      "notes": "Kept separate from CT20 editorialCard - see consolidation decisions.",
+      "properties": [
+        {
+          "name": "video",
+          "label": "Video",
+          "group": "Content",
+          "type": "reference",
+          "required": "Yes",
+          "default": "",
+          "validation": "CT16 only",
+          "localizable": "No",
+          "notes": "Reuses the video block rather than duplicating its fields"
+        },
+        {
+          "name": "title",
+          "label": "Title",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 60 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "caption",
+          "label": "Caption",
+          "group": "Content",
+          "type": "textMultiline",
+          "required": "No",
+          "default": "",
+          "validation": "Max 180 chars",
+          "localizable": "Yes",
+          "notes": ""
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT20",
+      "name": "editorialCard",
+      "layer": "Collection",
+      "purpose": "Card linking to another page - articles, guides, landing pages",
+      "complexity": "S",
+      "instances": 2,
+      "reuse": 2,
+      "consolidates": [
+        "C017 Editorial Card"
+      ],
+      "observed_on": [
+        "P01",
+        "P03"
+      ],
+      "notes": "The inventory asks whether this is a variation of Complementary Card (ID 79) or the News Card Grid's own card (ID 78). Modelled as one card type used by CT18 in either layout, which makes the question moot.",
+      "properties": [
+        {
+          "name": "image",
+          "label": "Image",
+          "group": "Content",
+          "type": "mediaImage",
+          "required": "No",
+          "default": "",
+          "validation": ">=800x450, 16:9, <=200KB",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "altText",
+          "label": "Alt text",
+          "group": "SEO / Accessibility",
+          "type": "text",
+          "required": "Conditional",
+          "default": "",
+          "validation": "Max 125 chars; required when image is set and not decorative",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "eyebrow",
+          "label": "Category",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 30 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "title",
+          "label": "Title",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 80 chars; longest observed 63",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "summary",
+          "label": "Summary",
+          "group": "Content",
+          "type": "textMultiline",
+          "required": "No",
+          "default": "",
+          "validation": "Max 200 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "link",
+          "label": "Destination",
+          "group": "Content",
+          "type": "link",
+          "required": "Yes",
+          "default": "",
+          "validation": "internal or external; label optional as the title carries the link",
+          "localizable": "Yes",
+          "notes": "Required - a card that goes nowhere is not a card. This is the field that keeps it separate from CT19"
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT21",
+      "name": "testimonial",
+      "layer": "Collection",
+      "purpose": "Attributed partner quote",
+      "complexity": "S",
+      "instances": 1,
+      "reuse": 1,
+      "consolidates": [
+        "C031 Testimonials (item model)"
+      ],
+      "observed_on": [
+        "P03"
+      ],
+      "notes": "",
+      "properties": [
+        {
+          "name": "quote",
+          "label": "Quote",
+          "group": "Content",
+          "type": "textMultiline",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 320 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "attribution",
+          "label": "Name",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 60 chars",
+          "localizable": "No",
+          "notes": "Personal and property names are not translated"
+        },
+        {
+          "name": "role",
+          "label": "Role or property",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 80 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "avatar",
+          "label": "Photo or logo",
+          "group": "Content",
+          "type": "mediaImage",
+          "required": "No",
+          "default": "",
+          "validation": ">=200x200, 1:1",
+          "localizable": "No",
+          "notes": ""
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT22",
+      "name": "leadCaptureForm",
+      "layer": "Integration",
+      "purpose": "Partner sign-up form with an optional supporting column",
+      "complexity": "L",
+      "instances": 1,
+      "reuse": 1,
+      "consolidates": [
+        "C024 Lead Capture Form"
+      ],
+      "observed_on": [
+        "P02"
+      ],
+      "notes": "The highest-uncertainty component in the set. Progressive disclosure, submission endpoint, consent handling and validation rules are all invisible from the rendered page.",
+      "properties": [
+        {
+          "name": "formId",
+          "label": "Form ID",
+          "group": "Integration",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Matches a form defined in the marketing platform",
+          "localizable": "No",
+          "notes": "Fields are defined in the form platform, not in the CMS - confirm in open question 2"
+        },
+        {
+          "name": "heading",
+          "label": "Heading",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 70 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "body",
+          "label": "Supporting copy",
+          "group": "Content",
+          "type": "richText",
+          "required": "No",
+          "default": "",
+          "validation": "Max 500 chars",
+          "localizable": "Yes",
+          "notes": "The left column the inventory asks about - modelled as part of the component, not a separate headline"
+        },
+        {
+          "name": "logo",
+          "label": "Logo",
+          "group": "Content",
+          "type": "mediaImage",
+          "required": "No",
+          "default": "",
+          "validation": "<=100KB, SVG/PNG",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "consentText",
+          "label": "Consent text",
+          "group": "Integration",
+          "type": "richText",
+          "required": "Yes",
+          "default": "",
+          "validation": "Allows p, a; must include a privacy policy link",
+          "localizable": "Yes",
+          "notes": "Legal copy differs per market - always localised"
+        },
+        {
+          "name": "successBehaviour",
+          "label": "On success",
+          "group": "Behaviour",
+          "type": "enum",
+          "required": "Yes",
+          "default": "message",
+          "validation": "message, redirect",
+          "localizable": "No",
+          "notes": ""
+        },
+        {
+          "name": "successMessage",
+          "label": "Success message",
+          "group": "Content",
+          "type": "richText",
+          "required": "Conditional",
+          "default": "",
+          "validation": "Required when successBehaviour=message",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "successRedirect",
+          "label": "Redirect target",
+          "group": "Behaviour",
+          "type": "link",
+          "required": "Conditional",
+          "default": "",
+          "validation": "Internal only; required when successBehaviour=redirect",
+          "localizable": "Yes",
+          "notes": ""
+        }
+      ],
+      "variants": []
+    },
+    {
+      "id": "CT23",
+      "name": "calculator",
+      "layer": "Integration",
+      "purpose": "Interactive value calculator with authorable inputs and copy",
+      "complexity": "L",
+      "instances": 1,
+      "reuse": 1,
+      "consolidates": [
+        "C030 Calculator"
+      ],
+      "observed_on": [
+        "P03"
+      ],
+      "notes": "Whether the formula is authorable or hardcoded is unresolved in the inventory and decides whether this is an S or an L. Specified here as configuration-driven with the formula in the head, which is the lower-risk reading.",
+      "properties": [
+        {
+          "name": "calculatorKey",
+          "label": "Calculator",
+          "group": "Integration",
+          "type": "enum",
+          "required": "Yes",
+          "default": "",
+          "validation": "From the set implemented in the front end",
+          "localizable": "No",
+          "notes": "The formula lives in code; the CMS selects which one and supplies the copy"
+        },
+        {
+          "name": "heading",
+          "label": "Heading",
+          "group": "Content",
+          "type": "text",
+          "required": "No",
+          "default": "",
+          "validation": "Max 70 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "inputs",
+          "label": "Input labels",
+          "group": "Content",
+          "type": "groupList",
+          "required": "Yes",
+          "default": "",
+          "validation": "1-5 items; {key, label <=40 chars, helpText <=120 chars, min, max, default}",
+          "localizable": "Yes",
+          "notes": "key is technical and not localised; labels are"
+        },
+        {
+          "name": "resultLabel",
+          "label": "Result label",
+          "group": "Content",
+          "type": "text",
+          "required": "Yes",
+          "default": "",
+          "validation": "Max 60 chars",
+          "localizable": "Yes",
+          "notes": ""
+        },
+        {
+          "name": "disclaimer",
+          "label": "Disclaimer",
+          "group": "Content",
+          "type": "richText",
+          "required": "No",
+          "default": "",
+          "validation": "Max 400 chars",
+          "localizable": "Yes",
+          "notes": "Estimate disclaimers are usually market-specific"
+        }
+      ],
+      "variants": []
+    }
+  ],
+  "consolidation": [
+    {
+      "candidates": "C004 Hero Banner, C022 Hero Banner with Breadcrumb",
+      "decision": "Unified",
+      "test": "Content model identical; breadcrumb is a page property, eyebrow is one optional field",
+      "result": "CT07 heroBanner"
+    },
+    {
+      "candidates": "C008 Split Banner, C021 image on the right, C032 with CTA, C011 with Accordion",
+      "decision": "Unified",
+      "test": "Content model identical; difference is mediaPosition, an optional cta, and one optional block slot",
+      "result": "CT08 splitBanner"
+    },
+    {
+      "candidates": "C012 Promo Banner image, C025 Promo Banner colour",
+      "decision": "Unified",
+      "test": "Content model identical; background is presentation",
+      "result": "CT09 promoBanner"
+    },
+    {
+      "candidates": "C013 Card Carousel, C016 News Card Grid, C031 Testimonials",
+      "decision": "Unified",
+      "test": "Same container model; grid/carousel is presentation, card type is a reference constraint",
+      "result": "CT18 cardCollection"
+    },
+    {
+      "candidates": "C027 Rich Text, C027 footnotes",
+      "decision": "Unified",
+      "test": "Content model identical; footnote is a style",
+      "result": "CT14 richTextBlock with style enum"
+    },
+    {
+      "candidates": "C005 Headline, C019 Background Section, C020 Separator",
+      "decision": "Structural",
+      "test": "Carry no content of their own; they wrap, title and space the blocks inside them",
+      "result": "CT01 section - removes 4-6 properties from every block"
+    },
+    {
+      "candidates": "C026 Article Header, C033 Author Block",
+      "decision": "Site-level / page-level",
+      "test": "Page metadata supplies the values, so the block renders rather than being authored",
+      "result": "CT03 articlePage fields + CT06 author"
+    },
+    {
+      "candidates": "C003 Cookie Banner, C034 Tags and Share, C035 Page Feedback",
+      "decision": "Site-level / page-level",
+      "test": "Meta info and taxonomy, not page-authored content",
+      "result": "CT04 siteConfiguration + page taxonomy"
+    },
+    {
+      "candidates": "C023 Breadcrumb",
+      "decision": "Site-level / page-level",
+      "test": "Derived from the URL path; authoring it invites it to disagree with the page location",
+      "result": "Template behaviour, toggled by CT02.showBreadcrumb"
+    },
+    {
+      "candidates": "C018 Button",
+      "decision": "Structural",
+      "test": "Never placed independently; always part of a parent block",
+      "result": "cta group on CT07, CT08, CT09, CT11"
+    },
+    {
+      "candidates": "C029 CTA Card into C010 Info Boxes",
+      "decision": "Kept distinct",
+      "test": "cta is mandatory on one and absent on the other; cardinality differs (single vs grid); different editorial job",
+      "result": "Two types - CT10 and CT11"
+    },
+    {
+      "candidates": "C014 Video Card into C017 Editorial Card",
+      "decision": "Kept distinct",
+      "test": "link is mandatory on the editorial card and meaningless on the video card; merging would drop the validation",
+      "result": "Two types - CT19 and CT20; they share front-end primitives"
+    },
+    {
+      "candidates": "C007 Anchor Navbar into site Navigation",
+      "decision": "Kept distinct",
+      "test": "Lifecycle differs: in-page anchors change with the page, site IA changes with the site",
+      "result": "CT17 anchorNav kept separate - answers the inventory's open question"
+    },
+    {
+      "candidates": "CT07 heroBanner into CT09 promoBanner",
+      "decision": "Kept distinct",
+      "test": "Mental model and SEO: the hero is once per page and owns the h1; the promo band is repeatable and never h1",
+      "result": "Two types"
+    }
+  ],
+  "coverage": [
+    {
+      "url": "P01 Campaign landing page",
+      "status": "Covered",
+      "components": [
+        "CT02",
+        "CT01",
+        "CT07",
+        "CT16",
+        "CT17",
+        "CT08",
+        "CT12",
+        "CT10",
+        "CT13",
+        "CT09",
+        "CT18",
+        "CT19",
+        "CT20",
+        "CT04",
+        "CT05"
+      ],
+      "notes": "5 split-banner instances (3 left, 2 right) resolve to CT08 with mediaPosition; C011 resolves to CT08 with bodyBlock=CT13; ~10 standalone C005 headlines resolve to CT01.heading"
+    },
+    {
+      "url": "P02 Join us with form",
+      "status": "Covered",
+      "components": [
+        "CT02",
+        "CT01",
+        "CT07",
+        "CT22",
+        "CT09",
+        "CT04",
+        "CT05"
+      ],
+      "notes": "Breadcrumb from CT02.showBreadcrumb; promo band uses background=brand"
+    },
+    {
+      "url": "P03 Blog article",
+      "status": "Covered",
+      "components": [
+        "CT03",
+        "CT01",
+        "CT06",
+        "CT17",
+        "CT14",
+        "CT15",
+        "CT16",
+        "CT11",
+        "CT23",
+        "CT18",
+        "CT20",
+        "CT21",
+        "CT08",
+        "CT13",
+        "CT04",
+        "CT05"
+      ],
+      "notes": "Article header and author block render from CT03 fields and the CT06 reference; tags from CT03.topics; feedback from CT03.showFeedback + CT04"
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "Is the 'Recommended for you' grid author-picked or query-driven? If query: sort order, filters, and behaviour when it returns nothing.",
+      "blocks": "CT18 spec, emptyBehaviour default",
+      "owner": "EG content team"
+    },
+    {
+      "question": "Lead capture form - submission endpoint, field definitions, progressive disclosure on industry selection, consent and validation rules.",
+      "blocks": "CT22 spec and complexity",
+      "owner": "EG marketing ops"
+    },
+    {
+      "question": "Comparison table on mobile - horizontal scroll or stacked columns?",
+      "blocks": "CT12.mobileBehaviour",
+      "owner": "EG design"
+    },
+    {
+      "question": "Are URL slugs localised per locale, or is one slug used across all five?",
+      "blocks": "CT02.slug, CT03.slug; routing in the head",
+      "owner": "EG SEO"
+    },
+    {
+      "question": "Does any locale need different imagery, or are assets shared across all locales?",
+      "blocks": "localizable flag on every mediaImage field - disruptive to change once populated",
+      "owner": "EG brand"
+    },
+    {
+      "question": "Cookie consent - does OneTrust remain an external script?",
+      "blocks": "CT04.cookieConsentProvider",
+      "owner": "EG legal / platform"
+    },
+    {
+      "question": "Header mobile menu third level was never captured. Is depth 3 correct?",
+      "blocks": "CT05.children max depth",
+      "owner": "EG - carried over from the inventory"
+    },
+    {
+      "question": "Which roles may place which blocks on which template? The section allow-list is the enforcement point and needs a policy behind it.",
+      "blocks": "CT01.blocks allow-list per page type",
+      "owner": "EG content ops"
+    },
+    {
+      "question": "Analytics - what data layer does each block need to emit?",
+      "blocks": "Front-end implementation of every block",
+      "owner": "EG analytics"
+    },
+    {
+      "question": "Which Contentful plan is in scope? Content type count, scheduled publishing quota, workflows and multiple environments are all entitlement-dependent.",
+      "blocks": "CT04 scheduling, review workflow, environment strategy",
+      "owner": "EG procurement - pilot scoping Q23"
+    }
+  ]
+}
