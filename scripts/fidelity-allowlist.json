@@ -1,42 +1,42 @@
 [
   {
-    "page": "uc1-solution-architecture",
+    "origin": "uc1:model:*",
     "from": "this is the hand-modelled route described in the backlog, and",
     "to": "this is the hand-modelled route, and",
     "reason": "The backlog is no longer on the site (migration discrepancy 2, owner decision 2026-09-28)"
   },
   {
-    "page": "uc1-solution-architecture",
+    "origin": "uc1:authoring:*",
     "from": "This is where the platform constraint from the backlog bites:",
     "to": "This is where a platform constraint bites:",
     "reason": "The backlog is no longer on the site (migration discrepancy 2, owner decision 2026-09-28)"
   },
   {
-    "page": "uc1-solution-architecture",
+    "origin": "uc1:alternatives:*",
     "from": "Rejected on three counts:",
     "to": "Not taken, for three reasons:",
     "reason": "Terminology rule: \"Rejected\" reads as correcting earlier work (final review finding 5, owner decision 2026-09-28: \"Not taken\")"
   },
   {
-    "page": "uc1-solution-architecture",
+    "origin": "uc1:alternatives:*",
     "from": "Rejected: it puts partner data",
     "to": "Not taken: it puts partner data",
     "reason": "Terminology rule: \"Rejected\" reads as correcting earlier work (final review finding 5, owner decision 2026-09-28: \"Not taken\")"
   },
   {
-    "page": "uc1-solution-architecture",
+    "origin": "uc1:alternatives:*",
     "from": "Rejected because it contradicts",
     "to": "Not taken because it contradicts",
     "reason": "Terminology rule: \"Rejected\" reads as correcting earlier work (final review finding 5, owner decision 2026-09-28: \"Not taken\")"
   },
   {
-    "page": "uc1-solution-architecture",
+    "origin": "uc1:alternatives:*",
     "from": "Rejected: an opaque token",
     "to": "Not taken: an opaque token",
     "reason": "Terminology rule: \"Rejected\" reads as correcting earlier work (final review finding 5, owner decision 2026-09-28: \"Not taken\")"
   },
   {
-    "page": "uc1-solution-architecture",
+    "origin": "uc1:open:*",
     "from": "additional to the twenty-seven in the pilot scoping document.",
     "to": "additional to the twenty-seven raised with EG (Q1–Q26, Q6b).",
     "reason": "The scoping document is not on the site (final review finding 10, owner decision 2026-09-28)"

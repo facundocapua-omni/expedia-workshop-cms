@@ -1,23 +1,37 @@
-// Checks that the migrated idea pages carry the same visible text as the original HTML
-// deliverables (read from git at the pre-migration commit), that <pre> blocks survive byte
-// for byte, and that question detail matches doc 01. Run after `pnpm build`.
-// Accepted wording changes go in scripts/fidelity-allowlist.json as {page, from, to, reason},
-// applied to the original text before comparing.
+// Checks that every block of the original HTML deliverables (read from git at the
+// pre-migration commit) is still on the built site, on whichever page it now lives, that
+// <pre> blocks survive byte for byte, and that question detail matches doc 01.
+// Run after `pnpm build`.
+//
+// A migrated block carries data-origin="<doc>:<section id>:<piece>". The piece is the block's
+// index among the original section's children after its <h2> (for a ROW_PIECES section, its
+// table row, with the head row as 0), or "*" for the whole section body. Mastheads and
+// footers do not move, and are compared on their own idea page.
+//
+// Accepted changes go in scripts/fidelity-allowlist.json, keyed by origin:
+//   {origin, from, to, reason}       applied to the original text before comparing
+//   {origin, retire: true, reason}   a piece deliberately taken off the site
+// List the pieces of a section with: node scripts/verify-fidelity.mjs --pieces uc1:risks
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
+import path from 'node:path';
 import { fromHtml } from 'hast-util-from-html';
 import { select, selectAll } from 'hast-util-select';
 import YAML from 'yaml';
 
 const BASE = '6c8dd77';
-const PAGES = [
-  { original: 'docs/02-uc1-solution-architecture.html', slug: 'uc1-solution-architecture' },
-  { original: 'docs/03-uc2-content-model.html', slug: 'uc2-content-model' },
+const DOCS = [
+  { doc: 'uc1', original: 'docs/02-uc1-solution-architecture.html', slug: 'uc1-solution-architecture' },
+  { doc: 'uc2', original: 'docs/03-uc2-content-model.html', slug: 'uc2-content-model' },
 ];
+/** Section ids the site renamed (site spec §0.10). Origins use the site id. */
+const RENAMED = { 'uc1:rejected': 'uc1:alternatives' };
+/** Sections split by table row rather than by child block. */
+const ROW_PIECES = new Set(['uc1:risks']);
 const BLOCK = new Set(['p', 'li', 'td', 'th', 'tr', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'section', 'table',
   'thead', 'tbody', 'pre', 'ul', 'ol', 'br', 'header', 'footer', 'figure', 'figcaption', 'blockquote', 'nav', 'main']);
 
-const git = (path) => execSync(`git show ${BASE}:${path}`, { encoding: 'utf8', maxBuffer: 1 << 26 });
+const git = (p) => execSync(`git show ${BASE}:${p}`, { encoding: 'utf8', maxBuffer: 1 << 26 });
 const allow = JSON.parse(fs.readFileSync('scripts/fidelity-allowlist.json', 'utf8'));
 let failures = 0;
 const fail = (message) => { failures += 1; console.error(`✗ ${message}`); };
@@ -35,33 +49,123 @@ function visibleText(node) {
   return out.join('').replace(/\s+/g, ' ').trim();
 }
 const rawText = (node) => { let s = ''; (function walk(n) { if (n.type === 'text') s += n.value; (n.children ?? []).forEach(walk); })(node); return s; };
-const applyAllow = (slug, text) => allow.filter((a) => a.page === slug).reduce((t, a) => t.split(a.from).join(a.to), text);
+const pres = (node) => (node.tagName === 'pre' ? [node] : selectAll('pre', node));
 
-for (const { original, slug } of PAGES) {
-  const before = fromHtml(git(original));
-  const after = fromHtml(fs.readFileSync(`dist/ideas/${slug}/index.html`, 'utf8'));
-  const blocks = (tree) => [select('header.mast', tree), ...selectAll('main section', tree), select('main footer', tree)];
-  const a = blocks(before);
-  const b = blocks(after);
-  if (a.length !== b.length) { fail(`${slug}: ${a.length} blocks in the original, ${b.length} migrated`); continue; }
-  a.forEach((node, i) => {
-    const label = `${slug} ${node?.properties?.id ?? node?.tagName ?? i}`;
-    if (!node || !b[i]) { fail(`${label}: block missing`); return; }
-    const was = applyAllow(slug, visibleText(node));
-    const now = visibleText(b[i]);
-    if (was === now) { console.log(`✓ ${label}`); return; }
+/** Original sections keyed "<doc>:<site section id>", each with its pieces in order. */
+function originalSections() {
+  const sections = new Map();
+  for (const { doc, original } of DOCS) {
+    for (const section of selectAll('main section', fromHtml(git(original)))) {
+      const raw = `${doc}:${section.properties.id}`;
+      const key = RENAMED[raw] ?? raw;
+      if (section.children.some((c) => c.type === 'text' && c.value.trim())) fail(`${key}: loose text in the section cannot be a piece`);
+      sections.set(key, ROW_PIECES.has(key)
+        ? [select('thead', section), ...selectAll('tbody > tr', section)]
+        : section.children.filter((c) => c.type === 'element' && c.tagName !== 'h2'));
+    }
+  }
+  return sections;
+}
+
+const pieceArg = process.argv.indexOf('--pieces');
+if (pieceArg !== -1) {
+  const key = process.argv[pieceArg + 1];
+  const pieces = originalSections().get(key);
+  if (!pieces) { console.error(`no section ${key}`); process.exit(1); }
+  pieces.forEach((p, i) => console.log(`${key}:${i}  ${visibleText(p).slice(0, 100)}`));
+  process.exit(0);
+}
+
+function* builtPages(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) { if (entry.name !== 'pagefind' && entry.name !== '_astro') yield* builtPages(full); }
+    else if (entry.name.endsWith('.html')) yield full;
+  }
+}
+
+/** Every element on the built site that carries an origin, with the page it is on. */
+function builtOrigins() {
+  const found = new Map();
+  for (const file of builtPages('dist')) {
+    const where = `/${path.relative('dist', file).split(path.sep).join('/').replace(/index\.html$/, '')}`;
+    for (const node of selectAll('[data-origin]', fromHtml(fs.readFileSync(file, 'utf8')))) {
+      const origin = String(node.properties.dataOrigin);
+      if (found.has(origin)) fail(`${origin}: on ${found.get(origin).where} and again on ${where}`);
+      else found.set(origin, { node, where });
+    }
+  }
+  return found;
+}
+
+const compared = new Set();
+function applyAllow(origin, text) {
+  return allow.filter((a) => a.origin === origin && !a.retire).reduce((t, a) => {
+    if (!t.includes(a.from)) fail(`allowlist: "${a.from}" is not in the original text of ${origin}`);
+    return t.split(a.from).join(a.to);
+  }, text);
+}
+
+function compare(origin, originals, built) {
+  compared.add(origin);
+  const was = applyAllow(origin, originals.map(visibleText).join(' ').replace(/\s+/g, ' ').trim());
+  const now = visibleText(built.node);
+  if (was !== now) {
     let k = 0;
     while (was[k] === now[k]) k += 1;
-    fail(`${label} differs at character ${k}\n    original: …${was.slice(Math.max(0, k - 60), k + 80)}\n    migrated: …${now.slice(Math.max(0, k - 60), k + 80)}`);
-  });
-  const preBefore = selectAll('main pre', before);
-  const preAfter = selectAll('main pre', after);
-  if (preBefore.length !== preAfter.length) fail(`${slug}: ${preBefore.length} pre blocks in the original, ${preAfter.length} migrated`);
-  preBefore.forEach((pre, i) => {
-    if (preAfter[i] && rawText(pre) === rawText(preAfter[i])) console.log(`✓ ${slug} pre ${i + 1} exact`);
-    else fail(`${slug} pre ${i + 1}: whitespace or text differs`);
+    fail(`${origin} on ${built.where} differs at character ${k}\n    original: …${was.slice(Math.max(0, k - 60), k + 80)}\n    migrated: …${now.slice(Math.max(0, k - 60), k + 80)}`);
+    return;
+  }
+  const preWas = originals.flatMap(pres).map(rawText);
+  const preNow = pres(built.node).map(rawText);
+  if (preWas.length !== preNow.length || preWas.some((p, i) => p !== preNow[i])) {
+    fail(`${origin}: a <pre> block differs in text or whitespace`);
+    return;
+  }
+  console.log(`✓ ${origin}${preWas.length > 0 ? ` (${preWas.length} pre exact)` : ''}`);
+}
+
+const sections = originalSections();
+const found = builtOrigins();
+const retired = new Set(allow.filter((a) => a.retire).map((a) => a.origin));
+const matched = new Set();
+
+for (const [key, pieces] of sections) {
+  const whole = found.get(`${key}:*`);
+  const parts = [...found.keys()].filter((o) => o.startsWith(`${key}:`) && o !== `${key}:*`);
+  if (whole) {
+    matched.add(`${key}:*`);
+    parts.forEach((o) => matched.add(o));
+    if (parts.length > 0) fail(`${key}: marked whole on ${whole.where} and also in pieces (${parts.join(', ')})`);
+    else compare(`${key}:*`, pieces, whole);
+    continue;
+  }
+  pieces.forEach((piece, i) => {
+    const origin = `${key}:${i}`;
+    const built = found.get(origin);
+    if (built) matched.add(origin);
+    if (retired.has(origin)) {
+      compared.add(origin);
+      if (built) fail(`${origin}: retired in the allowlist but still on ${built.where}`);
+      else console.log(`✓ ${origin} retired`);
+    } else if (!built) fail(`${origin}: not on the site (${visibleText(piece).slice(0, 60)}…)`);
+    else compare(origin, [piece], built);
   });
 }
+for (const [origin, { where }] of found) if (!matched.has(origin)) fail(`${origin} on ${where}: no such block in the original`);
+
+// Mastheads and footers stay on their idea page.
+for (const { doc, original, slug } of DOCS) {
+  const before = fromHtml(git(original));
+  const after = fromHtml(fs.readFileSync(`dist/ideas/${slug}/index.html`, 'utf8'));
+  for (const [part, selector] of [['mast', 'header.mast'], ['footer', 'main footer']]) {
+    const a = select(selector, before);
+    const b = select(selector, after);
+    if (!a || !b) fail(`${doc}:${part}: ${selector} missing`);
+    else compare(`${doc}:${part}`, [a], { node: b, where: `/ideas/${slug}/` });
+  }
+}
+for (const a of allow) if (!compared.has(a.origin)) fail(`allowlist: ${a.origin} is not a compared block (stale entry?)`);
 
 const doc01 = fromHtml(git('docs/01-pilot-backlog.html'));
 const questions = YAML.parse(fs.readFileSync('data/questions.yaml', 'utf8'));

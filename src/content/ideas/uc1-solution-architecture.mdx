@@ -19,6 +19,7 @@ import uc1Fragment4 from '../fragments/uc1-4.html?raw';
 import uc1Fragment5 from '../fragments/uc1-5.html?raw';
 
 <Section n="01" id="position" title="Six design positions, taken up front" nav="Design positions">
+<div data-origin="uc1:position:*">
   <p class="sec-note">Each of these answers one of the open questions. If EG disagrees with any of them the design changes shape, so they belong at the top of the conversation rather than buried in a component description.</p>
 
   <div class="decide">
@@ -60,10 +61,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
     <p><strong>Why it is acceptable here and nowhere else.</strong> The POC tests whether one authored source reaches every channel consistently, translated and versioned. Substitution proves that. But CMS-47 — composing the metric into a grammatically correct, locale-appropriate sentence — is one of the capabilities EG is evaluating, and the one they describe as a capability gain rather than an efficiency gain. Deferring it means that capability is <strong>demonstrated in principle, not proven</strong>, and the readout should say so rather than let it pass unremarked.</p>
     <p><strong>What full implementation needs.</strong> A plural-aware message format — ICU is the standard and every translation tool already parses it — with authoring that keeps the syntax away from the author: a plain source sentence expanded into plural categories by a generation step, approved once, and stored in the machine-readable form. Two things drive the cost: whether the real parameter types are counts only or also currency, dates and ordinals, and whether Arabic stays in the locale set. Four of the five pilot locales need at most two forms; Arabic alone accounts for most of the work.</p>
   </div>
+</div>
 </Section>
 
 
 <Section n="02" id="model" title="Content model">
+<div data-origin="uc1:model:*">
   <p class="sec-note">Four content types plus taxonomy. Variants are modelled as referenced entries rather than a variant dimension, because core entries have no such dimension — this is the hand-modelled route, and it is deliberate here rather than a fallback.</p>
 
   <div class="fig">
@@ -76,10 +79,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
 
   <h3>Approval state on the entry</h3>
   <p>The <code>approvals[]</code> field records who signed off on what and when — variant copy, per-locale translation, channel rendering. It exists because the audit requirement is about editorial accountability, not just field history: "who approved the Japanese version of the familiar-tone variant" is the question that gets asked, and version history alone answers it awkwardly.</p>
+</div>
 </Section>
 
 
 <Section n="03" id="ref" title="The content reference">
+<div data-origin="uc1:ref:*">
   <p class="sec-note">The identifier the whole use case rests on. It does not exist natively — the platform issues an ID per entry, with locale as a query parameter and version as a revision counter — so it has to be defined as a contract and implemented.</p>
 
   <Fragment set:html={uc1Fragment2} />
@@ -109,10 +114,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
   <p>Register carries a second thing the source document implies without stating: the CRM rendering does not address the partner at all. It briefs a Market Manager on what the partner has already seen, so it has to carry the partner's copy <em>and</em> be usable as a talking point. That is why <code>audience</code> sits on the rendering as <code>partner</code> or <code>internal</code> — email and VMC are partner-facing, CRM is not, and generation prompts and review criteria differ accordingly.</p>
   <p>Channel constrains without being a criterion: if a variant has no email rendering, NBA shouldn't dispatch it to email — but that absence never makes a different variant a better fit for the partner. It is a filter on the index, not an input to the choice.</p>
   <p>Channel still earns its place in the pilot, for a different reason. Without it, cross-channel consistency is trivially true — one string fetched three times proves nothing. With it, the claim becomes that one authored source yields three differently-shaped outputs carrying the same message, which is CMS-01 and CMS-06 tested together. That is why <code>consistencyKey</code> covers variant, version, locale and parameters but deliberately excludes the channel shaping.</p>
+</div>
 </Section>
 
 
 <Section n="04" id="authoring" title="Authoring flow">
+<div data-origin="uc1:authoring:*">
   <p class="sec-note">Four phases, three human gates. Generation is automated; approval never is. Nothing reaches a channel without a named person having accepted it.</p>
 
   <div class="fig">
@@ -132,10 +139,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
   <p>This is where a platform constraint bites: publishing acts on the entry, so every locale goes live together, and a per-locale approval gate appears impossible.</p>
   <p>The way through is to treat the empty field as the gate. A translation lives in the translation workflow until a reviewer approves it, and only then is it written into the localised field. Unapproved locales stay empty, native fallback serves the source copy, and the resolver flags that a fallback happened. Publishing becomes safe at any moment because the entry never contains unapproved copy.</p>
   <p>The trade is that an unapproved locale is not "blocked" — it is served in English and reported as such. For a pilot testing whether partners get consistent content that is the better failure mode, and it turns a modelling problem into a reporting one. It should be stated explicitly to EG rather than discovered at the readout.</p>
+</div>
 </Section>
 
 
 <Section n="05" id="consumption" title="Consumption flow">
+<div data-origin="uc1:consumption:*">
   <p class="sec-note">Nine interactions. Two of them — the variant index and the served-variant signal — are not in the source document's flow, and the pattern does not work without them.</p>
 
   <div class="legend"><span><span class="sw sw1"></span>Content platform</span> <span><span class="sw sw3"></span>Resolution layer</span> <span><span class="sw sw2"></span>Decisioning</span> <span><span class="sw sw4"></span>Channels</span></div>
@@ -165,10 +174,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
   <h3>The resolved payload</h3>
   <Fragment set:html={uc1Fragment5} />
   <p>Returning the template alongside the substituted string costs nothing and makes every substitution failure debuggable after the fact. The <code>consistencyKey</code> is what turns "the same content everywhere" from a visual judgement into an assertion a test can make.</p>
+</div>
 </Section>
 
 
 <Section n="06" id="surfaces" title="Surfaces and channels">
+<div data-origin="uc1:surfaces:*">
   <p class="sec-note">Partner web and VMC are different surfaces, and web is treated as one more channel rather than a special case. Every surface fetches through the same resolution API — that is what keeps the consistency claim true as surfaces are added.</p>
 
   <div class="scroll">
@@ -190,10 +201,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
   <h3>One resolver, every surface — including UC2</h3>
   <p>The Next.js partner-web application built for Use Case 2 consumes this same Content Resolution API. That has a consequence worth stating plainly rather than discovering during the UC2 build: <strong>UC2's content model needs a proof-point block it does not have today</strong>, and the two workstreams stop being independent at that point. The block itself is small — a reference to a content reference plus a placement — but the dependency is real and it should appear on both plans.</p>
   <p>The upside is the reason for doing it: a fourth surface costs one channel rendering per variant and a client that speaks the same API. It costs nothing in the content model, nothing in the decisioning, and nothing in the consistency guarantee, because all three already treat channel as a parameter rather than a dimension.</p>
+</div>
 </Section>
 
 
 <Section n="07" id="components" title="System responsibilities">
+<div data-origin="uc1:components:*">
   <p class="sec-note">Worth being explicit, because three of these five owners are teams the pilot parameters currently exclude from doing development work.</p>
   <div class="scroll">
   <table>
@@ -208,10 +221,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
     </tbody>
   </table>
   </div>
+</div>
 </Section>
 
 
 <Section n="08" id="performance" title="Performance at production volume" nav="Performance at volume">
+<div data-origin="uc1:performance:*">
   <p class="sec-note">The numbers below are engineering estimates of what the proposed design can absorb. EG's real send volumes, click-through rates and latency targets are open questions; until they arrive, these establish the order of magnitude rather than a commitment.</p>
 
   <div class="decide">
@@ -250,10 +265,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
   </table>
   </div>
   <p>Recommendation: Redis as the snapshot store and primary read path, with an in-process cache for the hot set. Whether nginx or a CDN sits in front depends on where EG hosts the service and which surfaces are public — a topology decision that belongs with the hosting owner.</p>
+</div>
 </Section>
 
 
 <Section n="09" id="failure" title="Failure handling and fallback" nav="Failure and fallback">
+<div data-origin="uc1:failure:*">
   <p class="sec-note">Two rules underpin the rest. Fallback copy is content, authored and approved like any other content — never a string in the resolver. And the behaviour when content cannot be resolved differs by surface, because the cost of being wrong differs by surface.</p>
 
   <h3>Policy per surface</h3>
@@ -289,10 +306,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
   </table>
   </div>
   <p>The service holds no per-request state and has no side effects, so every one of these is safe to retry. That is a deliberate property, not a convenience: it is what allows a channel to retry a failed fetch without any risk of a partner receiving two different messages for the same decision.</p>
+</div>
 </Section>
 
 
 <Section n="10" id="ownership" title="Build, host and support" nav="Build, host, support">
+<div data-origin="uc1:ownership:*">
   <p class="sec-note">The design introduces one custom runtime component, which means it introduces something that has to be operated. Naming who does that now is cheaper than discovering it at go-live.</p>
   <div class="scroll">
   <table>
@@ -308,10 +327,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
   </table>
   </div>
   <p>Until the support owner is named, four things have no home: the service SLA, the on-call rota, the runbook, and the severity definitions that decide whether a rising fallback rate wakes someone at 3am or waits for Monday. None of them is hard to produce — each simply needs an owner first, and the usual failure is to leave the question until the service is already live.</p>
+</div>
 </Section>
 
 
 <Section n="11" id="validation" title="Validation plan">
+<div data-origin="uc1:validation:*">
   <p class="sec-note">The seven points you listed, each with the evidence it produces and the condition that decides pass or fail. Every one is machine-checkable except the two where the judgement is genuinely editorial.</p>
   <div class="scroll">
   <table>
@@ -356,10 +377,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
   </table>
   </div>
   <p>Two judgements stay human and should be scheduled as such: whether a generated tone variant is <em>good</em>, and whether the translated copy reads naturally in each locale. Both need a named reviewer per locale, and neither is a test we can run on EG's behalf. Reviewers should be briefed that grammatical agreement with the variable is out of scope for this round, so they flag translation quality rather than re-reporting a known limitation.</p>
+</div>
 </Section>
 
 
 <Section n="12" id="alternatives" title="Alternatives considered">
+<div data-origin="uc1:alternatives:*">
 
   <div class="decide risk">
     <h4>Tone and channel as a single dimension</h4>
@@ -389,10 +412,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
     <h4>An opaque hashed content ID</h4>
     <p>Tidier on the wire. Not taken: an opaque token cannot be read in a log, a support ticket or an SFMC preview, and the traceability requirement is precisely about being able to answer "what was this" long after the send.</p>
   </div>
+</div>
 </Section>
 
 
 <Section n="13" id="sizing" title="POC content sizing" nav="POC sizing">
+<div data-origin="uc1:sizing:*">
   <p class="sec-note">Small enough to author by hand in the pilot, large enough that NBA is choosing between real options rather than fetching one hardcoded entry.</p>
   <div class="scroll">
   <table>
@@ -411,10 +436,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
   </table>
   </div>
   <p>The last row is the honest argument for automation and for a review model based on sampling rather than exhaustive approval. It is also the concrete version of the variant-explosion concern the source document defers to a case-study discussion — at production scale it is not a discussion, it is a staffing plan.</p>
+</div>
 </Section>
 
 
 <Section n="14" id="open" title="Open questions raised by this design" nav="Open questions">
+<div data-origin="uc1:open:*">
   <p class="sec-note">Ten questions arising from the production concerns above, additional to the twenty-seven raised with EG (Q1–Q26, Q6b). Each carries the working assumption the design currently runs on, so nothing is blocked waiting for an answer — but each assumption is one someone should confirm rather than inherit.</p>
   <div class="scroll">
   <table>
@@ -433,10 +460,12 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
     </tbody>
   </table>
   </div>
+</div>
 </Section>
 
 
 <Section n="15" id="risks" title="Risks carried by this design" nav="Risks">
+<div data-origin="uc1:risks:*">
   <div class="scroll">
   <table>
     <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
@@ -452,6 +481,7 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
     </tbody>
   </table>
   </div>
+</div>
 </Section>
 
 <footer>

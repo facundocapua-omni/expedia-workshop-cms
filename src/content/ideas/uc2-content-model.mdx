@@ -15,6 +15,7 @@ import Fact from '../../components/Fact.astro';
 import ContentTypeTable from '../../components/ContentTypeTable.astro';
 
 <Section n="01" id="summary" title="Summary">
+<div data-origin="uc2:summary:*">
   <div class="stat">
     <div><b><Fact k="inventoryComponents" /></b><span>inventory components</span></div>
     <div><b>26</b><span>structural signatures</span></div>
@@ -27,10 +28,12 @@ import ContentTypeTable from '../../components/ContentTypeTable.astro';
   <p>Ten components become a content type of their own and are specified as they stand. The count was not driven down for its own sake: four further unifications were considered and the types kept distinct instead, and those four are set out in section 04 alongside the ones that were unified.</p>
   <p>Every content type has a matching component in the Next.js and Tailwind front end built alongside it, so the <Fact k="contentTypes" /> types resolve to <Fact k="authorableBlocks" /> block components, one section wrapper and two route-level page components. The container decision pays off twice over there: presentation props become a single class map on one component instead of being restated seventeen times, and <code>section.blocks</code> resolves through one registry, so a new type later is a content-model change plus one registry entry.</p>
   <p>Three types carry most of the delivery risk, and none of them is a modelling problem. The card collection, because query-driven collections are the least specified thing in any inventory. The lead capture form and the calculator, because their behaviour — progressive fields, submission, formula — is invisible from a rendered page and has to come from EG.</p>
+</div>
 </Section>
 
 
 <Section n="02" id="disposition" title="Component mapping" nav="Inventory disposition">
+<div data-origin="uc2:disposition:*">
   <p class="sec-note">Full traceability from the component analysis. Every C-number is accounted for, so the model can be checked against the source inventory rather than taken on trust.</p>
   <div class="scroll">
   <table>
@@ -74,15 +77,19 @@ import ContentTypeTable from '../../components/ContentTypeTable.astro';
     </tbody>
   </table>
   </div>
+</div>
 </Section>
 
 <Section n="03" id="types" title="The {{contentTypes}} content types" nav="Content types">
+<div data-origin="uc2:types:*">
   <p class="sec-note">Full property specifications — name, label, group, type, required, default, validation, localisable and authoring notes — are in the accompanying workbook.</p>
   <ContentTypeTable />
   <p>Three types carry L complexity — the card collection, the lead capture form and the calculator. Everything else is S or M, which is the shape you want: the risk is concentrated in three places rather than spread thinly across twenty-three.</p>
+</div>
 </Section>
 
 <Section n="04" id="decisions" title="Modelling decisions">
+<div data-origin="uc2:decisions:*">
   <p class="sec-note">Ten decisions. Six bring components together under a single type; four keep types distinct where combining them would cost a validation or blur what an author reaches for. The four distinctions carry as much weight as the six unifications — together they show the count was reasoned rather than minimised.</p>
   <div class="scroll">
   <table>
@@ -101,10 +108,12 @@ import ContentTypeTable from '../../components/ContentTypeTable.astro';
     </tbody>
   </table>
   </div>
+</div>
 </Section>
 
 
 <Section n="05" id="coverage" title="The three templates">
+<div data-origin="uc2:coverage:*">
   <p class="sec-note">Each pilot page walked top to bottom, in the order the inventory recorded it, showing which content type renders each block and how it is configured. This is the proof the model reconstructs the pages: if a row had no content type, the model would be incomplete.</p>
 
   <h3>P01 — Campaign landing page</h3>
@@ -205,6 +214,7 @@ import ContentTypeTable from '../../components/ContentTypeTable.astro';
   </table>
   </div>
   <p>Five types carry the three templates between them: the section container, the split banner, the card collection, the accordion and the video block. Six types appear on exactly one page — the comparison table, info boxes, form, calculator, testimonial and media card — which is expected at pilot scope and would be the first thing to re-test against the wider site.</p>
+</div>
 </Section>
 
 
