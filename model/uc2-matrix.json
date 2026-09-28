@@ -187,7 +187,8 @@
           "values": "background=image, width=fullBleed",
           "seen_on": "P01"
         }
-      ]
+      ],
+      "summary": "Container carrying all presentation and the section heading"
     },
     {
       "id": "CT02",
@@ -307,7 +308,8 @@
           "values": "showBreadcrumb=true",
           "seen_on": "P02"
         }
-      ]
+      ],
+      "summary": "Campaign landing and form pages — P02 is a subset of P01, so one type"
     },
     {
       "id": "CT03",
@@ -438,7 +440,8 @@
           "notes": "The per-page half of C035; the widget itself is meta info"
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Editorial article with author, date and taxonomy"
     },
     {
       "id": "CT04",
@@ -538,7 +541,8 @@
           "notes": ""
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Site-level meta and integration settings: GTM, breakpoints, consent, share, feedback"
     },
     {
       "id": "CT05",
@@ -615,7 +619,8 @@
           "values": "label set, children empty",
           "seen_on": "Global"
         }
-      ]
+      ],
+      "summary": "Nestable link tree for header and footer columns"
     },
     {
       "id": "CT06",
@@ -678,7 +683,8 @@
           "notes": ""
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Reusable author profile"
     },
     {
       "id": "CT07",
@@ -820,7 +826,8 @@
           "values": "layout=split, eyebrow set",
           "seen_on": "P02"
         }
-      ]
+      ],
+      "summary": "Page opener with optional media and CTA"
     },
     {
       "id": "CT08",
@@ -974,7 +981,8 @@
           "values": "cta set",
           "seen_on": "P03"
         }
-      ]
+      ],
+      "summary": "Media beside copy — the workhorse, four inventory entries in one"
     },
     {
       "id": "CT09",
@@ -1083,7 +1091,8 @@
           "values": "background=brand",
           "seen_on": "P02"
         }
-      ]
+      ],
+      "summary": "Mid-page conversion band with a required CTA"
     },
     {
       "id": "CT10",
@@ -1135,7 +1144,8 @@
           "notes": ""
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Grid of short informational boxes"
     },
     {
       "id": "CT11",
@@ -1209,7 +1219,8 @@
           "notes": ""
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Single inline conversion prompt"
     },
     {
       "id": "CT12",
@@ -1272,7 +1283,8 @@
           "notes": "Open question 6 - confirm against the live site"
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Structured comparison across 2–4 columns"
     },
     {
       "id": "CT13",
@@ -1347,7 +1359,8 @@
           "values": "placed as CT08.bodyBlock",
           "seen_on": "P01"
         }
-      ]
+      ],
+      "summary": "Collapsible rows; emits FAQ structured data on request"
     },
     {
       "id": "CT14",
@@ -1411,7 +1424,8 @@
           "values": "style=footnote",
           "seen_on": "P03"
         }
-      ]
+      ],
+      "summary": "Long-form copy; footnotes as a style"
     },
     {
       "id": "CT15",
@@ -1463,7 +1477,8 @@
           "notes": "Attribution line beneath the figures"
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Row of headline figures"
     },
     {
       "id": "CT16",
@@ -1571,7 +1586,8 @@
           "values": "referenced by CT19",
           "seen_on": "P01"
         }
-      ]
+      ],
+      "summary": "Platform or asset video with poster, captions, transcript"
     },
     {
       "id": "CT17",
@@ -1635,7 +1651,8 @@
           "values": "4 items",
           "seen_on": "P03"
         }
-      ]
+      ],
+      "summary": "Sticky in-page navigation, auto-derived from section anchors"
     },
     {
       "id": "CT18",
@@ -1750,7 +1767,8 @@
           "values": "layout=carousel, items=CT21",
           "seen_on": "P03"
         }
-      ]
+      ],
+      "summary": "Grid, carousel or list; author-picked or query-driven"
     },
     {
       "id": "CT19",
@@ -1802,7 +1820,8 @@
           "notes": ""
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Card whose payload is a video"
     },
     {
       "id": "CT20",
@@ -1888,7 +1907,8 @@
           "notes": "Required - a card that goes nowhere is not a card. This is the field that keeps it separate from CT19"
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Card linking to another page"
     },
     {
       "id": "CT21",
@@ -1951,7 +1971,8 @@
           "notes": ""
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Attributed partner quote"
     },
     {
       "id": "CT22",
@@ -2058,7 +2079,8 @@
           "notes": ""
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Sign-up form with supporting column and consent"
     },
     {
       "id": "CT23",
@@ -2132,7 +2154,8 @@
           "notes": "Estimate disclaimers are usually market-specific"
         }
       ],
-      "variants": []
+      "variants": [],
+      "summary": "Interactive calculator; formula in code, copy in the CMS"
     }
   ],
   "consolidation": [
@@ -2284,54 +2307,93 @@
   ],
   "open_questions": [
     {
+      "id": "U1",
       "question": "Is the 'Recommended for you' grid author-picked or query-driven? If query: sort order, filters, and behaviour when it returns nothing.",
       "blocks": "CT18 spec, emptyBehaviour default",
-      "owner": "EG content team"
+      "owner": "EG content team",
+      "status": "open",
+      "confirmedByEG": false
     },
     {
+      "id": "U2",
       "question": "Lead capture form - submission endpoint, field definitions, progressive disclosure on industry selection, consent and validation rules.",
       "blocks": "CT22 spec and complexity",
-      "owner": "EG marketing ops"
+      "owner": "EG marketing ops",
+      "status": "open",
+      "confirmedByEG": false
     },
     {
+      "id": "U3",
+      "question": "Is the calculator formula authorable or in the front end?",
+      "blocks": "CT23 spec",
+      "owner": "EG product",
+      "status": "assumed",
+      "confirmedByEG": false,
+      "position": "Formula in the front end, copy in the CMS: the formula is selected by calculatorKey, and the labels and disclaimer are authored."
+    },
+    {
+      "id": "U4",
       "question": "Comparison table on mobile - horizontal scroll or stacked columns?",
       "blocks": "CT12.mobileBehaviour",
-      "owner": "EG design"
+      "owner": "EG design",
+      "status": "open",
+      "confirmedByEG": false
     },
     {
+      "id": "U5",
       "question": "Are URL slugs localised per locale, or is one slug used across all five?",
       "blocks": "CT02.slug, CT03.slug; routing in the head",
-      "owner": "EG SEO"
+      "owner": "EG SEO",
+      "status": "open",
+      "confirmedByEG": false
     },
     {
+      "id": "U6",
       "question": "Does any locale need different imagery, or are assets shared across all locales?",
       "blocks": "localizable flag on every mediaImage field - disruptive to change once populated",
-      "owner": "EG brand"
+      "owner": "EG brand",
+      "status": "open",
+      "confirmedByEG": false
     },
     {
+      "id": "U7",
       "question": "Cookie consent - does OneTrust remain an external script?",
       "blocks": "CT04.cookieConsentProvider",
-      "owner": "EG legal / platform"
+      "owner": "EG legal / platform",
+      "status": "open",
+      "confirmedByEG": false
     },
     {
+      "id": "U8",
       "question": "Header mobile menu third level was never captured. Is depth 3 correct?",
       "blocks": "CT05.children max depth",
-      "owner": "EG - carried over from the inventory"
+      "owner": "EG - carried over from the inventory",
+      "status": "open",
+      "confirmedByEG": false
     },
     {
+      "id": "U9",
       "question": "Which roles may place which blocks on which template? The section allow-list is the enforcement point and needs a policy behind it.",
       "blocks": "CT01.blocks allow-list per page type",
-      "owner": "EG content ops"
+      "owner": "EG content ops",
+      "status": "open",
+      "confirmedByEG": false
     },
     {
+      "id": "U10",
       "question": "Analytics - what data layer does each block need to emit?",
       "blocks": "Front-end implementation of every block",
-      "owner": "EG analytics"
+      "owner": "EG analytics",
+      "status": "open",
+      "confirmedByEG": false
     },
     {
+      "id": "U11",
       "question": "Which Contentful plan is in scope? Content type count, scheduled publishing quota, workflows and multiple environments are all entitlement-dependent.",
       "blocks": "CT04 scheduling, review workflow, environment strategy",
-      "owner": "EG procurement - pilot scoping Q23"
+      "owner": "EG procurement - pilot scoping Q23",
+      "status": "open",
+      "confirmedByEG": false
     }
   ]
 }

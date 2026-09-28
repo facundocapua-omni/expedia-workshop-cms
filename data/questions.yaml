@@ -1,0 +1,293 @@
+# Q1–Q26 and Q6b (raised with EG) and DQ-1–DQ-10 (UC1 design).
+# UC2 questions U1–U11 live in model/uc2-matrix.json because they feed the workbook.
+# status: open | assumed | answered | closed. confirmedByEG becomes true once EG accepts the answer.
+- id: Q1
+  group: blocking
+  question: Where does the personalised value actually live?
+  detail: Is the proof-point value stored in Contentful per partner, or does Contentful hold a templated sentence with the value injected at render time from NBA or an SFMC data extension?
+  why: CMS-10 describes a typed value field in the entry; the scale note anticipates a unique proof point across ~1M partner records. Those can't both be true in the same design. The answer sets the entry count, the content model, the licensing tier and whether Contentful sits in the per-recipient path at all.
+  owner: EG architecture
+  status: answered
+  answer: Template with named variables in Contentful; value injected at resolution time
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: position
+- id: Q2
+  group: blocking
+  question: Who resolves the variant — NBA or Contentful?
+  detail: Do the channels fetch a fully-resolved variant ID that NBA has already chosen, or a base ID plus segment/locale parameters that Contentful resolves on the way out?
+  why: The parameters say NBA decides and mark CMS-37 out of scope, but CMS-31 and CMS-38 are scored on content "resolving" for a segment/tone combination. If Contentful resolves, audience mapping is in scope and the pilot is larger than described. Segment and tone are the only inputs to that resolution; channel is not one, and Q6b settles why.
+  owner: EG
+  status: answered
+  answer: NBA selects from a variant index; Contentful never decides
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: position
+- id: Q3
+  group: blocking
+  question: One content ID across channels, or one per channel rendering?
+  detail: Step 5 says every channel fetches the same ID; step 6 says a channel-specific variant of every proof point should be possible under the same base ID. Is the shared contract base_id, or base_id + channel?
+  why: It determines what NBA hands off, what SFMC and CRM store on their records, and what "the same ID everywhere" is actually being proved.
+  owner: EG
+  status: answered
+  answer: One reference; channel is a fetch parameter
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: position
+- id: Q4
+  group: blocking
+  question: What mechanism produces the channel-specific rendering automatically?
+  detail: CMS-01 passes only if the channel rendering is generated from one base entry plus channel parameters. What is the expected mechanism, and what hand-authored reference will the output be compared against?
+  why: There's no native "clone this entry by channel parameter" behaviour to point at. This becomes field-level conditions, referenced content types, or a custom app — each with different effort and different governance.
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q5
+  group: blocking
+  question: Where is the localised sentence assembled?
+  detail: Should the API return a fully composed localised sentence with the metric inside it, or the message pattern plus parameters for the channel to compose?
+  why: CMS-47 is the capability the document calls out as a genuine capability gain, not just efficiency. Plural, gender and ordinal handling normally resolves in the renderer, not the store — so if EG expects a composed sentence back, something has to inject and translate at request time, and that is a design decision, not a configuration one.
+  owner: EG
+  status: assumed
+  position: "The Content Resolution API assembles it: plain substitution of the parameters into the localised message pattern (D-04, D-06)."
+  confirmedByEG: false
+- id: Q6
+  group: blocking
+  question: How does SFMC fetch at send time?
+  detail: Per-recipient outbound calls from SFMC at send time, or a data extension hydrated before the send? Which SFMC modules are in play — Content Builder, Journey Builder — and are outbound calls permitted under EG's SFMC configuration?
+  why: Per-recipient external calls at send time carry hard platform limits and are the usual failure point in this pattern at volume. Worth settling now rather than discovering it in the pilot.
+  owner: EG marketing ops
+  status: open
+  confirmedByEG: false
+- id: Q6b
+  group: blocking
+  question: Is tone a property of the partner or of the channel?
+  detail: Step 5 has the CRM continuing the conversation in the same tone of voice the partner already received, which makes tone a partner attribute that persists across surfaces. CMS-01's "channel-specific content models" and step 6's "channel-specific variant" pull the other way. Which is it?
+  why: If tone belongs to the partner, it is a selection criterion alongside segment and channel is only a rendering parameter. If tone belongs to the channel, CMS-19 loses half its pass condition because tone stops being decisioning metadata, CMS-31 collapses to segment alone, and CMS-06 becomes trivially satisfiable since no cross-channel constant remains. Three capability results move on this one answer.
+  owner: EG
+  status: open
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: position
+- id: Q7
+  group: scope
+  question: Are UC1 and UC2 one pilot or two tracks?
+  detail: The capability matrix is written entirely from UC1's perspective and marks page-building capabilities as belonging to "the separate marketing-page CMS / replatform track" — while UC2, in the same document, is exactly that track. Same window, same team, same readout, or separate?
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q8
+  group: scope
+  question: Who builds the rendering layer for UC2?
+  detail: '"Publish the page and it renders as designed" implies a front-end application, hosting, routing, CSS/JS and GTM wiring. Is EG providing an existing head to point at Contentful, or is building it part of the pilot?'
+  why: This is the single largest effort variable in the document. A pilot that includes building a head is a different order of work from one that authors into an existing one.
+  owner: EG + Globant
+  status: answered
+  answer: Globant, Next.js and Tailwind, in scope for the user story
+  confirmedByEG: false
+- id: Q9
+  group: scope
+  question: Does the component library already exist, or does it have to be built?
+  detail: The acceptance criteria say pages are authored from "pre-existing components or layouts" — pre-existing where? If it means the Figma library, the corresponding content types and components have to be built first. How many components does the library contain, and do the three pages stay inside it?
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q10
+  group: scope
+  question: Where are the three pilot pages published?
+  detail: Target environment, domain and CDN. I'm assuming not live partner.expediagroup.com, but that needs confirming along with who owns the DNS and certificate work if it's a new host.
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q11
+  group: scope
+  question: What is the current-state CMS, and is coexistence in scope?
+  detail: The document offers current-state technical specifications and a site index "for reference", and marks migration tooling (CMS-30) as demo-only. Is any coexistence or content migration expected during the pilot, or purely greenfield pages?
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q12
+  group: scope
+  question: Are CMS-22, CMS-23 and CMS-24 in the pilot?
+  detail: All three are marked "Yes", their How column argues the opposite, and all three Pass Results read "To be confirmed". Given UC2 uses images and video, I'd propose scoping them to UC2 and writing pass criteria accordingly — confirm.
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q13
+  group: scope
+  question: Is CMS-27 intentionally excluded?
+  detail: The list is described as 46 capabilities numbered CMS-01 through CMS-47. CMS-27 doesn't appear anywhere in the document. Deliberate, or an omission?
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q14
+  group: scope
+  question: What counts as evidence when nothing is rendered?
+  detail: No email is sent and no CRM/VMC view is built, yet CMS-06 is scored on "renders with the same wording", CMS-18 on RTL layout, and CMS-39 on a send/render event. What is the agreed artifact — a payload diff, an SFMC preview or seed send to an internal list, a static render harness?
+  why: Worth agreeing in writing. "Pattern matching" means different things to a content lead and to an engineer, and this is where a pass/fail argument would happen.
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q15
+  group: scope
+  question: Who builds the feedback loop?
+  detail: CMS-39, CMS-40 and CMS-41 are all marked in scope, but the flow description says reporting "is a separate detail we're not solving in this document" and the parameters rule out NBA development. Who builds and validates it, and against what?
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q16
+  group: inputs
+  question: Can we have the Travel Corridors payload spec and a sample?
+  detail: CMS-46 requires the real payload, not a stub, while the parameters allow "minor tweaks" with no NBA development. Who makes the tweaks? Is there a sandbox endpoint, or will this be a static payload file?
+  owner: EG / NBA
+  status: open
+  confirmedByEG: false
+- id: Q17
+  group: inputs
+  question: How many variants, exactly?
+  detail: "\"Multiple\" and \"enough real options that NBA is actually choosing between something\" won't size the work. How many opportunity types × NBS segments × tone values — and separately, how many channel renderings per variant, since channel multiplies authoring and review volume without adding a selection dimension? Who authors the EN-US source copy and the tone guidelines?"
+  owner: EG content
+  status: open
+  confirmedByEG: false
+- id: Q18
+  group: inputs
+  question: Why do the two locale sets differ?
+  detail: UC1 uses EN-US, Arabic, Thai, German and Japanese; UC2 uses EN-US, German, French, Japanese and Swedish. Intentional, or should one set align to the other? Is RTL relevant to the web pages too?
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q19
+  group: inputs
+  question: Contentful, Babel Prime, or both — and who builds the connector?
+  detail: 'The document raises this itself. Extending it: does Babel Prime expose an API or a supported connector, and if the answer is "a mix", who owns building and maintaining that integration during the pilot?'
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q20
+  group: inputs
+  question: Who owns the data contract, and by when?
+  detail: "Which SFMC and CRM/VMC identifiers tie a send or a view back to the same partner, who signs the contract, and what is the date? Also: are there masking rules for partner identifiers in a non-production pilot?"
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q21
+  group: inputs
+  question: Which EG people are available, and for how long?
+  detail: "Several pass criteria can only be met by EG staff: an author for the no-developer-involvement test, a Market Manager or CRM owner for the ingest mapping, an SFMC engineer, and a native reviewer per locale for the sentence-composition sign-off."
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q22
+  group: inputs
+  question: Is the SFMC future-state environment ready within the pilot window?
+  detail: The document is explicit that this pilots against future-state SFMC rather than Marketo. Is that instance provisioned and accessible, and has outbound connectivity to Contentful cleared security review?
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q23
+  group: commercial
+  question: Which Contentful tier and add-ons are assumed?
+  detail: Several requested capabilities sit outside a base platform entitlement — scheduled publishing, workflows and tasks, multiple environments, SSO and RBAC, and in particular variant dimensions on an entry (CMS-31) and audience mapping (CMS-37), which are typically delivered by Contentful's personalisation product rather than core entries. What is licensed for the pilot?
+  why: If personalisation isn't licensed, CMS-31 gets modelled by hand and the variant-explosion concern in CMS-45 becomes real during the pilot rather than after it.
+  owner: EG procurement
+  status: open
+  confirmedByEG: false
+- id: Q24
+  group: commercial
+  question: Is this a comparative evaluation against other CMS vendors?
+  detail: The 46-capability list is described as "Expedia's consolidated CMS list". If other vendors are being assessed against it, are the pass criteria and evidence formats identical across vendors, and who scores?
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q25
+  group: commercial
+  question: What is the timeline and the definition of done?
+  detail: Start, end, readout date, who signs pass or fail, and what happens to the pass criteria currently marked "to be confirmed" or "to be defined".
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q26
+  group: commercial
+  question: How is a demo-only capability weighted against a built one?
+  detail: Roughly nineteen capabilities are assessed by demo or documentation. Do they score the same as capabilities proven in the build, and is a "documented but unproven" answer a pass?
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: DQ-1
+  group: uc1-design
+  question: Send size and window for a large send
+  status: open
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: open
+- id: DQ-2
+  group: uc1-design
+  question: Engagement rate and peak concurrency after a send
+  status: open
+  position: 10–20% engagement modelled
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: open
+- id: DQ-3
+  group: uc1-design
+  question: Latency SLO for render and for the send-time call
+  status: open
+  position: p99 under 100ms from the resolver
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: open
+- id: DQ-4
+  group: uc1-design
+  question: Is send-time fetch a production requirement?
+  status: assumed
+  position: yes
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: open
+- id: DQ-5
+  group: uc1-design
+  question: Confirm fail-open for email and web, fail-closed for CRM
+  status: assumed
+  position: as specified
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: open
+- id: DQ-6
+  group: uc1-design
+  question: How long may the service serve stale content?
+  status: assumed
+  position: indefinitely, with alerting
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: open
+- id: DQ-7
+  group: uc1-design
+  question: Is partner web authenticated?
+  status: assumed
+  position: yes
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: open
+- id: DQ-8
+  group: uc1-design
+  question: Decision lookup or precomputed decisions for pull surfaces?
+  status: open
+  position: precomputed
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: open
+- id: DQ-9
+  group: uc1-design
+  question: Who operates and supports the Content Resolution API?
+  status: open
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: open
+- id: DQ-10
+  group: uc1-design
+  question: Where is the service hosted, and is it internet-facing?
+  status: assumed
+  position: EG infra, internal-only
+  confirmedByEG: false
+  idea: uc1-solution-architecture
+  section: open
