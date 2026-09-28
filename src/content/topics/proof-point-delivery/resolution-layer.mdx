@@ -1,0 +1,51 @@
+  <div data-origin="uc1:position:4" class="decide risk">
+    <h4><span class="stamp">new</span>A thin resolution service sits between Contentful and the channels</h4>
+    <p>Channels do not call the Contentful delivery API directly. A small stateless service — the <strong>Content Resolution API</strong> — parses the reference, serves an immutable published snapshot, applies and <em>reports</em> translation fallback, composes the message, and shapes the channel payload.</p>
+    <p>This is the one net-new component in the design, and it needs saying plainly: the delivery API alone cannot satisfy three of the stated requirements. It serves only the latest published version, so "exactly the same content" breaks the moment an author republishes mid-campaign. Its locale fallback is silent, so a consumer cannot report on it. And it will not survive a burst of concurrent fetches after a newsletter send without a cache in front of it. If the guarantee is that every channel gets identical content, that guarantee has to be enforced in one place — otherwise the pilot proves consistency of input, not of output.</p>
+  </div>
+
+  <div data-origin="uc1:position:6" class="decide risk">
+    <h4><span class="stamp">deferred</span>Grammatical agreement is out of POC scope, and has to be solved before production</h4>
+    <p>For the POC, copy is plain text with named variables and a straight substitution at resolution time. Authors write one sentence per locale with no syntax beyond the variable itself. Number formatting follows the locale — thousands separators and decimal marks — but nothing in the sentence adapts to the value.</p>
+    <p><strong>What this knowingly leaves broken.</strong> A value of 1 produces "seen 1 times". German and Thai degrade the same way. Arabic is worse: six plural categories, with the noun and any surrounding adjective changing alongside the number, so one sentence cannot be correct across the range. Ordinals and any gendered noun driven by the variable have the same problem.</p>
+    <p><strong>Why it is acceptable here and nowhere else.</strong> The POC tests whether one authored source reaches every channel consistently, translated and versioned. Substitution proves that. But CMS-47 — composing the metric into a grammatically correct, locale-appropriate sentence — is one of the capabilities EG is evaluating, and the one they describe as a capability gain rather than an efficiency gain. Deferring it means that capability is <strong>demonstrated in principle, not proven</strong>, and the readout should say so rather than let it pass unremarked.</p>
+    <p><strong>What full implementation needs.</strong> A plural-aware message format — ICU is the standard and every translation tool already parses it — with authoring that keeps the syntax away from the author: a plain source sentence expanded into plural categories by a generation step, approved once, and stored in the machine-readable form. Two things drive the cost: whether the real parameter types are counts only or also currency, dates and ordinals, and whether Arabic stays in the locale set. Four of the five pilot locales need at most two forms; Arabic alone accounts for most of the work.</p>
+  </div>
+
+<h3>System responsibilities</h3>
+
+<div data-origin="uc1:components:*">
+  <p class="sec-note">Worth being explicit, because three of these five owners are teams the pilot parameters currently exclude from doing development work.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:19%">Component</th><th style="width:34%">Responsibility</th><th>Explicitly not responsible for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Contentful</strong></td><td>Authoring, taxonomy, variants as entries, localisation, approval gates, version history, publish events</td><td>Deciding anything. No audience rules, no conditional logic, no partner data.</td></tr>
+      <tr><td><strong>Content Resolution API</strong></td><td>Reference contract, immutable snapshots, locale fallback and reporting, variable substitution, channel shaping, variant index, caching, and the fallback behaviour set out in <a href="#failure">Failure handling and fallback</a></td><td>Choosing a variant. It answers, it never decides.</td></tr>
+      <tr><td><strong>NBA</strong></td><td>Selecting the variant from the index on segment and tone, filtering by channel availability, emitting the decision payload, consuming served-variant signals</td><td>Knowing how content is stored or modelled, and shaping content per channel. It sees references and tags, nothing else.</td></tr>
+      <tr><td><strong>SFMC</strong></td><td>Receiving the decision, fetching by reference at send time, rendering, emitting the send event</td><td>Holding any content of its own. No local copy, no channel-specific authoring.</td></tr>
+      <tr><td><strong>CRM / VMC</strong></td><td>Fetching by the same reference, rendering the channel payload, emitting the render event</td><td>Same — no separately authored copy anywhere.</td></tr>
+      <tr><td><strong>Partner web</strong></td><td>Reading the current decision for the signed-in partner, fetching by reference with <code>channel=web</code>, rendering</td><td>Deciding anything. It is a fourth consumer of the same API, not a second system.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<h3>Alternatives considered</h3>
+
+  <div data-origin="uc1:alternatives:1" class="decide risk">
+    <h4>Channels calling the delivery API directly, no resolution layer</h4>
+    <p>Fewest moving parts and closest to the source document's description. Not taken, for three reasons: the delivery API serves only the current published version, so version pinning is impossible and a mid-campaign republish silently changes what was sent; locale fallback is silent, so no consumer can report on it; and every channel would have to implement message composition independently, which reintroduces exactly the drift the pilot exists to eliminate.</p>
+    <p>If EG wants the minimal version anyway, it is viable for the CRM and VMC payload comparison — but not for SFMC, and not for anything claiming immutability.</p>
+  </div>
+
+<h3>Risks carried by this design</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
+  <tbody>
+      <tr data-origin="uc1:risks:1"><td><strong>Grammatical agreement deferred out of the POC</strong></td><td>CMS-47 is demonstrated rather than proven, and a value of 1 produces visibly wrong copy in every locale that inflects.</td><td>Use values above 1 in pilot content so the demo isn't undermined by an avoidable artefact, and state the deferral in the readout rather than leaving EG to notice it. Scope the production solution in the same conversation.</td></tr>
+      <tr data-origin="uc1:risks:4"><td><strong>The resolution service reads as scope creep</strong></td><td>EG hears "you want to build middleware for a CMS evaluation".</td><td>Frame it as what it is: the place the consistency and immutability guarantees are enforced, and the reason a send of any size never touches the CMS. Without it, three of the seven validation points cannot pass. <a href="#ownership">The ownership topic</a> names who builds, hosts and supports it, which is usually the real question behind the objection.</td></tr>
+  </tbody>
+</table>
+</div>

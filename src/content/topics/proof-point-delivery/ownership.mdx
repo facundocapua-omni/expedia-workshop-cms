@@ -1,0 +1,27 @@
+<div data-origin="uc1:ownership:*">
+  <p class="sec-note">The design introduces one custom runtime component, which means it introduces something that has to be operated. Naming who does that now is cheaper than discovering it at go-live.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:30%">Responsibility</th><th style="width:20%">Owner</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>Build the Content Resolution API</td><td><strong>Globant</strong></td><td>Including the snapshot store, the variant index feed and the fallback behaviour set out in <a href="#failure">Failure handling and fallback</a></td></tr>
+      <tr><td>Host and run it</td><td><strong>EG</strong></td><td>EG infrastructure. This also decides the cache topology set out in <a href="#performance">Performance at production volume</a> and whether the service is internet-facing</td></tr>
+      <tr><td>Operate and support</td><td><strong>To define</strong></td><td>Globant or EG. The single most consequential open item in this section</td></tr>
+      <tr><td>Alert routing</td><td>Follows support</td><td>Fallback-rate alerts, unknown-reference alerts and staleness alerts all route to whoever holds the pager</td></tr>
+      <tr><td>Content authoring and approval</td><td><strong>EG</strong></td><td>Including the fallback variants</td></tr>
+      <tr><td>Contentful tenancy and entitlements</td><td><strong>EG</strong></td><td>Plan, environments, API tokens</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Until the support owner is named, four things have no home: the service SLA, the on-call rota, the runbook, and the severity definitions that decide whether a rising fallback rate wakes someone at 3am or waits for Monday. None of them is hard to produce — each simply needs an owner first, and the usual failure is to leave the question until the service is already live.</p>
+</div>
+
+<h3>Risks carried by this design</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
+  <tbody>
+      <tr data-origin="uc1:risks:6"><td><strong>Support ownership unresolved at go-live</strong></td><td>A live service with no pager, no runbook and no severity definitions. Fallback rates can rise unnoticed for weeks.</td><td>Settle DQ-9 during design rather than at handover. The build and hosting owners are already named; only support is open.</td></tr>
+  </tbody>
+</table>
+</div>

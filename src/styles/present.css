@@ -8,3 +8,4 @@ html[data-mode="present"] [data-slide][data-current]{min-height:100vh;padding-to
 html[data-mode="present"] header.mast[data-current]{display:flex;flex-direction:column;justify-content:center;border-bottom:0}
 #present-counter{display:none}
 html[data-mode="present"] #present-counter{display:block;position:fixed;right:20px;bottom:16px;z-index:30;font-family:var(--mono);font-size:.8125rem;color:var(--ink-soft);background:var(--card);border:1px solid var(--rule);border-radius:3px;padding:4px 10px}
+html[data-mode="present"] main > p.moved{display:none}

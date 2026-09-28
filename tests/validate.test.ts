@@ -37,12 +37,13 @@ describe('findProblems: every source loaded something', () => {
     expect(findProblems(data)).toContain('no UC2 questions loaded from model/uc2-matrix.json');
   });
   it('reports every other empty source', () => {
-    const problems = findProblems(siteData({ decisions: [], contentTypes: [], inventory: [], ideas: [] }));
+    const problems = findProblems(siteData({ decisions: [], contentTypes: [], inventory: [], ideas: [], sessions: [] }));
     expect(problems).toEqual(expect.arrayContaining([
       'no decisions loaded from decisions/',
       'no content types loaded from model/uc2-matrix.json',
       'no components loaded from sources/component-inventory.md',
       'no ideas loaded from src/content/ideas/',
+      'no sessions loaded from src/content/sessions/',
     ]));
   });
 });

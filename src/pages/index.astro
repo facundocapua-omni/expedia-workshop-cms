@@ -3,8 +3,10 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { loadSiteData } from '../lib/data';
 import { computeFacts, interpolateFacts } from '../lib/facts';
+import { stillOpen } from '../lib/sessions';
 
-const facts = computeFacts(await loadSiteData());
+const data = await loadSiteData();
+const facts = computeFacts(data);
 const ideas = (await getCollection('ideas')).sort((a, b) => a.data.order - b.data.order);
 ---
 <Base title="EG CMS pilot — workshop" kind="home">
@@ -12,10 +14,23 @@ const ideas = (await getCollection('ideas')).sort((a, b) => a.data.order - b.dat
     <header class="mast">
       <p class="kicker">Expedia Group · Contentful · Globant</p>
       <h1>CMS pilot workshop</h1>
-      <p class="lede">The design proposals for the Contentful pilot, and the questions the pilot needs answered. Press <kbd>P</kbd> on any page to present it, and <kbd>/</kbd> to search.</p>
+      <p class="lede">The workshop sessions, the design material behind them, and the questions the pilot needs answered. Press <kbd>P</kbd> on any page to present it, and <kbd>/</kbd> to search.</p>
     </header>
     <main>
-      <h2 class="home-h">Ideas</h2>
+      <h2 class="home-h">Sessions</h2>
+      <div class="cards">
+        {data.sessions.map((s) => {
+          const open = stillOpen(s, data.questions);
+          return (
+            <a class="card session" href={`/sessions/${s.slug}/`}>
+              <p class="kicker">Session {s.order} · {s.track}</p>
+              <h3>{s.title}</h3>
+              <p>Owner: {s.owner} · {s.topics.length} topics · {open.toConfirm.length + open.toDecide.length} to settle</p>
+            </a>
+          );
+        })}
+      </div>
+      <h2 class="home-h">Reference material</h2>
       <div class="cards">
         {ideas.map((idea) => (
           <a class="card" href={`/ideas/${idea.id}/`}>

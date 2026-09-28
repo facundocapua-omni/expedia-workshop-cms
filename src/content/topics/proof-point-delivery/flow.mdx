@@ -1,0 +1,34 @@
+import uc1Fragment4 from '../../fragments/uc1-4.html?raw';
+import uc1Fragment5 from '../../fragments/uc1-5.html?raw';
+
+<div data-origin="uc1:consumption:*">
+  <p class="sec-note">Nine interactions. Two of them — the variant index and the served-variant signal — are not in the source document's flow, and the pattern does not work without them.</p>
+
+  <div class="legend"><span><span class="sw sw1"></span>Content platform</span> <span><span class="sw sw3"></span>Resolution layer</span> <span><span class="sw sw2"></span>Decisioning</span> <span><span class="sw sw4"></span>Channels</span></div>
+
+  <div class="fig">
+    <Fragment set:html={uc1Fragment4} />
+  </div>
+  <p class="cap">Figure 3 — Consumption flow. Solid arrows are synchronous requests; dashed are asynchronous.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:5%">#</th><th style="width:18%">From → To</th><th style="width:29%">Request</th><th>What moves, and why it matters</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td>Contentful → Resolver</td><td class="ref">webhook Entry.publish</td><td>Triggers a snapshot per variant + version + locale + channel, and refreshes the variant index. Asynchronous, so nothing on the read path depends on it completing.</td></tr>
+      <tr><td class="n">2</td><td>Resolver → Contentful</td><td class="ref">GET /entries/\{id\}?locale=*</td><td>Pulls the full localised entry with its channel renderings. Happens on publish and on cold miss only — never on the per-send path.</td></tr>
+      <tr><td class="n">3</td><td>Resolver → NBA</td><td class="ref">GET /index/variants</td><td>The catalogue NBA chooses from: variantRef, segments, tone, channels available, locales translated, current version. <strong>Not in the source flow.</strong> Without it NBA is selecting blind.</td></tr>
+      <tr><td class="n">4</td><td>NBA → SFMC</td><td class="ref">journey event / DE row</td><td>The decision payload: reference, partner, locale, parameters. No channel — SFMC knows it is email. The same payload reaches every channel, and that sameness is what makes the consistency claim testable.</td></tr>
+      <tr><td class="n">5</td><td>SFMC → Resolver</td><td class="ref">GET /v1/content/\{ref\}<br />?locale&amp;channel&amp;params</td><td>Fetch at send time, initiated by the channel. Single call, static bearer token, no SDK — deliberately shaped for what an email platform can actually do inside a send.</td></tr>
+      <tr><td class="n">6</td><td>Resolver → SFMC</td><td class="ref">200 resolved payload</td><td>Composed copy plus <code>localeServed</code>, <code>fallbackApplied</code>, <code>version</code> and <code>consistencyKey</code>. The metadata is as important as the copy: it is what every traceability and fallback criterion is scored on.</td></tr>
+      <tr><td class="n">7</td><td>VMC → Resolver</td><td class="ref">same ref, channel=vmc</td><td>Partner clicks through from the email. Same reference, same version, different rendering — matching <code>consistencyKey</code> is the proof.</td></tr>
+      <tr><td class="n">8</td><td>CRM → Resolver</td><td class="ref">same ref, channel=crm</td><td>Market Manager opens the record the next day. Version pinning is what makes this return yesterday's copy rather than whatever was published since.</td></tr>
+      <tr><td class="n">9</td><td>Channels → NBA</td><td class="ref">served-variant event</td><td>What was actually served, per partner. <strong>Not in the source flow</strong> and explicitly deferred there — but without it the decision loop never closes and three capability rows cannot pass.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>The resolved payload</h3>
+  <Fragment set:html={uc1Fragment5} />
+  <p>Returning the template alongside the substituted string costs nothing and makes every substitution failure debuggable after the fact. The <code>consistencyKey</code> is what turns "the same content everywhere" from a visual judgement into an assertion a test can make.</p>
+</div>

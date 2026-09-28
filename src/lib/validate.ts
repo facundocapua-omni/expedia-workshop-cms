@@ -22,6 +22,7 @@ export function findProblems(data: SiteData): string[] {
     [data.contentTypes.length === 0, 'no content types loaded from model/uc2-matrix.json'],
     [data.inventory.length === 0, 'no components loaded from sources/component-inventory.md'],
     [data.ideas.length === 0, 'no ideas loaded from src/content/ideas/'],
+    [data.sessions.length === 0, 'no sessions loaded from src/content/sessions/'],
   ];
   for (const [isEmpty, message] of empty) if (isEmpty) problems.push(message);
 

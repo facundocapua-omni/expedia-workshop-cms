@@ -1,0 +1,46 @@
+title: Cross-channel proof point delivery and the Content Resolution API
+short: Delivery
+track: Cross-channel proof points
+owner: Globant, Contentful and Salesforce
+order: 1
+outcomes:
+  - Target delivery pattern agreed in principle
+  - Custom build elements and their ownership identified
+  - Latency and volume assumptions documented for validation
+  - Questions for NBA Engineering logged
+topics:
+  - agenda: "End to end flow: NBA decision, notification to the channel, channel retrieves the proof point by reference"
+    id: flow
+    nav: End-to-end flow
+  - agenda: "The proposed resolution layer: what Contentful provides natively, what needs configuration, and what would be custom build"
+    id: resolution-layer
+    nav: Resolution layer
+    settles: [Q5]
+    decisions: [D-04, D-06]
+  - agenda: "Ownership of any custom layer: who builds, hosts and supports it"
+    id: ownership
+    nav: Build, host, support
+    settles: [DQ-9, DQ-10]
+    decisions: [D-09]
+  - agenda: How SFMC retrieves content at send time
+    id: sfmc
+    nav: SFMC at send time
+    settles: [Q6, Q22, DQ-4]
+  - agenda: Performance at production volume, including the burst of requests after a large send
+    id: performance
+    nav: Performance at volume
+    settles: [DQ-1, DQ-2, DQ-3]
+  - agenda: Failure handling and fallback
+    id: failure
+    nav: Failure and fallback
+    settles: [DQ-5, DQ-6]
+    decisions: [D-08]
+  - agenda: Whether the same pattern serves partner web and VMC
+    id: surfaces
+    nav: Partner web and VMC
+    settles: [DQ-7, DQ-8]
+    decisions: [D-07]
+  - agenda: Reference implementations of this pattern
+    id: reference-implementations
+    nav: Reference implementations
+    prompt: true

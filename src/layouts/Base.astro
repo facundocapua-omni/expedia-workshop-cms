@@ -17,7 +17,7 @@ import { buildRegistry, registryToJSON } from '../lib/registry';
 interface Props {
   title: string;
   description?: string;
-  kind: 'home' | 'idea' | 'agenda' | 'register';
+  kind: 'home' | 'idea' | 'agenda' | 'register' | 'session';
 }
 const { title, description, kind } = Astro.props;
 const data = await loadSiteData();
@@ -26,6 +26,7 @@ const registryJson = JSON.stringify(registryToJSON(buildRegistry(data))).replace
 const path = Astro.url.pathname;
 const current = (href: string) => (path === href ? 'page' : undefined);
 const links = [
+  ...data.sessions.map((s) => ({ href: `/sessions/${s.slug}/`, label: s.short })),
   ...data.ideas.map((i) => ({ href: `/ideas/${i.slug}/`, label: i.short })),
   { href: '/decide/', label: 'Decide' },
   { href: '/registers/questions/', label: 'Questions' },

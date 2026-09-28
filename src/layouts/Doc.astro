@@ -6,22 +6,30 @@ import { computeFacts, interpolateFacts } from '../lib/facts';
 interface Props {
   title: string;
   kicker: string;
-  lede: string;
+  lede?: string;
   meta?: string[];
-  kind: 'idea' | 'agenda' | 'register';
+  /** A session's expected outcomes, shown in the masthead. */
+  outcomes?: string[];
+  kind: 'idea' | 'agenda' | 'register' | 'session';
 }
-const { title, kicker, kind } = Astro.props;
+const { title, kicker, kind, outcomes = [] } = Astro.props;
 const facts = computeFacts(await loadSiteData());
-const lede = interpolateFacts(Astro.props.lede, facts);
+const lede = Astro.props.lede ? interpolateFacts(Astro.props.lede, facts) : undefined;
 const meta = (Astro.props.meta ?? []).map((m) => interpolateFacts(m, facts));
 ---
-<Base title={title} description={lede} kind={kind}>
+<Base title={title} description={lede ?? title} kind={kind}>
   <div class="wrap">
     <header class="mast" data-slide>
       <p class="kicker">{kicker}</p>
       <h1>{title}</h1>
-      <p class="lede">{lede}</p>
+      {lede && <p class="lede">{lede}</p>}
       {meta.length > 0 && <p class="meta">{meta.map((m) => <span>{m}</span>)}</p>}
+      {outcomes.length > 0 && (
+        <div class="outcomes">
+          <p class="label">Expected outcomes</p>
+          <ul>{outcomes.map((o) => <li>{o}</li>)}</ul>
+        </div>
+      )}
     </header>
     <div class="cols">
       <nav class="index" aria-label="Contents" data-index></nav>

@@ -1,0 +1,37 @@
+<div data-origin="uc1:failure:*">
+  <p class="sec-note">Two rules underpin the rest. Fallback copy is content, authored and approved like any other content — never a string in the resolver. And the behaviour when content cannot be resolved differs by surface, because the cost of being wrong differs by surface.</p>
+
+  <h3>Policy per surface</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:17%">Surface</th><th style="width:16%">Policy</th><th>Behaviour and reasoning</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SFMC email</strong></td><td>Fail open</td><td>Send proceeds with the approved fallback variant. A send cannot be recalled, so halting it to protect one module costs more than the module is worth — but the copy that goes out must still be copy someone approved</td></tr>
+      <tr><td><strong>VMC / partner web</strong></td><td>Fail open</td><td>Page renders with the fallback variant. A visible page with generic copy beats a broken region</td></tr>
+      <tr><td><strong>Salesforce CRM</strong></td><td>Fail closed</td><td>The module shows nothing. A Market Manager acting on wrong or generic information in front of a partner is worse than having no prompt at all — this is the one surface where absence is safer than approximation</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The split is deliberate and worth confirming with EG rather than assuming: it says an internal user is trusted to notice an empty panel, and a partner is not expected to notice generic copy.</p>
+
+  <h3>Fallback content is authored, not hardcoded</h3>
+  <p>A fallback variant exists per opportunity type, carrying no parameters and making no partner-specific claim. It goes through the same authoring, translation and approval path as everything else, which means it is reviewable, localised into all five locales, and versioned. Copy embedded in the resolver would be none of those things, and it would be the one piece of partner-facing English nobody ever reviews.</p>
+
+  <h3>Failure modes</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:26%">Failure</th><th style="width:30%">Behaviour</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>Contentful unavailable</td><td>Serve from the snapshot store as normal; queue publishes</td><td>No request-path dependency on Contentful, so an outage is invisible to every surface until someone tries to publish</td></tr>
+      <tr><td>Snapshot store cold miss</td><td>Read through to the delivery API; on failure, fallback variant</td><td>Only possible before the first publish webhook has been processed</td></tr>
+      <tr><td>Unknown content reference</td><td>Fallback variant, and alert</td><td>Indicates a decisioning or data-contract defect, not a content one — it should be noisy</td></tr>
+      <tr><td>Variant unpublished after the send</td><td>Serve the pinned snapshot</td><td>The reference names a version, and a published version is immutable. Serving it is what makes the service stateless; the partner already received that message and the CRM view exists to continue that conversation</td></tr>
+      <tr><td>Missing translation</td><td>Serve source locale, <code>fallbackApplied: true</code></td><td>Already in the design — reported rather than silent</td></tr>
+      <tr><td>Missing or malformed parameters</td><td>Fallback variant</td><td>A template with unfilled placeholders reaching a partner is worse than generic copy. Never render a half-substituted sentence</td></tr>
+      <tr><td>Resolver timeout</td><td>Per the surface policy above</td><td>Email and web take the fallback, CRM omits the module</td></tr>
+      <tr><td>Prolonged Contentful outage</td><td>Serve known-stale content and alert</td><td>Stale correct copy beats no copy. How long that may continue before the service stops is for EG to bound</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The service holds no per-request state and has no side effects, so every one of these is safe to retry. That is a deliberate property, not a convenience: it is what allows a channel to retry a failed fetch without any risk of a partner receiving two different messages for the same decision.</p>
+</div>

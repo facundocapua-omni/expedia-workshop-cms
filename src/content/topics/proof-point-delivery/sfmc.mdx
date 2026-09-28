@@ -1,0 +1,11 @@
+<p class="sec-note">The send-time fetch is interactions 5 and 6 of the <a href="#flow">consumption flow</a>.</p>
+
+<h3>Risks carried by this design</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
+  <tbody>
+      <tr data-origin="uc1:risks:2"><td><strong>SFMC cannot make a per-recipient call at send time</strong></td><td>The headline pattern — fetch by ID at send — is unprovable in its stated form.</td><td>Prove the pattern on a seed send, and design the production path as pre-send hydration of a data extension. Decide this before build, not after the first failed send.</td></tr>
+  </tbody>
+</table>
+</div>

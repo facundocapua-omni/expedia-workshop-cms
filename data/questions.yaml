@@ -218,76 +218,56 @@
   question: Send size and window for a large send
   status: open
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: open
 - id: DQ-2
   group: uc1-design
   question: Engagement rate and peak concurrency after a send
   status: open
   position: 10–20% engagement modelled
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: open
 - id: DQ-3
   group: uc1-design
   question: Latency SLO for render and for the send-time call
   status: open
   position: p99 under 100ms from the resolver
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: open
 - id: DQ-4
   group: uc1-design
   question: Is send-time fetch a production requirement?
   status: assumed
   position: yes
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: open
 - id: DQ-5
   group: uc1-design
   question: Confirm fail-open for email and web, fail-closed for CRM
   status: assumed
   position: as specified
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: open
 - id: DQ-6
   group: uc1-design
   question: How long may the service serve stale content?
   status: assumed
   position: indefinitely, with alerting
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: open
 - id: DQ-7
   group: uc1-design
   question: Is partner web authenticated?
   status: assumed
   position: yes
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: open
 - id: DQ-8
   group: uc1-design
   question: Decision lookup or precomputed decisions for pull surfaces?
   status: open
   position: precomputed
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: open
 - id: DQ-9
   group: uc1-design
   question: Who operates and supports the Content Resolution API?
   status: open
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: open
 - id: DQ-10
   group: uc1-design
   question: Where is the service hosted, and is it internet-facing?
   status: assumed
   position: EG infra, internal-only
   confirmedByEG: false
-  idea: uc1-solution-architecture
-  section: open

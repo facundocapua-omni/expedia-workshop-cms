@@ -1,0 +1,33 @@
+<div data-origin="uc1:surfaces:*">
+  <p class="sec-note">Partner web and VMC are different surfaces, and web is treated as one more channel rather than a special case. Every surface fetches through the same resolution API — that is what keeps the consistency claim true as surfaces are added.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:17%">Surface</th><th style="width:10%">channel</th><th style="width:10%">Audience</th><th style="width:12%">Decision arrives</th><th style="width:11%">In pilot</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SFMC email</strong></td><td class="ref">email</td><td>partner</td><td>pushed</td><td>Yes — live fetch</td><td>The only surface where the fetch happens inside someone else's time budget</td></tr>
+      <tr><td><strong>Salesforce CRM</strong></td><td class="ref">crm</td><td>internal</td><td>pushed</td><td>Payload only</td><td>Briefs a Market Manager on what the partner saw; never addresses the partner</td></tr>
+      <tr><td><strong>VMC</strong></td><td class="ref">vmc</td><td>partner</td><td>pulled</td><td>Payload only</td><td>Partner console — opportunity card</td></tr>
+      <tr><td><strong>Partner web</strong></td><td class="ref">web</td><td>partner</td><td>pulled</td><td>No — pattern extends</td><td>Authenticated, so the page knows which partner is viewing. Assumed, to confirm</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Push and pull are the real difference, not the surface</h3>
+  <p>Email and CRM have a decision pushed to them: NBA decides, and the content reference travels with the send or the record. The pull surfaces have no such moment. A partner opens VMC or a web page at an arbitrary time, and something has to answer <em>what is the current decision for this partner, right now</em>.</p>
+  <p>Two ways to answer it. NBA exposes a decision lookup the surface calls on page load, or decisions are precomputed per partner and stored for the surfaces to read on NBA's own cadence. The second is materially cheaper and does not put a decisioning engine in a page-render path; the first is fresher. This is a question for EG and it is the one architectural difference between the push and pull surfaces — everything downstream of the decision is identical.</p>
+
+  <h3>One resolver, every surface — including UC2</h3>
+  <p>The Next.js partner-web application built for Use Case 2 consumes this same Content Resolution API. That has a consequence worth stating plainly rather than discovering during the UC2 build: <strong>UC2's content model needs a proof-point block it does not have today</strong>, and the two workstreams stop being independent at that point. The block itself is small — a reference to a content reference plus a placement — but the dependency is real and it should appear on both plans.</p>
+  <p>The upside is the reason for doing it: a fourth surface costs one channel rendering per variant and a client that speaks the same API. It costs nothing in the content model, nothing in the decisioning, and nothing in the consistency guarantee, because all three already treat channel as a parameter rather than a dimension.</p>
+</div>
+
+<h3>Risks carried by this design</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
+  <tbody>
+      <tr data-origin="uc1:risks:7"><td><strong>UC2 coupling discovered late</strong></td><td>Partner web consumes the same resolver, so UC2's content model needs a proof-point block it does not have. Found during the UC2 build, it is rework on both sides.</td><td>Add the block to the UC2 model now and put the dependency on both plans.</td></tr>
+  </tbody>
+</table>
+</div>

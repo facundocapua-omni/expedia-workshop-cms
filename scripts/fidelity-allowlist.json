@@ -12,25 +12,25 @@
     "reason": "The backlog is no longer on the site (migration discrepancy 2, owner decision 2026-09-28)"
   },
   {
-    "origin": "uc1:alternatives:*",
+    "origin": "uc1:alternatives:1",
     "from": "Rejected on three counts:",
     "to": "Not taken, for three reasons:",
     "reason": "Terminology rule: \"Rejected\" reads as correcting earlier work (final review finding 5, owner decision 2026-09-28: \"Not taken\")"
   },
   {
-    "origin": "uc1:alternatives:*",
+    "origin": "uc1:alternatives:2",
     "from": "Rejected: it puts partner data",
     "to": "Not taken: it puts partner data",
     "reason": "Terminology rule: \"Rejected\" reads as correcting earlier work (final review finding 5, owner decision 2026-09-28: \"Not taken\")"
   },
   {
-    "origin": "uc1:alternatives:*",
+    "origin": "uc1:alternatives:3",
     "from": "Rejected because it contradicts",
     "to": "Not taken because it contradicts",
     "reason": "Terminology rule: \"Rejected\" reads as correcting earlier work (final review finding 5, owner decision 2026-09-28: \"Not taken\")"
   },
   {
-    "origin": "uc1:alternatives:*",
+    "origin": "uc1:alternatives:4",
     "from": "Rejected: an opaque token",
     "to": "Not taken: an opaque token",
     "reason": "Terminology rule: \"Rejected\" reads as correcting earlier work (final review finding 5, owner decision 2026-09-28: \"Not taken\")"
@@ -40,5 +40,59 @@
     "from": "additional to the twenty-seven in the pilot scoping document.",
     "to": "additional to the twenty-seven raised with EG (Q1–Q26, Q6b).",
     "reason": "The scoping document is not on the site (final review finding 10, owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:position:1",
+    "from": "See the deferred-scope note below",
+    "to": "See the deferred-scope note in Session 1",
+    "reason": "The deferred-scope note moved to the resolution-layer topic of Session 1"
+  },
+  {
+    "origin": "uc1:components:*",
+    "from": "and the fallback behaviour of section 09",
+    "to": "and the fallback behaviour set out in Failure handling and fallback",
+    "reason": "Section numbers are gone: the section is now a topic of Session 1"
+  },
+  {
+    "origin": "uc1:ownership:*",
+    "from": "the fallback behaviour above",
+    "to": "the fallback behaviour set out in Failure handling and fallback",
+    "reason": "Section numbers are gone: the section is now a topic of Session 1"
+  },
+  {
+    "origin": "uc1:ownership:*",
+    "from": "the cache topology in section 08",
+    "to": "the cache topology set out in Performance at production volume",
+    "reason": "Section numbers are gone: the section is now a topic of Session 1"
+  },
+  {
+    "origin": "uc1:risks:4",
+    "from": "Section 10 names who builds",
+    "to": "The ownership topic names who builds",
+    "reason": "Section numbers are gone: the section is now a topic of Session 1"
+  },
+  {
+    "origin": "uc1:open:*",
+    "from": "arising from the production concerns above",
+    "to": "arising from the production concerns in Session 1",
+    "reason": "Section numbers are gone: the section is now a topic of Session 1"
+  },
+  {
+    "origin": "uc1:open:*",
+    "from": "None — estimates in section 08 are",
+    "to": "None — the estimates in Performance at production volume are",
+    "reason": "Section numbers are gone: the section is now a topic of Session 1"
+  },
+  {
+    "origin": "uc1:open:*",
+    "from": "As specified in section 09",
+    "to": "As specified in Failure handling and fallback",
+    "reason": "Section numbers are gone: the section is now a topic of Session 1"
+  },
+  {
+    "origin": "uc1:open:*",
+    "from": "Decides the cache topology in section 08",
+    "to": "Decides the cache topology set out in Performance at production volume",
+    "reason": "Section numbers are gone: the section is now a topic of Session 1"
   }
 ]

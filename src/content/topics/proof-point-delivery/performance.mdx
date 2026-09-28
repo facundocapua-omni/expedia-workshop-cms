@@ -1,0 +1,40 @@
+<div data-origin="uc1:performance:*">
+  <p class="sec-note">The numbers below are engineering estimates of what the proposed design can absorb. EG's real send volumes, click-through rates and latency targets are open questions; until they arrive, these establish the order of magnitude rather than a commitment.</p>
+
+  <div class="decide">
+    <h4>Why the burst is a caching problem and not a CMS problem</h4>
+    <p>The number of <strong>distinct resolved payloads</strong> is variants × locales × channels × live versions — hundreds in the pilot, low hundreds of thousands at full production scale. It is not a function of the partner base. The only per-partner element is the parameter values, which arrive with the request and are substituted on the way out.</p>
+    <p>So the content is near-perfectly cacheable, the working set fits in memory on a single node, and a send of any size generates reads against a cache rather than against Contentful. The delivery API is read on publish, never on request.</p>
+  </div>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:38%">Quantity</th><th style="width:22%">Estimate</th><th>Basis</th></tr></thead>
+    <tbody>
+      <tr><td>Distinct resolved payloads, production</td><td class="ref">~200,000</td><td>variants × locales × channels × live versions</td></tr>
+      <tr><td>Working set held in memory</td><td class="ref">~400 MB</td><td>at roughly 2 KB per payload — a single node holds all of it</td></tr>
+      <tr><td>Cache hit rate</td><td class="ref">&gt;99%</td><td>content is not per-partner; only parameters vary</td></tr>
+      <tr><td>Sustained throughput, one resolver instance</td><td class="ref">~5,000–10,000 req/s</td><td>hot set in memory, no external call on the request path</td></tr>
+      <tr><td>Burst: 1M send, 10% engagement over an hour</td><td class="ref">~30 req/s average<br />~300 req/s peak</td><td>100,000 fetches — roughly 3% of one instance</td></tr>
+      <tr><td>Burst: 1M send, 20% engagement in ten minutes</td><td class="ref">~330 req/s average<br />~1,000 req/s peak</td><td>200,000 fetches — still inside one instance</td></tr>
+      <tr><td>Contentful reads during a send</td><td class="ref">0</td><td>publish-time only</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The headline: even the aggressive burst case sits an order of magnitude below what a single instance handles, and the service is stateless so it scales horizontally anyway. The constraint that actually binds is the delivery API's published rate limits — which is precisely why it is kept off the request path.</p>
+
+  <h3>Where the cache sits is a hosting decision, not a design one</h3>
+  <p>The snapshot store is already an immutable key-value store addressed by variant, version, locale and channel. That makes it the primary read path and the cache at the same time — there is no separate cache to invalidate, because a published version never changes.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:22%">Option</th><th style="width:30%">Where it fits</th><th>Trade</th></tr></thead>
+    <tbody>
+      <tr><td><strong>In-process memory</strong></td><td>Inside every resolver instance</td><td>Sub-millisecond on the hot set. Sized by the working set above, so it holds everything</td></tr>
+      <tr><td><strong>Redis or a shared KV store</strong></td><td>Behind the instances, as the snapshot store</td><td>Survives restarts and deployments; one source of truth across instances. <em>Recommended as the primary read path</em></td></tr>
+      <tr><td><strong>nginx reverse proxy</strong></td><td>In front, inside EG's network</td><td>Right answer when the resolver is internal-only and SFMC calls it from inside the perimeter</td></tr>
+      <tr><td><strong>CDN</strong></td><td>In front of internet-facing pull surfaces</td><td>Only earns its place for surfaces reachable from the public internet</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Recommendation: Redis as the snapshot store and primary read path, with an in-process cache for the hot set. Whether nginx or a CDN sits in front depends on where EG hosts the service and which surfaces are public — a topology decision that belongs with the hosting owner.</p>
+</div>

@@ -1,5 +1,5 @@
 // Every internal link in dist/ must reach a page that exists and, when it has a fragment,
-// an element with that id on that page. Run after `pnpm build`.
+// an element with that id on that page, and no page may use an id twice. Run after `pnpm build`.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fromHtml } from 'hast-util-from-html';
@@ -15,13 +15,18 @@ function* walk(dir) {
 }
 const pages = new Map();
 const links = [];
+let broken = 0;
 for (const file of walk(DIST)) {
   const url = `/${path.relative(DIST, file).split(path.sep).join('/').replace(/index\.html$/, '')}`;
   const tree = fromHtml(fs.readFileSync(file, 'utf8'));
-  pages.set(url, new Set(selectAll('[id]', tree).map((e) => String(e.properties.id))));
+  const ids = selectAll('[id]', tree).map((e) => String(e.properties.id));
+  for (const id of new Set(ids.filter((x, i) => ids.indexOf(x) !== i))) {
+    broken += 1;
+    console.error(`✗ ${url}: id "${id}" is used more than once`);
+  }
+  pages.set(url, new Set(ids));
   for (const a of selectAll('a[href]', tree)) links.push({ from: url, href: String(a.properties.href) });
 }
-let broken = 0;
 for (const { from, href } of links) {
   if (/^[a-z][a-z0-9+.-]*:/i.test(href)) continue; // external
   const [pathname, hash] = href.split('#');
