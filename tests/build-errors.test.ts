@@ -2,7 +2,7 @@
 // Unit tests cover the helpers; these prove the build itself refuses bad data, which is
 // what protects the post-workshop "edit the data, run pnpm build" flow.
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -58,5 +58,26 @@ describe('the build refuses bad data (Review Focus 4)', { timeout: 120_000 }, ()
     const { status, output } = buildWith(() => edit('data/questions.yaml', '- id: Q4\n', '- id: Q4\n  idea: uc1-solution-architecture\n  section: nowhere\n'));
     expect(status).not.toBe(0);
     expect(output).toContain('no #nowhere');
+  });
+  it('fails when a session settles a question that does not exist', () => {
+    const { status, output } = buildWith(() => edit('src/content/sessions/proof-point-delivery.yaml', 'settles: [Q6, Q22, DQ-4]', 'settles: [Q6, Q99, DQ-4]'));
+    expect(status).not.toBe(0);
+    expect(output).toContain('proof-point-delivery/sfmc: settles unknown question Q99');
+  });
+
+  it('fails on a YAML syntax error in a session file, naming the file', () => {
+    const { status, output } = buildWith(() => edit('src/content/sessions/nba-hand-off.yaml', 'order: 2', 'order: [2'));
+    expect(status).not.toBe(0);
+    expect(output).toContain('nba-hand-off.yaml');
+  });
+
+  it('fails when a topic file does not match its topic id', () => {
+    const { status, output } = buildWith(() => {
+      const topics = path.join(dir!, 'src/content/topics/proof-point-delivery');
+      renameSync(path.join(topics, 'failure.mdx'), path.join(topics, 'fallback.mdx'));
+    });
+    expect(status).not.toBe(0);
+    expect(output).toContain('proof-point-delivery/failure: no material');
+    expect(output).toContain('no session declares topic proof-point-delivery/fallback');
   });
 });
