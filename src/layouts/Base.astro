@@ -9,6 +9,7 @@ import '@fontsource/ibm-plex-mono/600.css';
 import '../styles/tokens.css';
 import '../styles/prose.css';
 import '../styles/site.css';
+import '../styles/present.css';
 import { loadSiteData } from '../lib/data';
 import { buildRegistry, registryToJSON } from '../lib/registry';
 
@@ -53,6 +54,7 @@ const links = [
     <script type="application/json" id="idref-data" is:inline set:html={registryJson} />
     <script>
       import '../scripts/tooltips';
+      import '../scripts/present';
     </script>
   </body>
 </html>

@@ -1,0 +1,10 @@
+html[data-mode="present"]{font-size:125%}
+html[data-mode="present"] .topbar,
+html[data-mode="present"] nav.index,
+html[data-mode="present"] main > footer{display:none}
+html[data-mode="present"] .cols{display:block}
+html[data-mode="present"] [data-slide]:not([data-current]){display:none}
+html[data-mode="present"] [data-slide][data-current]{min-height:100vh;padding-top:48px;margin:0}
+html[data-mode="present"] header.mast[data-current]{display:flex;flex-direction:column;justify-content:center;border-bottom:0}
+#present-counter{display:none}
+html[data-mode="present"] #present-counter{display:block;position:fixed;right:20px;bottom:16px;z-index:30;font-family:var(--mono);font-size:.8125rem;color:var(--ink-soft);background:var(--card);border:1px solid var(--rule);border-radius:3px;padding:4px 10px}
