@@ -371,23 +371,23 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
 
   <div class="decide risk">
     <h4>Channels calling the delivery API directly, no resolution layer</h4>
-    <p>Fewest moving parts and closest to the source document's description. Rejected on three counts: the delivery API serves only the current published version, so version pinning is impossible and a mid-campaign republish silently changes what was sent; locale fallback is silent, so no consumer can report on it; and every channel would have to implement message composition independently, which reintroduces exactly the drift the pilot exists to eliminate.</p>
+    <p>Fewest moving parts and closest to the source document's description. Not taken, for three reasons: the delivery API serves only the current published version, so version pinning is impossible and a mid-campaign republish silently changes what was sent; locale fallback is silent, so no consumer can report on it; and every channel would have to implement message composition independently, which reintroduces exactly the drift the pilot exists to eliminate.</p>
     <p>If EG wants the minimal version anyway, it is viable for the CRM and VMC payload comparison — but not for SFMC, and not for anything claiming immutability.</p>
   </div>
 
   <div class="decide risk">
     <h4>One entry per partner, holding the partner's metric</h4>
-    <p>The literal reading of the scale note. Rejected: it puts partner data in a content store, makes the entry count a function of the partner base, and makes every metric refresh a content operation. Nothing about it is a content-management problem.</p>
+    <p>The literal reading of the scale note. Not taken: it puts partner data in a content store, makes the entry count a function of the partner base, and makes every metric refresh a content operation. Nothing about it is a content-management problem.</p>
   </div>
 
   <div class="decide risk">
     <h4>Contentful resolving segment and tone to a variant</h4>
-    <p>Fewer round trips and closer to how personalisation products work. Rejected because it contradicts the stated parameter that NBA decides, pulls a licensed personalisation capability onto the critical path, and makes the fetch non-deterministic and harder to cache. Worth revisiting after the pilot if EG wants decisioning closer to the content.</p>
+    <p>Fewer round trips and closer to how personalisation products work. Not taken because it contradicts the stated parameter that NBA decides, pulls a licensed personalisation capability onto the critical path, and makes the fetch non-deterministic and harder to cache. Worth revisiting after the pilot if EG wants decisioning closer to the content.</p>
   </div>
 
   <div class="decide risk">
     <h4>An opaque hashed content ID</h4>
-    <p>Tidier on the wire. Rejected: an opaque token cannot be read in a log, a support ticket or an SFMC preview, and the traceability requirement is precisely about being able to answer "what was this" long after the send.</p>
+    <p>Tidier on the wire. Not taken: an opaque token cannot be read in a log, a support ticket or an SFMC preview, and the traceability requirement is precisely about being able to answer "what was this" long after the send.</p>
   </div>
 </Section>
 
@@ -415,7 +415,7 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
 
 
 <Section n="14" id="open" title="Open questions raised by this design" nav="Open questions">
-  <p class="sec-note">Ten questions arising from the production concerns above, additional to the twenty-seven in the pilot scoping document. Each carries the working assumption the design currently runs on, so nothing is blocked waiting for an answer — but each assumption is one someone should confirm rather than inherit.</p>
+  <p class="sec-note">Ten questions arising from the production concerns above, additional to the twenty-seven raised with EG (Q1–Q26, Q6b). Each carries the working assumption the design currently runs on, so nothing is blocked waiting for an answer — but each assumption is one someone should confirm rather than inherit.</p>
   <div class="scroll">
   <table>
     <thead><tr><th style="width:6%">#</th><th style="width:30%">Question</th><th style="width:26%">Working assumption</th><th>What the answer changes</th></tr></thead>

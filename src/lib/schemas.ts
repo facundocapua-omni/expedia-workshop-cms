@@ -31,6 +31,7 @@ export const questionSchema = z
     idea: z.string().optional(),
     section: z.string().optional(),
   })
+  .strict() // a misspelt key ("anwser:") must fail, not vanish
   .refine(hasPositionIfAssumed, POSITION_RULE);
 
 export const uc2QuestionSchema = z
@@ -44,6 +45,7 @@ export const uc2QuestionSchema = z
     answer: z.string().optional(),
     confirmedByEG: z.boolean().default(false),
   })
+  .strict() // a misspelt key ("anwser:") must fail, not vanish
   .refine(hasPositionIfAssumed, POSITION_RULE);
 
 export const decisionSchema = z.object({
@@ -51,7 +53,7 @@ export const decisionSchema = z.object({
   title: z.string(),
   useCase: z.enum(['uc1', 'uc2']),
   resolves: z.array(z.string()).default([]),
-});
+}).strict();
 
 export const contentTypeSchema = z.object({
   id: z.string().regex(/^CT\d{2}$/),

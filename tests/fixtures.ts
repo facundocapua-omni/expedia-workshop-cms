@@ -7,7 +7,7 @@ export function question(overrides: Partial<Question> & Pick<Question, 'id'>): Q
 export function siteData(overrides: Partial<SiteData> = {}): SiteData {
   return {
     ideas: [{ slug: 'uc1-solution-architecture', title: 'Use Case 1', short: 'UC1', order: 1 }],
-    questions: [question({ id: 'Q1', group: 'blocking' }), question({ id: 'DQ-9', group: 'uc1-design' })],
+    questions: [question({ id: 'Q1', group: 'blocking' }), question({ id: 'DQ-9', group: 'uc1-design' }), question({ id: 'U1', group: 'uc2-model' })],
     decisions: [{ id: 'D-05', title: 'Tone belongs to the partner', useCase: 'uc1', resolves: [] }],
     contentTypes: [{
       id: 'CT01', name: 'section', layer: 'Structural', purpose: 'Container', summary: 'Container',

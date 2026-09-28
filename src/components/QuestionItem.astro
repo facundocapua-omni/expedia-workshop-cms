@@ -21,7 +21,7 @@ const discussedIn = q.idea ? { href: `/ideas/${q.idea}/${q.section ? `#${q.secti
 >
   <header>
     <span class="qid">{q.id}</span>
-    <p class="qt">{q.question}</p>
+    <h3 class="qt" id={`${anchorFor(q.id)}-title`}>{q.question}</h3>
     <StatusChip status={q.status} confirmed={q.confirmedByEG} />
   </header>
   {q.detail && <p>{q.detail}</p>}

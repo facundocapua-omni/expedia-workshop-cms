@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { questionSchema, uc2QuestionSchema, uniqueById } from '../src/lib/schemas';
+import { decisionSchema, questionSchema, uc2QuestionSchema, uniqueById } from '../src/lib/schemas';
 
 describe('questionSchema', () => {
   const base = { id: 'Q5', group: 'blocking', question: 'Where is the sentence assembled?', status: 'open' };
@@ -24,6 +24,19 @@ describe('questionSchema', () => {
 describe('uc2QuestionSchema', () => {
   it('applies the same position rule', () => {
     expect(uc2QuestionSchema.safeParse({ id: 'U3', question: 'Calculator?', status: 'assumed' }).success).toBe(false);
+  });
+});
+
+describe('misspelt field names fail instead of vanishing', () => {
+  it('rejects an unknown key on a question (e.g. "anwser")', () => {
+    const q = { id: 'Q8', group: 'scope', question: 'Who builds it?', status: 'answered', anwser: 'Globant' };
+    expect(questionSchema.safeParse(q).success).toBe(false);
+  });
+  it('rejects an unknown key on a UC2 question (e.g. "confimedByEG")', () => {
+    expect(uc2QuestionSchema.safeParse({ id: 'U1', question: 'Grid?', status: 'open', confimedByEG: true }).success).toBe(false);
+  });
+  it('rejects an unknown key in decision frontmatter (e.g. "resolve")', () => {
+    expect(decisionSchema.safeParse({ id: 'D-26', title: 'A', useCase: 'uc1', resolve: ['Q8'] }).success).toBe(false);
   });
 });
 

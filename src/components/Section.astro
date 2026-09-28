@@ -16,6 +16,7 @@ const title = facts ? interpolateFacts(Astro.props.title, facts) : Astro.props.t
 const nav = facts && Astro.props.nav ? interpolateFacts(Astro.props.nav, facts) : Astro.props.nav;
 ---
 <section id={id} data-slide data-n={n} data-title={title} data-nav={nav}>
-  <h2><span class="h-n">{n}</span>{title}</h2>
+  {/* The heading id lets Pagefind link a result to this section, not just the page. */}
+  <h2 id={`${id}-title`}><span class="h-n">{n}</span>{title}</h2>
   <slot />
 </section>

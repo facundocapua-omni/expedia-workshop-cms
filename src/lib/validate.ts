@@ -14,6 +14,17 @@ export function findProblems(data: SiteData): string[] {
   data.contentTypes.forEach((c) => claim(c.id, 'content types'));
   data.inventory.forEach((c) => claim(c.id, 'inventory'));
 
+  // Belt and braces: a source that silently loaded nothing would shrink every count with it.
+  const empty: [boolean, string][] = [
+    [!data.questions.some((q) => /^(Q\d|DQ-)/.test(q.id)), 'no Q or DQ questions loaded from data/questions.yaml'],
+    [!data.questions.some((q) => /^U\d/.test(q.id)), 'no UC2 questions loaded from model/uc2-matrix.json'],
+    [data.decisions.length === 0, 'no decisions loaded from decisions/'],
+    [data.contentTypes.length === 0, 'no content types loaded from model/uc2-matrix.json'],
+    [data.inventory.length === 0, 'no components loaded from sources/component-inventory.md'],
+    [data.ideas.length === 0, 'no ideas loaded from src/content/ideas/'],
+  ];
+  for (const [isEmpty, message] of empty) if (isEmpty) problems.push(message);
+
   const ideas = new Set(data.ideas.map((i) => i.slug));
   for (const q of data.questions) {
     if (q.idea && !ideas.has(q.idea)) problems.push(`${q.id}: unknown idea "${q.idea}"`);

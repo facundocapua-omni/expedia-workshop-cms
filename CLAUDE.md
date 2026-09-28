@@ -12,11 +12,11 @@ is deliberately out of scope. Content and UI are in English, because they go in 
 
 ```bash
 pnpm dev              # dev server; without a TTY it detaches — stop with `pnpm astro dev stop`
-pnpm build            # astro build + pagefind --site dist
+pnpm build            # astro build + pagefind --site dist + verify-anchors (a broken internal link fails the build)
 pnpm preview          # serve dist/ (search only works on the built site); also detaches — `pnpm astro preview stop`
 pnpm test             # vitest; one file: pnpm test tests/linkify.test.ts; one test: add -t "<name>"
 pnpm check            # astro check (types)
-pnpm verify           # after build: verify-anchors (every internal link/fragment) + verify-fidelity
+pnpm verify           # after build: verify-anchors + verify-fidelity + verify-terms (client-facing wording)
 make xlsx | make check   # regenerate / sanity-check the UC2 workbook from model/uc2-matrix.json
 ```
 
@@ -55,6 +55,10 @@ make xlsx | make check   # regenerate / sanity-check the UC2 workbook from model
   such siblings on one line, separated by a space.
 - `markdown.smartypants` is off on purpose (straight quotes, fidelity).
 - `glob()` ids are lower-cased file names. Use `data.id` for decision IDs.
+- Questions and the matrix use inline loaders on purpose: Astro's `file()` loader swallows parser
+  errors and builds with the collection empty or stale. Keep them inline; under `astro dev`, data
+  edits need a restart. `tests/build-errors.test.ts` builds a throwaway copy to prove bad data fails.
+- Schemas are `.strict()`: a misspelt key fails the build instead of vanishing.
 - TypeScript is pinned to 6.x because `@astrojs/check` does not accept 7.
 - `scripts/verify-fidelity.mjs` compares against the original documents at commit `6c8dd77`.
   An intentional wording change needs an entry in `scripts/fidelity-allowlist.json`.

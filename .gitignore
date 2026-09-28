@@ -18,3 +18,6 @@ dist/
 
 # browser automation artefacts
 .playwright-mcp/
+
+# throwaway project copies built by tests/build-errors.test.ts
+.test-builds/

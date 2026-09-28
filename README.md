@@ -15,11 +15,11 @@ Nothing here has been shared with the client yet.
 ```bash
 pnpm install
 pnpm dev        # http://localhost:4321 — without a terminal it detaches; stop it with `pnpm astro dev stop`
-pnpm build      # static site in dist/, plus the Pagefind search index
+pnpm build      # static site in dist/, the Pagefind index, and a check of every internal link
 pnpm preview    # serves dist/; full-text search only works here (also detaches; `pnpm astro preview stop`)
 pnpm test       # unit tests
 pnpm check      # type check
-pnpm verify     # after a build: internal links, and fidelity against the original documents
+pnpm verify     # after a build: internal links, fidelity against the original documents, client-facing wording
 ```
 
 To share it, zip `dist/` and have the recipient run `npx serve dist`.
@@ -59,7 +59,8 @@ Pages: `/` home · `/ideas/<slug>/` · `/decide/` decision agenda ·
 4. If a U question changed, run `make xlsx`.
 
 The build fails, naming the file and ID, on a misspelt status, a repeated ID, a `resolves`
-that points nowhere, or an `assumed` question without a `position`.
+that points nowhere, an `assumed` question without a `position`, a misspelt field name, or a
+link to a section that doesn't exist. Under `pnpm dev`, restart after editing these data files.
 
 ## Adding an idea
 

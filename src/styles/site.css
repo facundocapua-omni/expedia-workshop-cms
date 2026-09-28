@@ -35,7 +35,7 @@ a.idref:hover,a.idref:focus-visible{color:var(--accent)}
 .q-item.to-decide{border-left-color:var(--flag)}
 .q-item header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
 .q-item .qid{font-family:var(--mono);font-size:.8125rem;font-weight:600;color:var(--accent)}
-.q-item .qt{margin:0;font-weight:600;flex:1 1 30ch}
+.q-item .qt{margin:0;padding:0;border:0;font-size:1rem;line-height:1.55;font-weight:600;flex:1 1 30ch}
 .q-item p{margin:8px 0 0;font-size:.9375rem;color:var(--ink-soft)}
 .q-item .proposal{color:var(--ink)}
 .q-item .q-meta{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:.84375rem}

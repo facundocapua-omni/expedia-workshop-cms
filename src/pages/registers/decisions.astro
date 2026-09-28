@@ -23,7 +23,7 @@ const groups = [
     <Section n={g.n} id={g.id} title={g.title}>
       {g.items.map(({ id, title, resolves, Content }) => (
         <article class="decide" id={anchorFor(id)} data-def={id}>
-          <h4><span class="stamp">{id}</span>{title}</h4>
+          <h4 id={`${anchorFor(id)}-title`}><span class="stamp">{id}</span>{title}</h4>
           <Content />
           {resolves.length > 0 && <p><strong>Resolves:</strong> {resolves.join(', ')}</p>}
         </article>

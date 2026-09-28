@@ -83,7 +83,7 @@
   why: This is the single largest effort variable in the document. A pilot that includes building a head is a different order of work from one that authors into an existing one.
   owner: EG + Globant
   status: answered
-  answer: Globant, Next.js and Tailwind, in scope for the user story
+  answer: Globant, Next.js and Tailwind, in scope for the pilot
   confirmedByEG: true
 - id: Q9
   group: scope

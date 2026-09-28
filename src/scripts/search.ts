@@ -1,7 +1,7 @@
 import { isEditableTarget } from '../lib/present-keys';
-import { matchId } from '../lib/search-id';
+import { bestSubResult, matchId, type SubResult } from '../lib/search-id';
 
-type PagefindData = { url: string; excerpt: string; meta: Record<string, string> };
+type PagefindData = { url: string; excerpt: string; meta: Record<string, string>; sub_results?: SubResult[] };
 type Pagefind = { search: (query: string) => Promise<{ results: { data: () => Promise<PagefindData> }[] }> };
 type Item = { href: string; kind: string; title: string; excerpt: string; excerptIsHtml: boolean };
 
@@ -35,6 +35,8 @@ if (dialog) {
       const li = document.createElement('li');
       const a = document.createElement('a');
       a.href = item.href;
+      // Close before navigating: a same-page result only changes the hash, and the modal would stay over it.
+      a.addEventListener('click', () => dialog?.close());
       const kind = Object.assign(document.createElement('span'), { className: 'r-kind', textContent: item.kind });
       const title = Object.assign(document.createElement('span'), { className: 'r-title', textContent: item.title });
       const excerpt = document.createElement('span');
@@ -61,7 +63,13 @@ if (dialog) {
       const { results } = await pf.search(query);
       const data = await Promise.all(results.slice(0, 8).map((r) => r.data()));
       if (mine !== sequence) return;
-      for (const d of data) items.push({ href: d.url, kind: d.meta.kind ?? '', title: d.meta.title ?? d.url, excerpt: d.excerpt, excerptIsHtml: true });
+      for (const d of data) {
+        // Land on the section with the most matches (headings carry ids), not the top of the page.
+        const sub = bestSubResult(d.sub_results ?? []);
+        const page = d.meta.title ?? d.url;
+        const title = sub?.title && sub.title !== page ? `${page} › ${sub.title}` : page;
+        items.push({ href: sub?.url ?? d.url, kind: d.meta.kind ?? '', title, excerpt: sub?.excerpt ?? d.excerpt, excerptIsHtml: true });
+      }
     }
     render(items);
   }
