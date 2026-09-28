@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { discussedIn, placementOf, stillOpen, topicHref } from '../src/lib/sessions';
+import { discussedIn, placementOf, stillOpen, topicDecisions, topicHref } from '../src/lib/sessions';
+import type { Decision } from '../src/lib/types';
 import { question, session, siteData, topic } from './fixtures';
 
 describe('placementOf', () => {
@@ -54,5 +55,22 @@ describe('stillOpen', () => {
   it('splits like /decide, in the order the topics raise them', () => {
     expect(open.toConfirm.map((q) => q.id)).toEqual(['Q5', 'Q3']);
     expect(open.toDecide.map((q) => q.id)).toEqual(['Q6']);
+  });
+});
+
+describe('topicDecisions', () => {
+  const decisions: Decision[] = [
+    { id: 'D-04', title: 'A thin Content Resolution API', useCase: 'uc1', resolves: [] },
+    { id: 'D-26', title: 'SFMC fetches per recipient', useCase: 'uc1', resolves: ['Q6'] },
+    { id: 'D-27', title: 'Pilot scope', useCase: 'uc1', resolves: ['Q7'] },
+  ];
+
+  it('lists the topic decisions, then any decision recorded later that resolves a question it settles', () => {
+    const t = topic({ id: 'sfmc', settles: ['Q6', 'Q22'], decisions: ['D-04'] });
+    expect(topicDecisions(t, decisions).map((d) => d.id)).toEqual(['D-04', 'D-26']);
+  });
+  it('shows a decision once when it is both listed and resolving', () => {
+    const t = topic({ id: 'sfmc', settles: ['Q6'], decisions: ['D-26'] });
+    expect(topicDecisions(t, decisions).map((d) => d.id)).toEqual(['D-26']);
   });
 });

@@ -36,8 +36,10 @@ make xlsx | make check   # regenerate / sanity-check the UC2 workbook from model
 - **Sessions.** `/sessions/<slug>/` walks the session's `topics` in agenda order. For each topic it
   renders the topic's MDX (or the discussion prompt when `prompt: true`), the optional `see`
   link, and then, under "To settle here", the questions in `settles` and the decisions in
-  `decisions`. The last section lists the expected outcomes and what `stillOpen`
-  (`src/lib/sessions.ts`) leaves on the agenda. A question is settled in one topic at most, and
+  `decisions`, plus any decision whose `resolves` names one of those questions
+  (`topicDecisions`). A decision recorded at the workshop therefore shows up under its topic
+  without editing the session. The last section lists the expected outcomes and what
+  `stillOpen` (`src/lib/sessions.ts`) leaves on the agenda. A question is settled in one topic at most, and
   a settled question carries no `idea`/`section`. "Discussed in" comes from `discussedIn()`.
   UC1 and UC2 (`src/content/ideas/`) keep only the material no session uses yet.
 - **ID linking and page index happen after rendering**, in `src/middleware.ts` →

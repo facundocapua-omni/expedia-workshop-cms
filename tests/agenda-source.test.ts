@@ -7,23 +7,21 @@ const DIR = 'src/content/sessions';
 const sessions = readdirSync(DIR)
   .filter((f) => f.endsWith('.yaml'))
   .map((f) => ({ file: f, ...YAML.parse(readFileSync(`${DIR}/${f}`, 'utf8')) }));
-const starts = sessions.map((s) => SOURCE.indexOf(s.title)).sort((a, b) => a - b);
 
 describe('session text is copied literally from sources/workshop-agenda.md', () => {
   it('has sessions to check', () => {
     expect(sessions.length).toBeGreaterThan(0);
   });
   for (const s of sessions) {
-    it(`${s.file}: title, track, owner, bullets and outcomes, in the agenda's order`, () => {
+    // A session's block in the source runs from its title to the next blank line: title, track,
+    // owner, the content bullets, then the expected outcomes. The YAML must match it line for line,
+    // so a bullet dropped, added or reordered on either side fails.
+    it(`${s.file}: title, track, owner, bullets and outcomes match the agenda exactly`, () => {
       const start = SOURCE.indexOf(s.title);
       expect(start, `title "${s.title}"`).toBeGreaterThanOrEqual(0);
-      const end = starts.find((i) => i > start) ?? SOURCE.length;
-      let at = start;
-      for (const line of [s.track, `Owner: ${s.owner}`, ...s.topics.map((t: { agenda: string }) => t.agenda), ...s.outcomes]) {
-        const next = SOURCE.indexOf(line, at + 1);
-        expect(next > at && next < end, `"${line}" is missing from the session, or out of order`).toBe(true);
-        at = next;
-      }
+      const stop = SOURCE.indexOf('', start);
+      const block = SOURCE.slice(start, stop === -1 ? SOURCE.length : stop);
+      expect([s.title, s.track, `Owner: ${s.owner}`, ...s.topics.map((t: { agenda: string }) => t.agenda), ...s.outcomes]).toEqual(block);
     });
   }
 });

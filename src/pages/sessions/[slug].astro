@@ -4,7 +4,7 @@ import Doc from '../../layouts/Doc.astro';
 import Section from '../../components/Section.astro';
 import QuestionItem from '../../components/QuestionItem.astro';
 import { loadSiteData } from '../../lib/data';
-import { stillOpen } from '../../lib/sessions';
+import { stillOpen, topicDecisions } from '../../lib/sessions';
 
 export async function getStaticPaths() {
   const data = await loadSiteData();
@@ -15,14 +15,13 @@ const data = await loadSiteData();
 const session = data.sessions.find((s) => s.slug === Astro.props.slug)!;
 const materials = new Map((await getCollection('topics')).map((entry) => [entry.id, entry]));
 const questionById = new Map(data.questions.map((q) => [q.id, q]));
-const decisionById = new Map(data.decisions.map((d) => [d.id, d]));
 const topics = await Promise.all(session.topics.map(async (topic) => {
   const entry = materials.get(`${session.slug}/${topic.id}`);
   return {
     ...topic,
     Material: entry ? (await render(entry)).Content : undefined,
     questions: topic.settles.map((id) => questionById.get(id)!),
-    decisionItems: topic.decisions.map((id) => decisionById.get(id)!),
+    decisionItems: topicDecisions(topic, data.decisions),
   };
 }));
 const n = (i: number) => String(i).padStart(2, '0');

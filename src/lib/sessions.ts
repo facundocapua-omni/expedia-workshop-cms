@@ -1,5 +1,5 @@
 import { hasProposal, onAgenda } from './agenda';
-import type { Question, SessionMeta, SiteData, TopicMeta } from './types';
+import type { Decision, Question, SessionMeta, SiteData, TopicMeta } from './types';
 
 export interface Placement { session: SessionMeta; topic: TopicMeta }
 export interface Link { href: string; label: string }
@@ -24,6 +24,15 @@ export function discussedIn(q: Question, data: Pick<SiteData, 'sessions' | 'idea
   if (!q.idea) return undefined;
   const idea = data.ideas.find((i) => i.slug === q.idea);
   return { href: `/ideas/${q.idea}/${q.section ? `#${q.section}` : ''}`, label: idea?.short ?? q.idea };
+}
+
+/** A topic's decisions: those it lists, then any decision recorded later that resolves a question it settles. */
+export function topicDecisions(topic: TopicMeta, decisions: Decision[]): Decision[] {
+  const listed = topic.decisions
+    .map((id) => decisions.find((d) => d.id === id))
+    .filter((d): d is Decision => d !== undefined);
+  const resolving = decisions.filter((d) => !topic.decisions.includes(d.id) && d.resolves.some((id) => topic.settles.includes(id)));
+  return [...listed, ...resolving];
 }
 
 /** What a session leaves on the agenda, in the order its topics raise it. */
