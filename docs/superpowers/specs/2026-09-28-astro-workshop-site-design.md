@@ -1,6 +1,50 @@
 # Astro workshop site — design
 
-Date: 2026-09-28 · Branch: `feat/astro-site` · Status: awaiting review (rev. 2)
+Date: 2026-09-28 · Branch: `feat/astro-site` · Status: approved (rev. 2), amended by §0 (rev. 3)
+
+## 0. Implementation findings (rev. 3)
+
+These findings came from probing Astro 7.3.5 with the real documents before planning. Where
+they conflict with a later section, they take precedence. Behaviour visible to the workshop
+is unchanged.
+
+1. **ID linking is a post-render HTML pass, not a rehype plugin** (supersedes §4.1's loader
+   paragraph and §4.3). Astro 7 renders Markdown and MDX with its native processor
+   (Sätteri), which does not run rehype plugins unless the whole pipeline is switched back
+   to unified. `src/middleware.ts` runs `enhanceHtml` over every rendered page instead. It
+   was verified to run during static prerendering and under `astro dev`. It produces the
+   markup and skip rules of §4.3, with one call site instead of two, so there is no
+   `<Linked>` or `IdLink` component and no `lib/sources.ts`. The registry comes from content
+   collections through `loadSiteData()`.
+2. **The page index is built by the same pass**, from `section[data-slide]`. `render()`
+   only reports Markdown headings, not `Section` titles. A section may carry a shorter
+   `nav` label: the original indexes use shorter labels than the headings.
+3. **`<pre>` and SVG blocks are raw HTML fragments** (`src/content/fragments/*.html`,
+   imported with `?raw`, rendered with `<Fragment set:html>`). MDX collapses whitespace in
+   raw `<pre>`, and both MDX and `.astro` read `{}` as expressions. Every other brace is
+   escaped, and HTML comments are dropped, because MDX rejects them. Probe result: all 20
+   UC1/UC2 sections kept identical text, and both `<pre>` blocks were byte-identical.
+4. **`markdown.smartypants: false`.** Otherwise straight quotes become typographic, which
+   the fidelity check caught.
+5. **Content types gain `summary`** (§3.3, §9.1 step 4). Doc 03's purpose column is a
+   short editorial summary that differs from the JSON `purpose` in 21 of 23 rows, and in
+   20 of those it doesn't contradict it. The site renders `summary` and the workbook keeps
+   `purpose`. Only CT23 is a real conflict (§9.2).
+6. **Questions keep doc 01's `why` note** as a field, next to `detail`. Q1, Q2, Q3 and Q6b
+   point to UC1 §position, and DQ-* to UC1 §open, through a `section` field. Wording
+   defaults to doc 01, the client-facing text. The register's differing wording for 11
+   questions goes into the discrepancy file.
+7. **One layout, `Doc.astro`** (renames `Idea.astro`), used by ideas, `/decide` and the
+   registers. The Present button sits in the top bar, so the masthead stays identical to the
+   original for the fidelity check. Styles are four global files (`tokens`, `prose`, `site`,
+   `present`) instead of per-component CSS: the source documents share one stylesheet.
+8. **Frontmatter and `Section` titles take `{{factKey}}` tokens**, because components can't
+   live in YAML. Ideas gain a `short` label for the top bar.
+9. **Presentation type scale** is `html { font-size: 125% }`, with every CSS font size in rem.
+10. **Doc 02's section id `rejected` becomes `alternatives`**: URL fragments are visible, and
+    the terminology rule applies. The heading text is unchanged.
+11. **Verify scripts are plain Node `.mjs`**, and `verify-fidelity` also checks `<pre>`
+    blocks byte for byte.
 
 ## 1. Goal
 
