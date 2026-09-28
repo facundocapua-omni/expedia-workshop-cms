@@ -1,7 +1,7 @@
 import { z } from 'astro/zod';
 
 export const STATUSES = ['open', 'assumed', 'answered', 'closed'] as const;
-export const GROUPS = ['blocking', 'scope', 'inputs', 'commercial', 'uc1-design', 'uc2-model'] as const;
+export const GROUPS = ['blocking', 'scope', 'inputs', 'commercial', 'uc1-design', 'uc2-model', 'migration'] as const;
 
 const status = z.enum(STATUSES);
 const POSITION_RULE = { message: 'an assumed question needs a position', path: ['position'] };
@@ -19,7 +19,7 @@ export const ideaSchema = z.object({
 export const questionSchema = z
   .object({
     id: z.string().regex(/^(Q\d+b?|DQ-\d+)$/),
-    group: z.enum(['blocking', 'scope', 'inputs', 'commercial', 'uc1-design']),
+    group: z.enum(['blocking', 'scope', 'inputs', 'commercial', 'uc1-design', 'migration']),
     question: z.string().min(1),
     detail: z.string().optional(),
     why: z.string().optional(),

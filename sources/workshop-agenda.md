@@ -43,3 +43,16 @@ SEO, tracking, consent, accessibility and EG security requirements
 Display layer architecture and ownership understood
 Split of self-serve versus engineering work agreed
 Hosting and security requirements identified for EG review
+
+
+AEM migration approach
+Partner web content
+Owner: Globant and Contentful
+Content scope: what migrates, what gets rebuilt, what gets retired
+Phased migration and AEM/Contentful coexistence
+Ongoing development vs. code freeze on AEM
+Cutover approach, including migration tooling and SEO protection
+Timing against the AEM contract end
+Migration approach and phasing understood
+Code freeze and coexistence rules clear for Web Ops planning
+Cutover risks identified

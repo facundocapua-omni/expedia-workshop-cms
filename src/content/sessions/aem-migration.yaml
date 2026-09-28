@@ -1,0 +1,38 @@
+title: AEM migration approach
+short: AEM migration
+track: Partner web content
+owner: Globant and Contentful
+order: 4
+outcomes:
+  - Migration approach and phasing understood
+  - Code freeze and coexistence rules clear for Web Ops planning
+  - Cutover risks identified
+topics:
+  - agenda: "Content scope: what migrates, what gets rebuilt, what gets retired"
+    id: content-scope
+    nav: Content scope
+    settles: [Q27, Q28, Q29]
+    decisions: [D-26, D-27]
+  - agenda: Phased migration and AEM/Contentful coexistence
+    id: coexistence
+    nav: Phasing and coexistence
+    settles: [Q11, Q30, Q31]
+    decisions: [D-28, D-29]
+  - agenda: Ongoing development vs. code freeze on AEM
+    id: code-freeze
+    nav: Development vs. freeze
+    settles: [Q32]
+    decisions: [D-30]
+  - agenda: Cutover approach, including migration tooling and SEO protection
+    id: cutover
+    nav: Cutover, tooling, SEO
+    settles: [Q33, Q34]
+    decisions: [D-31, D-32]
+    see:
+      href: /sessions/partner-web-display-layer/#requirements
+      label: "Session 3: SEO, tracking, consent, accessibility and EG security requirements"
+  - agenda: Timing against the AEM contract end
+    id: timing
+    nav: AEM contract end
+    settles: [Q35]
+    decisions: [D-33]

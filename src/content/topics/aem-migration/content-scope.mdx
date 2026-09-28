@@ -1,0 +1,41 @@
+import framework from '../../fragments/mig-framework.html?raw';
+
+<p class="sec-note">Nothing migrates during the pilot. This session is about the programme that follows it, moving partner web from AEM to Contentful, and its first question is not how content moves but which content deserves to.</p>
+
+<div class="decide">
+  <h4>A discovery phase, not a lift and shift</h4>
+  <p>Every piece of content gets a conscious decision: <strong>migrate</strong>, <strong>rebuild</strong> or <strong>retire</strong>. The decision follows a shared framework and is prepared jointly by EG and Globant, and it is <strong>EG's to make</strong>. Globant pulls the data and proposes; EG's content owners decide (D-26).</p>
+</div>
+
+<h3>The disposition framework</h3>
+<Fragment set:html={framework} />
+<p>The unit of decision is a URL with its blocks. Shared content — header, footer, legal copy — is decided once. Decisions are made as rules per business case or template first and as exceptions per URL second, so EG's time goes on the exceptions rather than on thousands of individual pages.</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:18%">Gate</th><th style="width:44%">Signals</th><th style="width:19%">Prepared by</th><th>Decided by</th></tr></thead>
+  <tbody>
+    <tr><td><strong>1. Keep?</strong></td><td>Twelve months of traffic and conversions; a named owner in EG; a legal obligation to publish; the same intent as another page, in which case the two are consolidated and the one that goes redirects to the one that stays</td><td>Globant pulls the data (Q28) and proposes</td><td><strong>EG</strong> (Q29)</td></tr>
+    <tr><td><strong>2. Fits the model?</strong></td><td>Every AEM component on the page maps to a content type, directly or through a mapping rule, following the <a href="/ideas/uc2-content-model/#disposition">UC2 component disposition</a></td><td>Globant, from the component usage exported from AEM</td><td><strong>EG</strong> accepts the cost of a rebuild</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>The outcome is the <strong>disposition log</strong>, signed off by EG: URL, business case, rule applied, disposition, redirect target, owner and rationale. Three things are generated from it: the list the migration pipeline loads, the rebuild list, and the redirect map used at <a href="#cutover">cutover</a>.</p>
+
+<h3>The 2027 brand refresh</h3>
+<p>A visual refresh does not touch the content model. Presentation fields in the UC2 model already hold roles, not colours — <code>background</code> is none, light, dark, brand or image, and <code>theme</code> is light or dark — so a new palette changes what <code>brand</code> means in the front end and the content never notices. What matters is the kind of change the refresh makes to each content type.</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:18%">Change</th><th style="width:44%">Examples</th><th>Effect on migrated content</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Visual only</strong></td><td>Palette, typography, spacing, imagery style</td><td>None: the front end absorbs it</td></tr>
+    <tr><td><strong>Additive</strong></td><td>A new option in a list, a new optional field, a new content type</td><td>None: migrated content stays valid</td></tr>
+    <tr><td><strong>Breaking</strong></td><td>A field renamed, split or removed; a new required field; a type restructured</td><td>The only case that affects the migration</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Content therefore migrates <strong>once, into the post-rebrand model</strong> (D-27). That makes the frozen model a dependency, but only of the second gate: keep or retire does not depend on the model and runs from the first day of discovery. The refreshed model has to be frozen before discovery <em>closes</em>, not before it starts (Q27).</p>
+<p>A copy rewrite for the refresh does not change a page's disposition. Migrating is cheap, and it gives authors their starting point in Contentful; the rewrite is editorial work that happens there.</p>

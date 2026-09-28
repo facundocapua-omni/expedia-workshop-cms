@@ -25,7 +25,7 @@ describe('buildAgenda', () => {
   });
   it('follows the register group order and omits empty groups', () => {
     expect(agenda.map((g) => g.group)).toEqual(['blocking', 'scope']);
-    expect(AGENDA_GROUPS.map((g) => g.group)).toEqual(['blocking', 'scope', 'inputs', 'commercial', 'uc1-design', 'uc2-model']);
+    expect(AGENDA_GROUPS.map((g) => g.group)).toEqual(['blocking', 'scope', 'inputs', 'commercial', 'uc1-design', 'uc2-model', 'migration']);
   });
   it('sorts by ID inside a group', () => {
     expect(agenda.find((g) => g.group === 'scope')!.toDecide.map((q) => q.id)).toEqual(['Q7', 'Q10']);

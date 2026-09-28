@@ -97,7 +97,8 @@
   question: What is the current-state CMS, and is coexistence in scope?
   detail: The document offers current-state technical specifications and a site index "for reference", and marks migration tooling (CMS-30) as demo-only. Is any coexistence or content migration expected during the pilot, or purely greenfield pages?
   owner: EG
-  status: open
+  status: answered
+  answer: AEM. Nothing migrates during the pilot; coexistence is in scope for the migration programme that follows it, business case by business case
   confirmedByEG: false
 - id: Q12
   group: scope
@@ -263,4 +264,70 @@
   question: Where is the service hosted, and is it internet-facing?
   status: assumed
   position: EG infra, internal-only
+  confirmedByEG: false
+- id: Q27
+  group: migration
+  question: Does the 2027 brand refresh change the content model, when is that model frozen, and does the refresh have a fixed public launch date?
+  detail: A visual refresh is absorbed by the front end, because presentation fields already hold roles (background light, dark or brand) rather than colours. Only a breaking change to a content type affects the migration — a field renamed, split or removed, a new required field, a type restructured. A fixed public date also decides whether AEM pages can keep the current brand until their business case moves (D-30).
+  why: Content migrates once, into the post-rebrand model (D-27), so the freeze of that model sits on the critical path of the whole programme.
+  owner: EG brand and design
+  status: open
+  confirmedByEG: false
+- id: Q28
+  group: migration
+  question: Which analytics and SEO sources give traffic, conversions and backlinks per URL, and who grants access?
+  detail: The first gate of the disposition framework runs on twelve months of traffic and conversions per URL. The SEO baseline adds top landing pages and backlinks. Both are captured before discovery starts.
+  owner: EG analytics and SEO
+  status: open
+  confirmedByEG: false
+- id: Q29
+  group: migration
+  question: Who are the content owners that sign off the disposition of each business case?
+  detail: Globant prepares the data and proposes a disposition per URL; EG decides. Each business case needs a named owner who can accept a retirement or the cost of a rebuild.
+  owner: EG content operations
+  status: open
+  confirmedByEG: false
+- id: Q30
+  group: migration
+  question: Which CDN fronts partner web, and can it split traffic by percentage between two origins with a sticky cookie?
+  detail: Coexistence is routed at the edge (D-28). Paths decide which business case is exposed and a sticky cohort decides who sees it. The same configuration serves the redirects (D-32) and makes rollback a routing change.
+  owner: EG platform
+  status: open
+  confirmedByEG: false
+- id: Q31
+  group: migration
+  question: What are the go/no-go thresholds at each ramp step, and who signs them?
+  detail: "Proposed gates: 5xx rate; Core Web Vitals at or above the AEM baseline; conversion of the new cohort against the cohort still on AEM; tracking (U10) and consent (U7) parity; no rise in crawl errors; and at least one full weekly traffic cycle per step."
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q32
+  group: migration
+  question: Can AEM stop taking new functionality from the moment the migration scope is signed off?
+  detail: The scope is signed off when discovery closes and EG agrees the disposition log.
+  why: Anything added to AEM after that is built twice, once on AEM and again on the new stack. It also reopens the disposition log, because the new components were never assessed against the target model.
+  owner: EG
+  status: open
+  position: "Yes. From scope sign-off AEM takes security patches, break-fix, legal and compliance changes, content edits outside a ramp, and the changes coexistence needs (data layer, consent, cohort cookie). A feature that cannot wait can still be built on AEM, but only as double development that EG agrees and budgets case by case."
+  confirmedByEG: false
+- id: Q33
+  group: migration
+  question: Which AEM version runs partner web, and what access can Globant have for extraction?
+  detail: AEM as a Cloud Service or AEM 6.5 changes the extraction route — JSON export of the page tree, the QueryBuilder API or content packages — and assets come from the DAM. Read access to the author instance for the length of the programme is the simplest option.
+  owner: EG platform
+  status: open
+  confirmedByEG: false
+- id: Q34
+  group: migration
+  question: How long is the rollback window after a business case reaches 100%?
+  detail: During the window the business case stays read-only in AEM, so the edge can route back to it. After it, that AEM content is decommissioned. The window also sets how close to the contract end the last business case can go live (D-33).
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q35
+  group: migration
+  question: When does the AEM contract end, what is the notice period, and what are the extension terms?
+  detail: The plan runs backwards from the contract end with an explicit buffer. The checkpoint that decides whether to negotiate an extension sits at contract end minus notice period minus negotiation time, so it needs all three.
+  owner: EG procurement
+  status: open
   confirmedByEG: false

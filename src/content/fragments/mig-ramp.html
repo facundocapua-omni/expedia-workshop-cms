@@ -1,0 +1,13 @@
+<pre>business case = a set of paths      the CDN routes by path, then by sticky cohort
+
+ wave 0   internal: EG and QA, by cookie
+   │  go/no-go
+ 20%      of visitors on the new front end; the rest stay on AEM <span class="c">(control)</span>
+   │  go/no-go
+ 50%
+   │  go/no-go
+ 100%     redirects on · sitemap moved · freeze lifted in Contentful
+   │
+ rollback window, AEM read-only ─▶ this business case's AEM content decommissioned
+
+<span class="c">rollback at any step = a routing change at the edge, in minutes, no DNS change</span></pre>

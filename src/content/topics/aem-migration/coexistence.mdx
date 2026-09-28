@@ -1,0 +1,44 @@
+import ramp from '../../fragments/mig-ramp.html?raw';
+
+<p class="sec-note">AEM stays live until the last business case has moved. Coexistence is therefore not a transition to get through quickly but the way partner web runs for most of the programme, and it needs rules.</p>
+
+<div class="decide">
+  <h4>Business case by business case, routed at the CDN</h4>
+  <p>The unit of cutover is a <strong>business case</strong>: one or more sections that serve one business purpose and move together. Routing lives at the CDN, on the same domain, so there is no domain move for search engines to follow and no visible switch for visitors (D-28).</p>
+</div>
+
+<h3>Two axes of control</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:14%">Axis</th><th style="width:56%">Mechanism</th><th>What it decides</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Path</strong></td><td>A business case is a set of paths, and the CDN sends them to AEM or to the new front end</td><td>What is exposed</td></tr>
+    <tr><td><strong>Cohort</strong></td><td>A cookie assigns each visitor once and keeps them there</td><td>Who sees it</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Keeping visitors in one cohort is not only about their experience. A visitor who bounces between origins sees two brands on consecutive pages, and blurs the conversion figures of both cohorts.</p>
+
+<h3>The ramp</h3>
+<Fragment set:html={ramp} />
+<p>Each step lasts at least one full weekly traffic cycle and ends with a go/no-go that EG signs. The proposed gates (Q31):</p>
+<ul class="tight">
+  <li><strong>Technical</strong> — 5xx rate, Core Web Vitals at or above the AEM baseline, no open P1.</li>
+  <li><strong>Business</strong> — conversion and leads of the new cohort against the cohort still on AEM. The percentage split gives the programme a control group at no extra cost.</li>
+  <li><strong>Tracking</strong> — the data layer (U10) and consent (U7) behave the same on both sides.</li>
+  <li><strong>SEO</strong> — no rise in 404s or crawl errors for the business case.</li>
+</ul>
+<p>Rollback at any step is a routing change at the edge. It takes effect in minutes and does not touch DNS, which points at the CDN throughout. A business case that fails rolls back alone; the ones already at 100% are not affected.</p>
+
+<h3>Content during a ramp</h3>
+<p>Fast rollback has a condition that is easy to miss: AEM must still be serving current content. While a business case ramps, its content is frozen in both systems, and urgent changes — legal, pricing, errors — are made in both by exception (D-29). That is also why ramps are kept short, at roughly three weeks from wave 0 to 100%.</p>
+
+<h3>What has to work on both sides</h3>
+<ul class="tight">
+  <li><strong>Header, footer and navigation</strong>, including links that cross from one system to the other.</li>
+  <li><strong>Consent</strong> (U7) and the <strong>analytics data layer</strong> (U10), so a journey that crosses origins is still one journey in the data.</li>
+  <li><strong>Sitemaps and robots.txt</strong>, served consistently from the edge.</li>
+  <li><strong>Images</strong> referenced from both systems, and the <strong>form back ends</strong> behind lead capture.</li>
+  <li>The <strong>cohort cookie</strong>, which AEM must leave alone.</li>
+</ul>
+<p>One cost is accepted: while business cases are split across the two systems, a visitor can meet the new brand in one and the current brand in another. <a href="#code-freeze">Development vs. freeze</a> explains why AEM is not reskinned to hide it (D-30).</p>

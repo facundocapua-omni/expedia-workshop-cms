@@ -1,0 +1,56 @@
+import pipeline from '../../fragments/mig-pipeline.html?raw';
+
+<p class="sec-note">With coexistence by business case, cutover is not a single day but a procedure that repeats for every business case. It has three parts: the tooling that moves the content, the steps that move the traffic, and the checks that protect search.</p>
+
+<h3>Migration tooling</h3>
+<Fragment set:html={pipeline} />
+<p>A scripted pipeline, built by Globant for this programme and discarded after it (D-31). Two of its properties matter more than the rest:</p>
+<ul class="tight">
+  <li><strong>Idempotent loads.</strong> Every entry is upserted by a stable ID derived from its AEM path, so the pipeline can run any number of times: full rehearsals first, then delta runs of what changed since the last run, and a final delta immediately before the content freeze.</li>
+  <li><strong>Validation on every run.</strong> Counts, required fields, broken links, and a visual diff between the AEM page and the new one.</li>
+</ul>
+
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:16%">Party</th><th>Contribution</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Globant</strong></td><td>Extract and transform, including the mapping from AEM components to the post-rebrand content types; rehearsals and delta runs</td></tr>
+    <tr><td><strong>Contentful</strong></td><td>The platform side: the Management API and its rate limits, environments, content model migrations; the CMS-30 walkthrough</td></tr>
+    <tr><td><strong>EG</strong></td><td>Access to AEM (Q33); content QA in wave 0</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="decide risk">
+  <h4><span class="stamp">risk</span>Language copies may not fit one entry</h4>
+  <p>AEM keeps each locale as a separate page; Contentful localises field by field inside a single entry. Where the locale versions of a page have drifted apart — a block that exists only in German, a different order in Thai — they do not fit one entry without a decision about which structure wins. Discovery measures how often this happens, and U5 belongs to the same conversation.</p>
+</div>
+
+<h3>Cutover procedure, per business case</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:5%">#</th><th>Step</th></tr></thead>
+  <tbody>
+    <tr><td class="n">1</td><td>Full rehearsal and final delta run; the content freeze starts (D-29)</td></tr>
+    <tr><td class="n">2</td><td>Wave 0: EG QA on the new front end, behind a cookie. The business case's redirects are loaded at the CDN, inactive</td></tr>
+    <tr><td class="n">3</td><td>Ramp to 20%, 50% and 100%, with a go/no-go at each step (D-28)</td></tr>
+    <tr><td class="n">4</td><td>At 100%: redirects on, the business case's URLs move from the AEM sitemap to the new one, Search Console is notified, and the freeze lifts in Contentful</td></tr>
+    <tr><td class="n">5</td><td>The AEM content stays read-only for the rollback window (Q34), then is decommissioned</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>SEO protection</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:20%">Protection</th><th>How</th></tr></thead>
+  <tbody>
+    <tr><td><strong>URLs kept by default</strong></td><td>A migrated page keeps its URL and needs no redirect. Only retired and consolidated pages change, plus localised slugs if U5 calls for them</td></tr>
+    <tr><td><strong>Redirect map</strong></td><td>Generated from the disposition log: 301 to the closest equivalent, 410 when there is none, and no chains. Served by the CDN, so it reaches every visitor during a ramp whichever origin serves them, and switched on at 100% (D-32)</td></tr>
+    <tr><td><strong>On-page parity</strong></td><td>Both versions are crawled and compared URL by URL: title, description, canonical, hreflang for all five locales, structured data, H1, robots directives and internal links</td></tr>
+    <tr><td><strong>Baseline</strong></td><td>Organic traffic, top landing pages and backlinks per URL, captured before discovery (Q28). A page with backlinks is never retired without its 301</td></tr>
+    <tr><td><strong>During a ramp</strong></td><td>Crawlers are treated like any other visitor, because routing them differently by user agent reads as cloaking. Redirects wait for 100%, so a URL never answers 200 to some visitors and 301 to others</td></tr>
+    <tr><td><strong>After 100%</strong></td><td>Four to six weeks of monitoring: Search Console coverage, 404s in the CDN logs, and organic traffic of key pages against the baseline</td></tr>
+  </tbody>
+</table>
+</div>

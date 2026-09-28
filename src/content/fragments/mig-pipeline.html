@@ -1,0 +1,11 @@
+<pre>AEM   page tree as JSON · QueryBuilder · DAM assets
+ │
+ ▼ <span class="k">EXTRACT</span>     migrate rows of the disposition log only
+ ▼ <span class="k">TRANSFORM</span>   AEM components → post-rebrand content types
+ │             HTML → Rich Text · internal links → entry links · DAM → assets
+ ▼ <span class="k">LOAD</span>        Management API, upsert by a stable ID derived from the AEM path
+Contentful environment
+ │
+ └ <span class="k">VALIDATE</span>    counts · required fields · broken links · visual diff against AEM
+
+rehearsal ─▶ rehearsal ─▶ delta runs ─▶ final delta ─▶ content freeze</pre>

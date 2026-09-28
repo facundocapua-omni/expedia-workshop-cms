@@ -1,5 +1,5 @@
 export type Status = 'open' | 'assumed' | 'answered' | 'closed';
-export type QuestionGroup = 'blocking' | 'scope' | 'inputs' | 'commercial' | 'uc1-design' | 'uc2-model';
+export type QuestionGroup = 'blocking' | 'scope' | 'inputs' | 'commercial' | 'uc1-design' | 'uc2-model' | 'migration';
 
 export interface Question {
   id: string;
