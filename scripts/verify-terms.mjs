@@ -10,6 +10,9 @@ const TERMS = [
   { pattern: /\bbacklog\b/i, why: 'the backlog is not on the site' },
   { pattern: /\buser stor(y|ies)\b/i, why: 'the user stories are not on the site' },
   { pattern: /\bpilot scoping document\b/i, why: 'the scoping document is not on the site' },
+  // Retired content model (message / messageVariant / channelProfile replaced it).
+  { pattern: /\b(opportunityType|channelRendering|proofPointVariant|proofPoint|parameterSchema|nbaSignalSource)\b/, why: 'retired content type or field: the model is message / messageVariant / channelProfile' },
+  { pattern: /\bregister (belongs|is fixed|carries|≠)|\bsurface voice\b/i, why: 'register is unified into tone; the channel profile only constrains shape and audience' },
 ];
 // Approval-workflow vocabulary (an author or a validator rejecting a draft) is not a verdict
 // on earlier work, so these exact phrases are allowed.

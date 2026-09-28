@@ -1,15 +1,15 @@
-import uc1Fragment2 from '../../fragments/uc1-2.html?raw';
+import contentReference from '../../fragments/content-reference.html?raw';
 
   <div data-origin="uc1:position:1" class="decide">
     <h4><span class="stamp">Q1</span>Contentful stores the message template, never the partner's number</h4>
-    <p>A proof-point entry holds localised copy with <strong>named variables</strong> — not <code>"seen 47 times"</code> but <code>"Your property page was seen \{views\} times in the last \{windowDays\} days"</code>. The value arrives with NBA's decision and is substituted at resolution time.</p>
+    <p>A message holds localised copy with <strong>named variables</strong>, declared once on the message — not <code>"seen 47 times"</code> but <code>"Your property page was seen \{views\} times in the last \{windowDays\} days"</code>. The value arrives with NBA's decision and is substituted at resolution time.</p>
     <p>This is what keeps the content set at variant scale — dozens of entries — instead of partner scale. No entry anywhere holds a partner identifier or a partner's metric.</p>
     <p>Grammatical agreement between the value and the sentence around it is <strong>out of scope for the POC</strong>. See the <a href="/sessions/proof-point-delivery/#resolution-layer">deferred-scope note in Session 1</a>, because it is not a detail.</p>
   </div>
 
   <div data-origin="uc1:position:3" class="decide">
     <h4><span class="stamp">Q3</span>One content reference everywhere; channel is a parameter, not a different ID</h4>
-    <p>All channels quote the same reference. The channel is passed alongside it, and selects which channel rendering is returned. This makes both statements in the source document true at once: every surface is fetching the same content, and each surface gets copy shaped for it.</p>
+    <p>All channels quote the same reference. The channel is passed alongside it, and selects the channel profile that shapes what is returned. This makes both statements in the source document true at once: every surface is fetching the same content, and each surface gets copy shaped for it.</p>
     <p>It also gives the consistency test something to assert against — every response carries a <code>consistencyKey</code> derived from variant, version, locale and parameters, and identical keys across channels is a machine-checkable pass.</p>
   </div>
 
@@ -17,7 +17,7 @@ import uc1Fragment2 from '../../fragments/uc1-2.html?raw';
 
   <p data-origin="uc1:ref:0" class="sec-note">The identifier the whole use case rests on. It does not exist natively — the platform issues an ID per entry, with locale as a query parameter and version as a revision counter — so it has to be defined as a contract and implemented.</p>
 
-  <div data-origin="uc1:ref:1"><Fragment set:html={uc1Fragment2} /></div>
+  <div><Fragment set:html={contentReference} /></div>
 
   <ul data-origin="uc1:ref:2" class="tight">
     <li><strong>The reference is opaque to channels and meaningful to us.</strong> SFMC passes it through without parsing; the resolution service decomposes it. Keeping it decomposable matters more than keeping it short — an opaque hash is untraceable at 2am.</li>

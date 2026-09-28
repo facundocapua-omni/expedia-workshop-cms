@@ -25,10 +25,10 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
   </div>
   <p class="cap">Figure 2 — Authoring flow. The design decision worth arguing about is in phase C.</p>
 
-  <h3>Phase B — generated tone and channel variants</h3>
-  <p>An AI action runs against the approved base template and produces a draft variant per tone, then a draft channel rendering per channel with that channel's constraints applied. The author sees a diff and accepts, edits or rejects. Two things make this safe enough to put in front of a client:</p>
+  <h3>Phase B — generated tone variants and briefings</h3>
+  <p>An AI action runs against the approved base template and produces a draft variant per tone — partner copy and a briefing for the Market Manager — then checks each variant against every channel profile and flags the ones that need an override. The author sees a diff and accepts, edits or rejects. Two things make this safe enough to put in front of a client:</p>
   <ul class="tight">
-    <li><strong>Placeholders are validated, not trusted.</strong> Generated copy is rejected automatically if it drops, renames or duplicates a parameter from <code>parameterSchema</code>. A tone rewrite that loses <code>\{views\}</code> is a broken send, and it is the most likely generation failure.</li>
+    <li><strong>Placeholders are validated, not trusted.</strong> Generated copy is rejected automatically if it drops, renames or duplicates a variable declared on the message. A tone rewrite that loses <code>\{views\}</code> is a broken send, and it is the most likely generation failure.</li>
     <li><strong>Provenance is recorded.</strong> <code>generatedBy</code> and the approving user are stored on the entry, so any later review can separate machine-written copy from hand-written copy.</li>
   </ul>
   <p>Availability of the AI actions feature on EG's plan needs confirming before this is committed. If it isn't available, the same flow runs through an external generation step writing drafts via the management API — more moving parts, same gates.</p>
@@ -55,8 +55,8 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
       </tr>
       <tr>
         <td><strong>Automatic generation for tone and channel</strong></td>
-        <td>AI action generates tone variants from the approved base, then channel renderings from each variant — applying that channel's register, audience and constraints — into draft state.</td>
-        <td>Generated copy preserves every parameter in <code>parameterSchema</code>; the placeholder check rejects any output that drops or renames one; the partner tone survives into every channel rendering while the register changes with the surface; the author can accept, edit or reject without leaving the editor; provenance is recorded on the entry.</td>
+        <td>AI action generates tone variants from the approved base — partner copy and a briefing each — into draft state, then every variant is checked against the email, CRM and VMC channel profiles.</td>
+        <td>Generated copy uses every variable declared on the message and no other; the placeholder check rejects any output that drops or renames one; the partner tone survives into every channel, including the CRM briefing; the author can accept, edit or reject without leaving the editor; provenance is recorded on the entry; the number of variants that needed a hand-authored override is reported — that count is the CMS-01 result.</td>
       </tr>
       <tr>
         <td><strong>Translation into five locales</strong></td>
@@ -92,25 +92,25 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
 
 
 <Section n="03" id="sizing" title="POC content sizing" nav="POC sizing">
-<div data-origin="uc1:sizing:*">
+<div>
   <p class="sec-note">Small enough to author by hand in the pilot, large enough that NBA is choosing between real options rather than fetching one hardcoded entry.</p>
   <div class="scroll">
   <table>
     <thead><tr><th style="width:26%">Dimension</th><th style="width:18%">POC</th><th style="width:20%">Plausible production</th><th>Note</th></tr></thead>
     <tbody>
-      <tr><td>Opportunity types</td><td class="ref">1</td><td class="ref">10–20</td><td>Travel Corridors reused, per the pilot parameters.</td></tr>
-      <tr><td>Proof points per opportunity</td><td class="ref">2</td><td class="ref">3–5</td><td>Two is enough to show the base/variant split is real.</td></tr>
+      <tr><td>Opportunities</td><td class="ref">1</td><td class="ref">10–20</td><td>Travel Corridors reused, per the pilot parameters. A tag on the message, not an entry.</td></tr>
+      <tr><td>Messages per opportunity</td><td class="ref">2</td><td class="ref">3–5</td><td>Two proof points is enough to show the message/variant split is real.</td></tr>
       <tr><td>Tones</td><td class="ref">3</td><td class="ref">3–4</td><td>Educational, familiar, data-led.</td></tr>
       <tr><td>Segments</td><td class="ref">2</td><td class="ref">6</td><td>Two of the six NBS segments; the model doesn't change with six.</td></tr>
-      <tr><td><strong>Variant entries</strong></td><td class="ref">12</td><td class="ref">540–2,400</td><td>opportunities × proof points × tones × segments.</td></tr>
-      <tr><td>Channels</td><td class="ref">3</td><td class="ref">4+</td><td>email, crm, vmc.</td></tr>
-      <tr><td><strong>Channel renderings</strong></td><td class="ref">36</td><td class="ref">2,160–9,600</td><td>variants × channels. The number that makes the variant-governance question real rather than theoretical.</td></tr>
+      <tr><td><strong>Variant entries</strong></td><td class="ref">12</td><td class="ref">540–2,400</td><td>messages × tones × segments.</td></tr>
+      <tr><td>Channels</td><td class="ref">3</td><td class="ref">4+</td><td>email, crm, vmc — one channel profile each. Configuration, not copy.</td></tr>
+      <tr><td><strong>Channel overrides</strong></td><td class="ref">measured</td><td class="ref">measured</td><td>Only where a variant's copy cannot fit a profile. Their count is the CMS-01 result, not something to plan for.</td></tr>
       <tr><td>Locales</td><td class="ref">5</td><td class="ref">20+</td><td>en-US, ar, th, de, ja.</td></tr>
-      <tr><td><strong>Localised units to review</strong></td><td class="ref">180</td><td class="ref">43,200–192,000</td><td>renderings × locales. Every one needs a human approval under the design above. This is the line that should drive the governance conversation.</td></tr>
+      <tr><td><strong>Localised units to review</strong></td><td class="ref">130</td><td class="ref">22,200–98,000</td><td>(variants × 2 + messages) × locales: every variant's partner copy and briefing, plus every message's default copy. Overrides add to it. This is the line that should drive the governance conversation.</td></tr>
     </tbody>
   </table>
   </div>
-  <p>The last row is the honest argument for automation and for a review model based on sampling rather than exhaustive approval. It is also the concrete version of the variant-explosion concern the source document defers to a case-study discussion — at production scale it is not a discussion, it is a staffing plan.</p>
+  <p>The last row is the honest argument for automation and for a review model based on sampling rather than exhaustive approval. Authoring copy per channel instead would put three units per variant on it rather than two, and even at two it is the concrete version of the variant-explosion concern the source document defers to a case-study discussion — at production scale it is not a discussion, it is a staffing plan.</p>
 </div>
 </Section>
 
@@ -144,7 +144,7 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
   <table>
     <thead data-origin="uc1:risks:0"><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
     <tbody>
-      <tr data-origin="uc1:risks:3"><td><strong>AI actions unavailable on EG's plan</strong></td><td>Automatic tone and channel generation moves outside the platform.</td><td>Same flow through an external generation step writing drafts via the management API. More moving parts, identical gates.</td></tr>
+      <tr data-origin="uc1:risks:3"><td><strong>AI actions unavailable on EG's plan</strong></td><td>Automatic generation of tone variants and briefings moves outside the platform.</td><td>Same flow through an external generation step writing drafts via the management API. More moving parts, identical gates.</td></tr>
       <tr data-origin="uc1:risks:8"><td><strong>Translation route undecided</strong></td><td>Phase C has no implementation and the locale gate cannot be exercised.</td><td>Needs an answer before build starts. A marketplace connector is days; a Babel Prime connector is a workstream.</td></tr>
     </tbody>
   </table>

@@ -1,4 +1,4 @@
-import uc1Fragment1 from '../../fragments/uc1-1.html?raw';
+import messageModel from '../../fragments/message-model.html?raw';
 
   <div data-origin="uc1:position:2" class="decide">
     <h4><span class="stamp">Q2</span>NBA selects the variant; Contentful never decides</h4>
@@ -8,19 +8,27 @@ import uc1Fragment1 from '../../fragments/uc1-1.html?raw';
 
 <h3>Content model</h3>
 
-<div data-origin="uc1:model:*">
-  <p class="sec-note">Four content types plus taxonomy. Variants are modelled as referenced entries rather than a variant dimension, because core entries have no such dimension — this is the hand-modelled route, and it is deliberate here rather than a fallback.</p>
+<div>
+  <p class="sec-note">Two content types plus channel profiles and taxonomy. A <strong>message</strong> is the reusable unit — the proof point is this pilot's example, not the model — and its variants are referenced entries rather than a variant dimension, because core entries have no such dimension. That is the hand-modelled route, and it is deliberate here rather than a fallback.</p>
 
   <div class="fig">
-    <Fragment set:html={uc1Fragment1} />
+    <Fragment set:html={messageModel} />
   </div>
-  <p class="cap">Figure 1 — Content model. The variant is the addressable unit: it is what NBA chooses and what the content reference points at.</p>
+  <p class="cap">Figure 1 — Content model. The message declares its variables and carries the default copy; the variant is the addressable unit NBA chooses; channel profiles are configuration, three entries in total.</p>
 
   <h3>Why the variant is the addressable unit</h3>
-  <p>NBA's decision is "this segment, this tone" — so the thing it selects has to be the thing identified. Making the base proof point addressable would force a second resolution step somewhere, and the only candidates are Contentful (ruled out by Q2) or each channel independently (which is the drift problem the pilot exists to solve). Channel and locale are narrower: they don't change <em>which</em> message is being told, only how it is dressed, so they belong as parameters on the fetch rather than in the identity.</p>
+  <p>NBA's decision is "this segment, this tone" — so the thing it selects has to be the thing identified. Making the message addressable would force a second resolution step somewhere, and the only candidates are Contentful (ruled out by Q2) or each channel independently (which is the drift problem the pilot exists to solve). Channel and locale are narrower: they don't change <em>which</em> message is being told, only how it is dressed, so they belong as parameters on the fetch rather than in the identity.</p>
+
+  <h3>A generic model, with the proof point as the example</h3>
+  <p>Nothing in the two types knows what a proof point is. The message declares its <strong>variables</strong> — name, type, format and a sample value — and every variant's copy may use only the variables its message declares: the resolver checks that before publish and again at substitution, so a variant that writes <code>\{view\}</code> for <code>\{views\}</code> never reaches a channel. A tip, an alert or an onboarding nudge is another message with other variables, not another content type. The message's kind and the NBA opportunity it serves (Travel Corridors in the pilot) are taxonomy tags, so a new opportunity is a tag, not a model change.</p>
+  <p>Every message carries a mandatory <strong>default copy</strong> — the "mandatory default entry" that CMS-31 tests variants on top of. It uses no variables and makes no partner-specific claim, which makes it the fallback when no variant can be served.</p>
+
+  <h3>Channel profiles instead of per-channel copy</h3>
+  <p>Each channel has one profile: the audience it speaks to and the shape its copy must fit — length limits and allowed markup. Email and VMC speak to the partner and receive the variant's headline and body; CRM speaks to the Market Manager and receives the variant's <strong>briefing</strong>, written in the same tone and usable as a talking point. The resolver picks the copy by audience and checks it against the profile; only a variant whose copy cannot fit a channel carries an authored override for it.</p>
+  <p>That turns the question CMS-01 asks — how much of the channel-specific rendering comes from one base entry automatically, and how much still needs hand-authoring per channel — into a count: the overrides. It also keeps a fourth surface cheap. Adding one is a new profile, not new copy for every variant.</p>
 
   <h3>Approval state on the entry</h3>
-  <p>The <code>approvals[]</code> field records who signed off on what and when — variant copy, per-locale translation, channel rendering. It exists because the audit requirement is about editorial accountability, not just field history: "who approved the Japanese version of the familiar-tone variant" is the question that gets asked, and version history alone answers it awkwardly.</p>
+  <p>The <code>approvals[]</code> field records who signed off on what and when — variant copy, briefing, per-locale translation, overrides. It exists because the audit requirement is about editorial accountability, not just field history: "who approved the Japanese version of the familiar-tone variant" is the question that gets asked, and version history alone answers it awkwardly.</p>
 </div>
 
 <h3>Alternatives considered</h3>

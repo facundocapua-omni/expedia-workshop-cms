@@ -1,11 +1,5 @@
 [
   {
-    "origin": "uc1:model:*",
-    "from": "this is the hand-modelled route described in the backlog, and",
-    "to": "this is the hand-modelled route, and",
-    "reason": "The backlog is no longer on the site (migration discrepancy 2, owner decision 2026-09-28)"
-  },
-  {
     "origin": "uc1:authoring:*",
     "from": "This is where the platform constraint from the backlog bites:",
     "to": "This is where a platform constraint bites:",
@@ -96,14 +90,117 @@
     "reason": "Section numbers are gone: the section is now a topic of Session 1"
   },
   {
-    "origin": "uc1:position:5",
-    "from": "Section 03 sets the four dimensions out side by side.",
-    "to": "The table below sets the four dimensions out side by side.",
-    "reason": "The dimensions table now follows this block in the same topic"
-  },
-  {
     "origin": "uc1:position:0",
     "retire": true,
     "reason": "The six positions now sit with the session topic each one answers, so a note introducing them together no longer applies"
+  },
+  { "origin": "uc1:model:0", "retire": true, "reason": "Content model rewritten as message / messageVariant / channelProfile (owner decision 2026-09-28)" },
+  { "origin": "uc1:model:1", "retire": true, "reason": "Figure 1 redrawn for message / messageVariant / channelProfile (owner decision 2026-09-28)" },
+  { "origin": "uc1:model:2", "retire": true, "reason": "Figure 1 caption rewritten for the generic model (owner decision 2026-09-28)" },
+  { "origin": "uc1:model:3", "retire": true, "reason": "Content model block rewritten; the heading is carried into the new block (owner decision 2026-09-28)" },
+  { "origin": "uc1:model:4", "retire": true, "reason": "Rewritten: the message, not a base proof point, is what would otherwise be addressable (owner decision 2026-09-28)" },
+  { "origin": "uc1:model:5", "retire": true, "reason": "Content model block rewritten; the heading is carried into the new block (owner decision 2026-09-28)" },
+  { "origin": "uc1:model:6", "retire": true, "reason": "Approvals now cover briefing and overrides instead of channel renderings (owner decision 2026-09-28)" },
+  { "origin": "uc1:position:5", "retire": true, "reason": "Tone and register unified as tone; the channel only shapes the copy (owner decision 2026-09-28)" },
+  { "origin": "uc1:ref:1", "retire": true, "reason": "Content reference diagram now names messageVariant (owner decision 2026-09-28)" },
+  { "origin": "uc1:ref:5", "retire": true, "reason": "Dimensions table without register, channel picks the channel profile (owner decision 2026-09-28)" },
+  { "origin": "uc1:ref:6", "retire": true, "reason": "Tone and register unified as tone (owner decision 2026-09-28)" },
+  { "origin": "uc1:ref:7", "retire": true, "reason": "Audience moves to the channel profile and the variant's briefing (owner decision 2026-09-28)" },
+  { "origin": "uc1:sizing:0", "retire": true, "reason": "Sizing block rewritten; the note is carried into the new block (owner decision 2026-09-28)" },
+  { "origin": "uc1:sizing:1", "retire": true, "reason": "Sizing recomputed for message / messageVariant / channel profiles (owner decision 2026-09-28)" },
+  { "origin": "uc1:sizing:2", "retire": true, "reason": "Sizing commentary rewritten for the new review volume (owner decision 2026-09-28)" },
+  {
+    "origin": "uc1:ref:8",
+    "from": "if a variant has no email rendering, NBA shouldn't dispatch it to email",
+    "to": "if a variant's copy cannot fit the email profile and has no override, NBA shouldn't dispatch it to email",
+    "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:alternatives:0",
+    "from": "The observation underneath it is kept: channel does carry a voice, and that voice is modelled as register on the rendering, alongside audience.",
+    "to": "The observation underneath it is kept: a channel does impose something — a shape, and for CRM a different reader — and both are modelled, as the channel profile and the variant's briefing, without a second voice.",
+    "reason": "Tone and register unified as tone (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:position:1",
+    "from": "A proof-point entry holds localised copy with named variables",
+    "to": "A message holds localised copy with named variables, declared once on the message",
+    "reason": "Generic message model (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:position:3",
+    "from": "and selects which channel rendering is returned.",
+    "to": "and selects the channel profile that shapes what is returned.",
+    "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:consumption:*",
+    "from": "Pulls the full localised entry with its channel renderings.",
+    "to": "Pulls the full localised variant, its message and the channel profiles.",
+    "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:consumption:*",
+    "from": "Same reference, same version, different rendering",
+    "to": "Same reference, same version, different profile",
+    "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:consumption:*",
+    "from": "variants · channel renderings · 5 locales · version history",
+    "to": "messages · variants · channel profiles · 5 locales",
+    "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:surfaces:*",
+    "from": "a fourth surface costs one channel rendering per variant and a client",
+    "to": "a fourth surface costs one channel profile and a client",
+    "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:failure:*",
+    "from": "A fallback variant exists per opportunity type, carrying no parameters and making no partner-specific claim.",
+    "to": "Every message carries its own fallback: the mandatory default copy, which uses no variables and makes no partner-specific claim.",
+    "reason": "One fallback per message (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:authoring:*",
+    "from": "Phase B — generated tone and channel variants",
+    "to": "Phase B — generated tone variants and briefings",
+    "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:authoring:*",
+    "from": "produces a draft variant per tone, then a draft channel rendering per channel with that channel's constraints applied.",
+    "to": "produces a draft variant per tone — partner copy and a briefing for the Market Manager — then checks each variant against every channel profile and flags the ones that need an override.",
+    "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:authoring:*",
+    "from": "drops, renames or duplicates a parameter from parameterSchema.",
+    "to": "drops, renames or duplicates a variable declared on the message.",
+    "reason": "Variables are declared on the message (owner decision 2026-09-28)"
+  },
+  { "origin": "uc1:authoring:*", "from": "proofPoint entry", "to": "message entry", "reason": "Generic message model (owner decision 2026-09-28)" },
+  { "origin": "uc1:authoring:*", "from": "template + parameterSchema", "to": "default copy + variables", "reason": "Generic message model (owner decision 2026-09-28)" },
+  { "origin": "uc1:authoring:*", "from": "AI action · per channel", "to": "check · per channel profile", "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)" },
+  { "origin": "uc1:authoring:*", "from": "applies constraints", "to": "flags needed overrides", "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)" },
+  {
+    "origin": "uc1:validation:*",
+    "from": "AI action generates tone variants from the approved base, then channel renderings from each variant — applying that channel's register, audience and constraints — into draft state.",
+    "to": "AI action generates tone variants from the approved base — partner copy and a briefing each — into draft state, then every variant is checked against the email, CRM and VMC channel profiles.",
+    "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:validation:*",
+    "from": "Generated copy preserves every parameter in parameterSchema; the placeholder check rejects any output that drops or renames one; the partner tone survives into every channel rendering while the register changes with the surface; the author can accept, edit or reject without leaving the editor; provenance is recorded on the entry.",
+    "to": "Generated copy uses every variable declared on the message and no other; the placeholder check rejects any output that drops or renames one; the partner tone survives into every channel, including the CRM briefing; the author can accept, edit or reject without leaving the editor; provenance is recorded on the entry; the number of variants that needed a hand-authored override is reported — that count is the CMS-01 result.",
+    "reason": "Channel profiles replace per-channel renderings; tone unified (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:risks:3",
+    "from": "Automatic tone and channel generation moves outside the platform.",
+    "to": "Automatic generation of tone variants and briefings moves outside the platform.",
+    "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
   }
 ]

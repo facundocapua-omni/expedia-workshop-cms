@@ -34,7 +34,8 @@
   detail: CMS-01 passes only if the channel rendering is generated from one base entry plus channel parameters. What is the expected mechanism, and what hand-authored reference will the output be compared against?
   why: There's no native "clone this entry by channel parameter" behaviour to point at. This becomes field-level conditions, referenced content types, or a custom app — each with different effort and different governance.
   owner: EG
-  status: open
+  status: assumed
+  position: "Channel profiles: each channel declares its audience and the length and markup its copy must fit, and the resolver shapes every variant by that profile. Only a variant that cannot fit a channel gets a hand-authored override, so the count of overrides is the CMS-01 result."
   confirmedByEG: false
 - id: Q5
   group: blocking
