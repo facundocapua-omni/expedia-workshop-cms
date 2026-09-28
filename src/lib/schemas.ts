@@ -1,0 +1,93 @@
+import { z } from 'astro/zod';
+
+export const STATUSES = ['open', 'assumed', 'answered', 'closed'] as const;
+export const GROUPS = ['blocking', 'scope', 'inputs', 'commercial', 'uc1-design', 'uc2-model'] as const;
+
+const status = z.enum(STATUSES);
+const POSITION_RULE = { message: 'an assumed question needs a position', path: ['position'] };
+const hasPositionIfAssumed = (q: { status: string; position?: string }) => q.status !== 'assumed' || Boolean(q.position);
+
+export const ideaSchema = z.object({
+  title: z.string(),
+  short: z.string(),
+  kicker: z.string(),
+  lede: z.string(),
+  order: z.number(),
+  meta: z.array(z.string()).default([]),
+});
+
+export const questionSchema = z
+  .object({
+    id: z.string().regex(/^(Q\d+b?|DQ-\d+)$/),
+    group: z.enum(['blocking', 'scope', 'inputs', 'commercial', 'uc1-design']),
+    question: z.string().min(1),
+    detail: z.string().optional(),
+    why: z.string().optional(),
+    owner: z.string().optional(),
+    status,
+    position: z.string().optional(),
+    answer: z.string().optional(),
+    confirmedByEG: z.boolean().default(false),
+    idea: z.string().optional(),
+    section: z.string().optional(),
+  })
+  .refine(hasPositionIfAssumed, POSITION_RULE);
+
+export const uc2QuestionSchema = z
+  .object({
+    id: z.string().regex(/^U\d+$/),
+    question: z.string().min(1),
+    blocks: z.string().optional(),
+    owner: z.string().optional(),
+    status,
+    position: z.string().optional(),
+    answer: z.string().optional(),
+    confirmedByEG: z.boolean().default(false),
+  })
+  .refine(hasPositionIfAssumed, POSITION_RULE);
+
+export const decisionSchema = z.object({
+  id: z.string().regex(/^D-\d{2}$/),
+  title: z.string(),
+  useCase: z.enum(['uc1', 'uc2']),
+  resolves: z.array(z.string()).default([]),
+});
+
+export const contentTypeSchema = z.object({
+  id: z.string().regex(/^CT\d{2}$/),
+  name: z.string(),
+  layer: z.string(),
+  purpose: z.string(),
+  summary: z.string(),
+  complexity: z.enum(['S', 'M', 'L']),
+  reuse: z.number(),
+  consolidates: z.array(z.string()),
+  properties: z.array(z.unknown()),
+});
+
+export const consolidationSchema = z.object({
+  candidates: z.string(),
+  decision: z.string(),
+  test: z.string(),
+  result: z.string(),
+});
+
+export const inventorySchema = z.object({
+  id: z.string().regex(/^C\d{3}$/),
+  name: z.string(),
+  type: z.string(),
+  variationOf: z.string().nullable(),
+  matrixStatus: z.string(),
+  reference: z.string().nullable(),
+  screens: z.array(z.string()),
+});
+
+/** Loader guard: a repeated id would otherwise overwrite the earlier entry silently. */
+export function uniqueById<T extends { id: string }>(list: T[], source: string): T[] {
+  const seen = new Set<string>();
+  for (const item of list) {
+    if (seen.has(item.id)) throw new Error(`${source}: duplicate id ${item.id}`);
+    seen.add(item.id);
+  }
+  return list;
+}

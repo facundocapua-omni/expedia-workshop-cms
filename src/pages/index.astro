@@ -1,5 +1,10 @@
 ---
+import { loadSiteData } from '../lib/data';
+const data = await loadSiteData();
 ---
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8" /><title>Workshop</title></head>
-<body><h1>Workshop</h1></body></html>
+<body><pre id="counts">{JSON.stringify({
+  questions: data.questions.length, decisions: data.decisions.length,
+  contentTypes: data.contentTypes.length, inventory: data.inventory.length, ideas: data.ideas.length,
+})}</pre></body></html>
