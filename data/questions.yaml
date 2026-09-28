@@ -84,7 +84,7 @@
   owner: EG + Globant
   status: answered
   answer: Globant, Next.js and Tailwind, in scope for the user story
-  confirmedByEG: false
+  confirmedByEG: true
 - id: Q9
   group: scope
   question: Does the component library already exist, or does it have to be built?

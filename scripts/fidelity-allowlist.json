@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "page": "uc1-solution-architecture",
+    "from": "this is the hand-modelled route described in the backlog, and",
+    "to": "this is the hand-modelled route, and",
+    "reason": "The backlog is no longer on the site (migration discrepancy 2, owner decision 2026-09-28)"
+  },
+  {
+    "page": "uc1-solution-architecture",
+    "from": "This is where the platform constraint from the backlog bites:",
+    "to": "This is where a platform constraint bites:",
+    "reason": "The backlog is no longer on the site (migration discrepancy 2, owner decision 2026-09-28)"
+  }
+]

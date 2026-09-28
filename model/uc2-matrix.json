@@ -2086,7 +2086,7 @@
       "id": "CT23",
       "name": "calculator",
       "layer": "Integration",
-      "purpose": "Interactive value calculator with authorable inputs and copy",
+      "purpose": "Interactive value calculator; the formula lives in the front end, the input labels and copy are authored in the CMS",
       "complexity": "L",
       "instances": 1,
       "reuse": 1,

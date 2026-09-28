@@ -64,7 +64,7 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
 
 
 <Section n="02" id="model" title="Content model">
-  <p class="sec-note">Four content types plus taxonomy. Variants are modelled as referenced entries rather than a variant dimension, because core entries have no such dimension — this is the hand-modelled route described in the backlog, and it is deliberate here rather than a fallback.</p>
+  <p class="sec-note">Four content types plus taxonomy. Variants are modelled as referenced entries rather than a variant dimension, because core entries have no such dimension — this is the hand-modelled route, and it is deliberate here rather than a fallback.</p>
 
   <div class="fig">
     <Fragment set:html={uc1Fragment1} />
@@ -129,7 +129,7 @@ import uc1Fragment5 from '../fragments/uc1-5.html?raw';
   <p>Availability of the AI actions feature on EG's plan needs confirming before this is committed. If it isn't available, the same flow runs through an external generation step writing drafts via the management API — more moving parts, same gates.</p>
 
   <h3>Phase C — the translation approval gate</h3>
-  <p>This is where the platform constraint from the backlog bites: publishing acts on the entry, so every locale goes live together, and a per-locale approval gate appears impossible.</p>
+  <p>This is where a platform constraint bites: publishing acts on the entry, so every locale goes live together, and a per-locale approval gate appears impossible.</p>
   <p>The way through is to treat the empty field as the gate. A translation lives in the translation workflow until a reviewer approves it, and only then is it written into the localised field. Unapproved locales stay empty, native fallback serves the source copy, and the resolver flags that a fallback happened. Publishing becomes safe at any moment because the entry never contains unapproved copy.</p>
   <p>The trade is that an unapproved locale is not "blocked" — it is served in English and reported as such. For a pilot testing whether partners get consistent content that is the better failure mode, and it turns a modelling problem into a reporting one. It should be stated explicitly to EG rather than discovered at the readout.</p>
 </Section>
