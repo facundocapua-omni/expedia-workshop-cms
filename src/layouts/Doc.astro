@@ -1,0 +1,33 @@
+---
+import Base from './Base.astro';
+import { loadSiteData } from '../lib/data';
+import { computeFacts, interpolateFacts } from '../lib/facts';
+
+interface Props {
+  title: string;
+  kicker: string;
+  lede: string;
+  meta?: string[];
+  kind: 'idea' | 'agenda' | 'register';
+}
+const { title, kicker, kind } = Astro.props;
+const facts = computeFacts(await loadSiteData());
+const lede = interpolateFacts(Astro.props.lede, facts);
+const meta = (Astro.props.meta ?? []).map((m) => interpolateFacts(m, facts));
+---
+<Base title={title} description={lede} kind={kind}>
+  <div class="wrap">
+    <header class="mast" data-slide>
+      <p class="kicker">{kicker}</p>
+      <h1>{title}</h1>
+      <p class="lede">{lede}</p>
+      {meta.length > 0 && <p class="meta">{meta.map((m) => <span>{m}</span>)}</p>}
+    </header>
+    <div class="cols">
+      <nav class="index" aria-label="Contents" data-index></nav>
+      <main data-pagefind-body data-pagefind-meta={`kind:${kind}`}>
+        <slot />
+      </main>
+    </div>
+  </div>
+</Base>

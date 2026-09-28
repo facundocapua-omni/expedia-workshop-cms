@@ -1,0 +1,21 @@
+---
+import { loadSiteData } from '../lib/data';
+import { computeFacts, interpolateFacts } from '../lib/facts';
+
+interface Props {
+  n: string;
+  id: string;
+  title: string;
+  /** Shorter label for the page index, when the heading is long. */
+  nav?: string;
+}
+const { n, id } = Astro.props;
+const needsFacts = Astro.props.title.includes('{{') || Astro.props.nav?.includes('{{');
+const facts = needsFacts ? computeFacts(await loadSiteData()) : undefined;
+const title = facts ? interpolateFacts(Astro.props.title, facts) : Astro.props.title;
+const nav = facts && Astro.props.nav ? interpolateFacts(Astro.props.nav, facts) : Astro.props.nav;
+---
+<section id={id} data-slide data-n={n} data-title={title} data-nav={nav}>
+  <h2><span class="h-n">{n}</span>{title}</h2>
+  <slot />
+</section>

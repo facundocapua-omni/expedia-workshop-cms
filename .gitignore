@@ -15,3 +15,6 @@ dist/
 
 # one-off migration scripts, never committed
 .migrate/
+
+# browser automation artefacts
+.playwright-mcp/

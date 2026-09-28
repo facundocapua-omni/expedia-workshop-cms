@@ -1,10 +1,44 @@
 ---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
 import { loadSiteData } from '../lib/data';
-const data = await loadSiteData();
+import { computeFacts, interpolateFacts } from '../lib/facts';
+
+const facts = computeFacts(await loadSiteData());
+const ideas = (await getCollection('ideas')).sort((a, b) => a.data.order - b.data.order);
 ---
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8" /><title>Workshop</title></head>
-<body><pre id="counts">{JSON.stringify({
-  questions: data.questions.length, decisions: data.decisions.length,
-  contentTypes: data.contentTypes.length, inventory: data.inventory.length, ideas: data.ideas.length,
-})}</pre></body></html>
+<Base title="EG CMS pilot — workshop" kind="home">
+  <div class="wrap">
+    <header class="mast">
+      <p class="kicker">Expedia Group · Contentful · Globant</p>
+      <h1>CMS pilot workshop</h1>
+      <p class="lede">The design proposals for the Contentful pilot, and the questions the pilot needs answered. Press <kbd>P</kbd> on any page to present it, and <kbd>/</kbd> to search.</p>
+    </header>
+    <main>
+      <h2 class="home-h">Ideas</h2>
+      <div class="cards">
+        {ideas.map((idea) => (
+          <a class="card" href={`/ideas/${idea.id}/`}>
+            <p class="kicker">{idea.data.kicker}</p>
+            <h3>{idea.data.title}</h3>
+            <p>{interpolateFacts(idea.data.lede, facts)}</p>
+          </a>
+        ))}
+      </div>
+      <h2 class="home-h">Decide</h2>
+      <div class="cards">
+        <a class="card agenda" href="/decide/">
+          <p class="kicker">Decision agenda</p>
+          <h3>{facts.agendaToConfirm} to confirm · {facts.agendaToDecide} to decide</h3>
+          <p>Open and assumed questions grouped by topic, each with the position proposed for it.</p>
+        </a>
+      </div>
+      <h2 class="home-h">Registers</h2>
+      <ul class="registers">
+        <li><a href="/registers/questions/">Questions</a> — {facts.questionsTotal}</li>
+        <li><a href="/registers/decisions/">Decisions</a> — {facts.decisions}</li>
+        <li><a href="/registers/inventory/">Component inventory</a> — {facts.inventoryComponents}</li>
+      </ul>
+    </main>
+  </div>
+</Base>

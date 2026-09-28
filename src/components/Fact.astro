@@ -1,0 +1,10 @@
+---
+import { loadSiteData } from '../lib/data';
+import { computeFacts, FACT_KEYS, type FactKey } from '../lib/facts';
+
+interface Props { k: FactKey }
+const { k } = Astro.props;
+if (!FACT_KEYS.includes(k)) throw new Error(`<Fact>: unknown key "${k}"`);
+const value = computeFacts(await loadSiteData())[k];
+---
+{value}

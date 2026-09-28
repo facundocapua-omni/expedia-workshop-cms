@@ -1,0 +1,55 @@
+---
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-sans/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '../styles/tokens.css';
+import '../styles/prose.css';
+import '../styles/site.css';
+import { loadSiteData } from '../lib/data';
+import { buildRegistry, registryToJSON } from '../lib/registry';
+
+interface Props {
+  title: string;
+  description?: string;
+  kind: 'home' | 'idea' | 'agenda' | 'register';
+}
+const { title, description, kind } = Astro.props;
+const data = await loadSiteData();
+// "<" is escaped so a label can never close the script element.
+const registryJson = JSON.stringify(registryToJSON(buildRegistry(data))).replace(/</g, '\\u003c');
+const path = Astro.url.pathname;
+const current = (href: string) => (path === href ? 'page' : undefined);
+const links = [
+  ...data.ideas.map((i) => ({ href: `/ideas/${i.slug}/`, label: i.short })),
+  { href: '/decide/', label: 'Decide' },
+  { href: '/registers/questions/', label: 'Questions' },
+  { href: '/registers/decisions/', label: 'Decisions' },
+  { href: '/registers/inventory/', label: 'Inventory' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232148b8'/%3E%3C/svg%3E" />
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body data-kind={kind}>
+    <header class="topbar">
+      <a class="brand" href="/">EG · CF · GL workshop</a>
+      <nav aria-label="Site">
+        {links.map((l) => <a href={l.href} aria-current={current(l.href)}>{l.label}</a>)}
+        <button type="button" data-search-open>Search<kbd>/</kbd></button>
+        <button type="button" data-present-toggle hidden>Present<kbd>P</kbd></button>
+      </nav>
+    </header>
+    <slot />
+    <script type="application/json" id="idref-data" is:inline set:html={registryJson} />
+  </body>
+</html>
