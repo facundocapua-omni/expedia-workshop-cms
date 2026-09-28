@@ -10,6 +10,7 @@ import '../styles/tokens.css';
 import '../styles/prose.css';
 import '../styles/site.css';
 import '../styles/present.css';
+import SearchModal from '../components/SearchModal.astro';
 import { loadSiteData } from '../lib/data';
 import { buildRegistry, registryToJSON } from '../lib/registry';
 
@@ -51,10 +52,12 @@ const links = [
       </nav>
     </header>
     <slot />
+    <SearchModal />
     <script type="application/json" id="idref-data" is:inline set:html={registryJson} />
     <script>
       import '../scripts/tooltips';
       import '../scripts/present';
+      import '../scripts/search';
     </script>
   </body>
 </html>
