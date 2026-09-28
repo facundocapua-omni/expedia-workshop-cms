@@ -4,9 +4,9 @@ import Section from '../../components/Section.astro';
 import QuestionItem from '../../components/QuestionItem.astro';
 import { AGENDA_GROUPS } from '../../lib/agenda';
 import { loadSiteData } from '../../lib/data';
+import { discussedIn } from '../../lib/sessions';
 
 const data = await loadSiteData();
-const ideaTitles = Object.fromEntries(data.ideas.map((i) => [i.slug, i.short]));
 const groups = AGENDA_GROUPS
   .map((g) => ({ ...g, items: data.questions.filter((q) => q.group === g.group) }))
   .filter((g) => g.items.length > 0);
@@ -19,7 +19,7 @@ const groups = AGENDA_GROUPS
 >
   {groups.map((g, i) => (
     <Section n={String(i + 1).padStart(2, '0')} id={g.group} title={g.title}>
-      {g.items.map((q) => <QuestionItem q={q} defines ideaTitles={ideaTitles} />)}
+      {g.items.map((q) => <QuestionItem q={q} defines discussedIn={discussedIn(q, data)} />)}
     </Section>
   ))}
 </Doc>

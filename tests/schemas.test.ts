@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { decisionSchema, questionSchema, uc2QuestionSchema, uniqueById } from '../src/lib/schemas';
+import { decisionSchema, questionSchema, sessionSchema, uc2QuestionSchema, uniqueById } from '../src/lib/schemas';
 
 describe('questionSchema', () => {
   const base = { id: 'Q5', group: 'blocking', question: 'Where is the sentence assembled?', status: 'open' };
@@ -46,5 +46,36 @@ describe('uniqueById', () => {
   });
   it('names the source and the id when an id repeats', () => {
     expect(() => uniqueById([{ id: 'Q1' }, { id: 'Q1' }], 'data/questions.yaml')).toThrow('data/questions.yaml: duplicate id Q1');
+  });
+});
+
+describe('sessionSchema', () => {
+  const valid = {
+    id: 'nba-hand-off', title: 'NBA hand-off', short: 'NBA hand-off', track: 'Cross-channel proof points',
+    owner: 'Globant w/ Contentful', order: 2, outcomes: ['NBA follow-ups logged'],
+    topics: [{ agenda: 'Contents of the notification payload sent to channels', id: 'payload', nav: 'Notification payload' }],
+  };
+
+  it('fills topic defaults', () => {
+    expect(sessionSchema.parse(valid).topics[0]).toEqual({
+      agenda: 'Contents of the notification payload sent to channels', id: 'payload', nav: 'Notification payload',
+      settles: [], decisions: [], prompt: false,
+    });
+  });
+  it('rejects a misspelt topic key instead of dropping it', () => {
+    expect(sessionSchema.safeParse({ ...valid, topics: [{ ...valid.topics[0], setles: ['Q1'] }] }).success).toBe(false);
+  });
+  it('rejects a session without outcomes', () => {
+    expect(sessionSchema.safeParse({ ...valid, outcomes: [] }).success).toBe(false);
+  });
+  it('rejects a topic id that is not a lower-case slug', () => {
+    expect(sessionSchema.safeParse({ ...valid, topics: [{ ...valid.topics[0], id: 'Payload' }] }).success).toBe(false);
+  });
+  it('rejects a decision ID in settles', () => {
+    expect(sessionSchema.safeParse({ ...valid, topics: [{ ...valid.topics[0], settles: ['D-01'] }] }).success).toBe(false);
+  });
+  it('accepts a see-also link to a site page', () => {
+    const topic = { ...valid.topics[0], prompt: true, see: { href: '/sessions/proof-point-delivery/#flow', label: 'Session 1' } };
+    expect(sessionSchema.safeParse({ ...valid, topics: [topic] }).success).toBe(true);
   });
 });

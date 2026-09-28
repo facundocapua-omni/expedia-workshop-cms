@@ -77,14 +77,14 @@ as 0). The original `<h2>` is not a piece.
 | `variant-metadata` | How NBA reads variant metadata to choose a proof point variant | `uc1:position:2` (NBA selects), `uc1:model:*`, `uc1:alternatives:3` (Contentful resolving), `uc1:risks:5` (NBA variant index) | Q2, Q17 | D-02 |
 | `taxonomy` | Shared taxonomy between the CMS and NBA | `uc1:position:5` (tone vs. register), `uc1:ref:3`–`uc1:ref:9` (dimensions), `uc1:alternatives:0` (tone and channel as one dimension) | Q6b | D-05 |
 | `payload` | Contents of the notification payload sent to channels | `uc1:ref:0`–`uc1:ref:2` (reference format), `uc1:position:1` (template), `uc1:position:3` (one reference), `uc1:alternatives:2` (entry per partner), `uc1:alternatives:4` (hashed ID) | Q1, Q3, Q16, Q20 | D-01, D-03 |
-| `served-variant` | Reporting the served variant back to NBA, including fallbacks | link to session 1 `#flow` row 9 | Q15 | — |
+| `served-variant` | Reporting the served variant back to NBA, including fallbacks | *prompt*, see Session 1 `#flow` (interaction 9) | Q15 | — |
 
 ### 2.3 Session 3 — `partner-web-display-layer` · short "Partner web"
 
 | Topic id | Agenda bullet (literal) | Material (origin) | Settles | Decisions |
 |---|---|---|---|---|
 | `front-end` | Front end approach: who builds, hosts and maintains it | *prompt* | Q8, Q10 | — |
-| `rendering` | Rendering, caching and page performance | *prompt*, link to session 1 cache options | U1 | — |
+| `rendering` | Rendering, caching and page performance | *prompt*, see Session 1 `#performance` (where the cache sits) | U1 | — |
 | `preview` | Live preview and visual editing | *prompt* | — | — |
 | `components` | Mapping content types to front end components and the design system, including the 2027 brand refresh | `uc2:summary:3` (front-end paragraph), link to UC2 content types | Q9, U2, U3, U4, U8 | — |
 | `self-serve` | What Web Ops can change without engineering versus what needs a developer | *prompt* | U9 | — |
@@ -134,7 +134,7 @@ topics:
 Schema (`sessionSchema` in `src/lib/schemas.ts`): `title`, `short`, `track`, `owner`,
 `order`, `outcomes` (non-empty strings), `topics` (non-empty). Each topic has `agenda`, `id`
 (lower-case slug), `nav`, `settles` (question IDs, default `[]`), `decisions` (D-NN, default
-`[]`) and `prompt` (default `false`). Session and topic objects are `.strict()`, like the
+`[]`), `prompt` (default `false`) and `see` (optional `{ href, label }`, rendered as "See also" after the material or the prompt line, so a prompt topic can point at material elsewhere). Session and topic objects are `.strict()`, like the
 other schemas, so a misspelt key fails instead of being dropped.
 
 ### 3.3 Topic material (`src/content/topics/<session>/<topic>.mdx`)

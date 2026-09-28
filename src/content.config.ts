@@ -1,11 +1,11 @@
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import YAML from 'yaml';
 import { parseInventory } from './lib/inventory';
 import {
   consolidationSchema, contentTypeSchema, decisionSchema, ideaSchema,
-  inventorySchema, questionSchema, uc2QuestionSchema, uniqueById,
+  inventorySchema, questionSchema, sessionSchema, topicMaterialSchema, uc2QuestionSchema, uniqueById,
 } from './lib/schemas';
 
 const QUESTIONS = './data/questions.yaml';
@@ -23,6 +23,25 @@ async function listFrom<T extends { id: string }>(path: string, pick: (parsed: a
     throw new Error(`${path}: ${(error as Error).message}`);
   }
   return uniqueById(pick(parsed), label);
+}
+
+const SESSIONS = './src/content/sessions';
+
+/** One session per YAML file, named by its slug. Throws on bad YAML, like listFrom. */
+async function sessionsFrom(dir: string): Promise<{ id: string }[]> {
+  const files = (await readdir(dir)).filter((f) => f.endsWith('.yaml')).sort();
+  return Promise.all(files.map(async (f) => {
+    const path = `${dir}/${f}`;
+    let parsed: unknown;
+    try {
+      parsed = YAML.parse(await readFile(path, 'utf8'));
+    } catch (error) {
+      throw new Error(`${path}: ${(error as Error).message}`);
+    }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error(`${path}: expected one session`);
+    if ('id' in parsed) throw new Error(`${path}: the file name is the session id, so remove "id"`);
+    return { id: f.slice(0, -'.yaml'.length), ...parsed };
+  }));
 }
 
 export const collections = {
@@ -46,4 +65,7 @@ export const collections = {
     loader: async () => parseInventory(await readFile('./sources/component-inventory.md', 'utf8')),
     schema: inventorySchema,
   }),
+  sessions: defineCollection({ loader: () => sessionsFrom(SESSIONS), schema: sessionSchema }),
+  // Topic material: src/content/topics/<session>/<topic>.mdx, id "<session>/<topic>".
+  topics: defineCollection({ loader: glob({ pattern: '*/*.mdx', base: './src/content/topics' }), schema: topicMaterialSchema }),
 };

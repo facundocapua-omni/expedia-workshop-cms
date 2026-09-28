@@ -64,7 +64,31 @@ export interface IdeaMeta {
   order: number;
 }
 
+export interface TopicMeta {
+  id: string;
+  agenda: string;
+  nav: string;
+  settles: string[];
+  decisions: string[];
+  prompt: boolean;
+  see?: { href: string; label: string };
+}
+
+export interface SessionMeta {
+  slug: string;
+  title: string;
+  short: string;
+  track: string;
+  owner: string;
+  order: number;
+  outcomes: string[];
+  topics: TopicMeta[];
+}
+
 export interface SiteData {
+  sessions: SessionMeta[];
+  /** Topic material files, as "<session>/<topic>". */
+  materials: string[];
   ideas: IdeaMeta[];
   questions: Question[];
   decisions: Decision[];

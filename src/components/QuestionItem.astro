@@ -8,11 +8,11 @@ interface Props {
   q: Question;
   /** True only on the register, which is where the ID is defined. */
   defines?: boolean;
-  ideaTitles: Record<string, string>;
+  /** From discussedIn(). Omitted on the page that discusses the question. */
+  discussedIn?: { href: string; label: string };
 }
-const { q, defines = false, ideaTitles } = Astro.props;
+const { q, defines = false, discussedIn } = Astro.props;
 const proposal = q.answer ?? q.position;
-const discussedIn = q.idea ? { href: `/ideas/${q.idea}/${q.section ? `#${q.section}` : ''}`, label: ideaTitles[q.idea] ?? q.idea } : undefined;
 ---
 <article
   class={`q-item ${hasProposal(q) ? 'to-confirm' : 'to-decide'}`}

@@ -55,6 +55,34 @@ export const decisionSchema = z.object({
   resolves: z.array(z.string()).default([]),
 }).strict();
 
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+export const topicSchema = z.object({
+  /** The agenda bullet, copied literally from sources/workshop-agenda.md. */
+  agenda: z.string().min(1),
+  id: z.string().regex(SLUG),
+  nav: z.string().min(1),
+  settles: z.array(z.string().regex(/^(Q\d+b?|DQ-\d+|U\d+)$/)).default([]),
+  decisions: z.array(z.string().regex(/^D-\d{2}$/)).default([]),
+  /** A topic with no prepared material: shown as a discussion prompt, and has no MDX file. */
+  prompt: z.boolean().default(false),
+  see: z.object({ href: z.string().startsWith('/'), label: z.string().min(1) }).strict().optional(),
+}).strict();
+
+export const sessionSchema = z.object({
+  id: z.string().regex(SLUG),
+  title: z.string().min(1),
+  short: z.string().min(1),
+  track: z.string().min(1),
+  owner: z.string().min(1),
+  order: z.number().int().positive(),
+  outcomes: z.array(z.string().min(1)).min(1),
+  topics: z.array(topicSchema).min(1),
+}).strict();
+
+/** Topic material is MDX without frontmatter. */
+export const topicMaterialSchema = z.object({}).strict();
+
 export const contentTypeSchema = z.object({
   id: z.string().regex(/^CT\d{2}$/),
   name: z.string(),

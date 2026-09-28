@@ -4,10 +4,10 @@ import Section from '../components/Section.astro';
 import QuestionItem from '../components/QuestionItem.astro';
 import { buildAgenda } from '../lib/agenda';
 import { loadSiteData } from '../lib/data';
+import { discussedIn } from '../lib/sessions';
 
 const data = await loadSiteData();
 const agenda = buildAgenda(data.questions);
-const ideaTitles = Object.fromEntries(data.ideas.map((i) => [i.slug, i.short]));
 ---
 <Doc
   title="Decision agenda"
@@ -21,13 +21,13 @@ const ideaTitles = Object.fromEntries(data.ideas.map((i) => [i.slug, i.short]));
       {g.toConfirm.length > 0 && (
         <>
           <h3>To confirm</h3>
-          {g.toConfirm.map((q) => <QuestionItem q={q} ideaTitles={ideaTitles} />)}
+          {g.toConfirm.map((q) => <QuestionItem q={q} discussedIn={discussedIn(q, data)} />)}
         </>
       )}
       {g.toDecide.length > 0 && (
         <>
           <h3>To decide</h3>
-          {g.toDecide.map((q) => <QuestionItem q={q} ideaTitles={ideaTitles} />)}
+          {g.toDecide.map((q) => <QuestionItem q={q} discussedIn={discussedIn(q, data)} />)}
         </>
       )}
     </Section>

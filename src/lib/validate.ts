@@ -34,6 +34,43 @@ export function findProblems(data: SiteData): string[] {
   for (const d of data.decisions) {
     for (const id of d.resolves) if (!questionIds.has(id)) problems.push(`${d.id}: resolves unknown question ${id}`);
   }
+
+  // Sessions: every question is settled in at most one topic, and every topic's material exists.
+  const decisionIds = new Set(data.decisions.map((d) => d.id));
+  const materials = new Set(data.materials);
+  const declared = new Set<string>();
+  const settledIn = new Map<string, string>();
+  const byOrder = new Map<number, string>();
+  const byShort = new Map<string, string>();
+  for (const s of data.sessions) {
+    const sameOrder = byOrder.get(s.order);
+    if (sameOrder) problems.push(`sessions ${sameOrder} and ${s.slug} share order ${s.order}`);
+    else byOrder.set(s.order, s.slug);
+    const sameShort = byShort.get(s.short);
+    if (sameShort) problems.push(`sessions ${sameShort} and ${s.slug} share the short label "${s.short}"`);
+    else byShort.set(s.short, s.slug);
+    const topicIds = new Set<string>();
+    for (const t of s.topics) {
+      const where = `${s.slug}/${t.id}`;
+      if (topicIds.has(t.id)) problems.push(`${s.slug}: duplicate topic ${t.id}`);
+      topicIds.add(t.id);
+      declared.add(where);
+      for (const id of t.settles) {
+        if (!questionIds.has(id)) problems.push(`${where}: settles unknown question ${id}`);
+        const before = settledIn.get(id);
+        if (before) problems.push(`${id}: settled in both ${before} and ${where}`);
+        else settledIn.set(id, where);
+      }
+      for (const id of t.decisions) if (!decisionIds.has(id)) problems.push(`${where}: unknown decision ${id}`);
+      if (t.prompt && materials.has(where)) problems.push(`${where}: a discussion prompt has no material, but src/content/topics/${where}.mdx exists`);
+      if (!t.prompt && !materials.has(where)) problems.push(`${where}: no material — add src/content/topics/${where}.mdx or mark the topic prompt: true`);
+    }
+  }
+  for (const m of data.materials) if (!declared.has(m)) problems.push(`src/content/topics/${m}.mdx: no session declares topic ${m}`);
+  for (const q of data.questions) {
+    const where = settledIn.get(q.id);
+    if (where && (q.idea || q.section)) problems.push(`${q.id}: settled in ${where}, so it must not also set idea/section`);
+  }
   return problems;
 }
 

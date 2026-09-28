@@ -1,7 +1,23 @@
-import type { Question, SiteData } from '../src/lib/types';
+import type { Question, SessionMeta, SiteData, TopicMeta } from '../src/lib/types';
 
 export function question(overrides: Partial<Question> & Pick<Question, 'id'>): Question {
   return { group: 'scope', question: `Question ${overrides.id}?`, status: 'open', confirmedByEG: false, ...overrides };
+}
+
+export function topic(overrides: Partial<TopicMeta> & Pick<TopicMeta, 'id'>): TopicMeta {
+  return { agenda: `Topic ${overrides.id}`, nav: `Topic ${overrides.id}`, settles: [], decisions: [], prompt: false, ...overrides };
+}
+
+export function session(overrides: Partial<SessionMeta> = {}): SessionMeta {
+  return {
+    slug: 'proof-point-delivery', title: 'Proof point delivery', short: 'Delivery', track: 'Cross-channel proof points',
+    owner: 'Globant', order: 1, outcomes: ['Pattern agreed'],
+    topics: [
+      topic({ id: 'ownership', nav: 'Ownership', settles: ['DQ-9'], decisions: ['D-05'] }),
+      topic({ id: 'reference-implementations', prompt: true }),
+    ],
+    ...overrides,
+  };
 }
 
 export function siteData(overrides: Partial<SiteData> = {}): SiteData {
@@ -18,6 +34,8 @@ export function siteData(overrides: Partial<SiteData> = {}): SiteData {
       id: 'C019', name: 'Background Section', type: 'Component', variationOf: null,
       matrixStatus: 'Existing', reference: 'ID 85', screens: ['P01'], contentTypes: ['CT01'],
     }],
+    sessions: [session()],
+    materials: ['proof-point-delivery/ownership'],
     ...overrides,
   };
 }
