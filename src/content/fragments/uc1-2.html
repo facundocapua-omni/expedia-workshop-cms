@@ -1,0 +1,17 @@
+<pre><span class="c">// what NBA emits — one string, decomposable, human-readable in logs</span>
+cr:1:<span class="k">7KxQ2mVn</span>@<span class="k">14</span>
+
+     │         │        └── publishedVersion, pins immutability
+     │         └─────────── proofPointVariant entry id
+     └───────────────────── contract version
+
+<span class="c">// what travels with it in the decision payload</span>
+{
+  "contentRef":  "cr:1:7KxQ2mVn@14",
+  "partnerId":   "EQC-88421",
+  "locale":      "de-DE",
+  "params":      { "views": 47, "windowDays": 7 }
+}
+<span class="c">// channel is NOT here — every consumer already knows which one it is,
+// and supplies it on the fetch. NBA uses channel only as an availability
+// filter when reading the index, never as a selection criterion.</span></pre>

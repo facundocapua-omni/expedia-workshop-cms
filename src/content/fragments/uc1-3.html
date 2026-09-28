@@ -1,0 +1,72 @@
+<svg class="dg" viewBox="0 0 900 330" role="img" aria-label="Authoring flow in four phases: author base, generate tone variants, localise, publish and version">
+      <defs>
+        <marker id="ar2" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+          <path d="M0,0 L9,4.5 L0,9 z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+
+      
+      <rect x="10" y="30" width="196" height="196" rx="4" fill="var(--card)" stroke="var(--rule)"/>
+      <text x="22" y="52" font-size="12.5" font-weight="600" fill="var(--ink)">A · Author base</text>
+      <rect x="22" y="66" width="172" height="34" rx="3" fill="var(--accent-soft)"/>
+      <text x="32" y="80" font-size="11" fill="var(--ink)">proofPoint entry</text>
+      <text x="32" y="94" font-size="10.5" fill="var(--ink-soft)">template + parameterSchema</text>
+      <rect x="22" y="108" width="172" height="34" rx="3" fill="var(--accent-soft)"/>
+      <text x="32" y="122" font-size="11" fill="var(--ink)">tag segment + tone</text>
+      <text x="32" y="136" font-size="10.5" fill="var(--ink-soft)">taxonomy, not free text</text>
+      <text x="22" y="168" font-size="10.5" fill="var(--ink-soft)">EG content author</text>
+      <text x="22" y="188" font-size="10.5" fill="var(--ink-soft)">source locale en-US only</text>
+
+      
+      <rect x="244" y="30" width="196" height="196" rx="4" fill="var(--card)" stroke="var(--rule)"/>
+      <text x="256" y="52" font-size="12.5" font-weight="600" fill="var(--ink)">B · Generate variants</text>
+      <rect x="256" y="66" width="172" height="34" rx="3" fill="var(--warm-soft)"/>
+      <text x="266" y="80" font-size="11" fill="var(--ink)">AI action · per tone</text>
+      <text x="266" y="94" font-size="10.5" fill="var(--ink-soft)">writes draft variants</text>
+      <rect x="256" y="108" width="172" height="34" rx="3" fill="var(--warm-soft)"/>
+      <text x="266" y="122" font-size="11" fill="var(--ink)">AI action · per channel</text>
+      <text x="266" y="136" font-size="10.5" fill="var(--ink-soft)">applies constraints</text>
+      <circle cx="268" cy="166" r="9" fill="var(--ok-soft)" stroke="var(--ok)"/>
+      <text x="264.5" y="170" font-size="10" font-weight="600" fill="var(--ok)">H</text>
+      <text x="286" y="170" font-size="10.5" fill="var(--ink-soft)">gate 1 — copy approval</text>
+      <text x="256" y="196" font-size="10.5" fill="var(--ink-soft)">placeholders preserved, checked</text>
+
+      
+      <rect x="478" y="30" width="196" height="196" rx="4" fill="var(--card)" stroke="var(--rule)"/>
+      <text x="490" y="52" font-size="12.5" font-weight="600" fill="var(--ink)">C · Localise</text>
+      <rect x="490" y="66" width="172" height="34" rx="3" fill="var(--warm-soft)"/>
+      <text x="500" y="80" font-size="11" fill="var(--ink)">send to translation</text>
+      <text x="500" y="94" font-size="10.5" fill="var(--ink-soft)">5 locales, variables intact</text>
+      <rect x="490" y="108" width="172" height="34" rx="3" fill="var(--accent-soft)"/>
+      <text x="500" y="122" font-size="11" fill="var(--ink)">write on approval only</text>
+      <text x="500" y="136" font-size="10.5" fill="var(--ink-soft)">empty field until then</text>
+      <circle cx="502" cy="166" r="9" fill="var(--ok-soft)" stroke="var(--ok)"/>
+      <text x="498.5" y="170" font-size="10" font-weight="600" fill="var(--ok)">H</text>
+      <text x="520" y="170" font-size="10.5" fill="var(--ink-soft)">gate 2 — per locale</text>
+      <text x="490" y="196" font-size="10.5" fill="var(--ink-soft)">unapproved locale falls back</text>
+
+      
+      <rect x="712" y="30" width="178" height="196" rx="4" fill="var(--card)" stroke="var(--rule)"/>
+      <text x="724" y="52" font-size="12.5" font-weight="600" fill="var(--ink)">D · Publish</text>
+      <rect x="724" y="66" width="154" height="34" rx="3" fill="var(--accent-soft)"/>
+      <text x="734" y="80" font-size="11" fill="var(--ink)">publish entry</text>
+      <text x="734" y="94" font-size="10.5" fill="var(--ink-soft)">version increments</text>
+      <rect x="724" y="108" width="154" height="34" rx="3" fill="var(--ok-soft)"/>
+      <text x="734" y="122" font-size="11" fill="var(--ink)">snapshot + index</text>
+      <text x="734" y="136" font-size="10.5" fill="var(--ink-soft)">webhook to resolver</text>
+      <circle cx="736" cy="166" r="9" fill="var(--ok-soft)" stroke="var(--ok)"/>
+      <text x="732.5" y="170" font-size="10" font-weight="600" fill="var(--ok)">H</text>
+      <text x="754" y="170" font-size="10.5" fill="var(--ink-soft)">gate 3 — release</text>
+      <text x="724" y="196" font-size="10.5" fill="var(--ink-soft)">NBA sees new variant</text>
+
+      <line x1="208" y1="128" x2="240" y2="128" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#ar2)"/>
+      <line x1="442" y1="128" x2="474" y2="128" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#ar2)"/>
+      <line x1="676" y1="128" x2="708" y2="128" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+      <line x1="10" y1="262" x2="890" y2="262" stroke="var(--rule)"/>
+      <circle cx="20" cy="288" r="9" fill="var(--ok-soft)" stroke="var(--ok)"/>
+      <text x="16.5" y="292" font-size="10" font-weight="600" fill="var(--ok)">H</text>
+      <text x="40" y="292" font-size="11.5" fill="var(--ink-soft)">human gate — generation is automated, acceptance never is</text>
+      <rect x="470" y="280" width="16" height="16" rx="3" fill="var(--warm-soft)"/>
+      <text x="498" y="292" font-size="11.5" fill="var(--ink-soft)">automated step</text>
+    </svg>

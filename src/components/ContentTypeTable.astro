@@ -1,0 +1,15 @@
+---
+import { loadSiteData } from '../lib/data';
+import { anchorFor } from '../lib/ids';
+const { contentTypes } = await loadSiteData();
+---
+<div class="scroll">
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:18%">Type</th><th style="width:12%">Layer</th><th style="width:7%">Props</th><th style="width:8%">Reuse</th><th style="width:8%">Cplx</th><th>Purpose</th></tr></thead>
+    <tbody>
+      {contentTypes.map((ct) => (
+        <tr id={anchorFor(ct.id)} data-def={ct.id}><td class="n">{ct.id}</td><td><code>{ct.name}</code></td><td>{ct.layer}</td><td class="ref">{ct.propertyCount}</td><td class="ref">{ct.reuse}</td><td class="ref">{ct.complexity}</td><td>{ct.summary}</td></tr>
+      ))}
+    </tbody>
+  </table>
+</div>

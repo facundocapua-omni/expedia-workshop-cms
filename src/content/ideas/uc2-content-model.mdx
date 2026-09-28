@@ -1,8 +1,214 @@
 ---
 title: "Use Case 2: partner web content on Contentful"
 short: UC2
-kicker: Content model
-lede: Stub, replaced by the migration.
+kicker: Content model — Globant DXP / Martech Studio
+lede: The {{inventoryComponents}} approved components in the live inventory become {{contentTypes}} Contentful content types, of which {{authorableBlocks}} are blocks an author places on a page. This document carries the definitions and the decisions behind them; the accompanying workbook carries all {{properties}} property specifications, filterable.
 order: 2
+meta:
+  - 3 pilot templates
+  - as-is migration
+  - pilot scope only
+  - Next.js + Tailwind front end
 ---
-Stub.
+import Section from '../../components/Section.astro';
+import Fact from '../../components/Fact.astro';
+import ContentTypeTable from '../../components/ContentTypeTable.astro';
+
+<Section n="01" id="summary" title="Summary">
+  <div class="stat">
+    <div><b><Fact k="inventoryComponents" /></b><span>inventory components</span></div>
+    <div><b>26</b><span>structural signatures</span></div>
+    <div><b><Fact k="contentTypes" /></b><span>content types</span></div>
+    <div><b><Fact k="authorableBlocks" /></b><span>authorable blocks</span></div>
+    <div><b><Fact k="properties" /></b><span>properties specified</span></div>
+    <div><b><Fact k="keptDistinct" /></b><span>kept distinct</span></div>
+  </div>
+  <p>The model takes shape in three moves. Five inventory entries share a content model with a parent and become properties on it — media position, background treatment, an optional CTA. Three collection containers share one model and become a single card collection with a layout property. And four entries belong to the structural layer rather than the page: a heading, a section wrapper, a separator and a button, which live on the section container or travel with their parent block.</p>
+  <p>Ten components become a content type of their own and are specified as they stand. The count was not driven down for its own sake: four further unifications were considered and the types kept distinct instead, and those four are set out in section 04 alongside the ones that were unified.</p>
+  <p>Every content type has a matching component in the Next.js and Tailwind front end built alongside it, so the <Fact k="contentTypes" /> types resolve to <Fact k="authorableBlocks" /> block components, one section wrapper and two route-level page components. The container decision pays off twice over there: presentation props become a single class map on one component instead of being restated seventeen times, and <code>section.blocks</code> resolves through one registry, so a new type later is a content-model change plus one registry entry.</p>
+  <p>Three types carry most of the delivery risk, and none of them is a modelling problem. The card collection, because query-driven collections are the least specified thing in any inventory. The lead capture form and the calculator, because their behaviour — progressive fields, submission, formula — is invisible from a rendered page and has to come from EG.</p>
+</Section>
+
+
+<Section n="02" id="disposition" title="Component mapping" nav="Inventory disposition">
+  <p class="sec-note">Full traceability from the component analysis. Every C-number is accounted for, so the model can be checked against the source inventory rather than taken on trust.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:23%">Inventory component</th><th style="width:15%">In the model</th><th style="width:12%">Lands as</th><th>Reason</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">C001</td><td>Header</td><td><span class="pill p-recl">Site-level</span></td><td class="ref">CT05</td><td>Rendered by the template; the link tree is what authors maintain</td></tr>
+      <tr><td class="ref">C002</td><td>Footer</td><td><span class="pill p-recl">Site-level</span></td><td class="ref">CT05</td><td>Footer columns are navigation entries on the same type</td></tr>
+      <tr><td class="ref">C003</td><td>Cookie Banner</td><td><span class="pill p-recl">Site-level</span></td><td class="ref">CT04</td><td>Consent script referenced from meta info and applied site-wide</td></tr>
+      <tr><td class="ref">C004</td><td>Hero Banner</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT07</td><td>Parent of the hero merge</td></tr>
+      <tr><td class="ref">C005</td><td>Headline</td><td><span class="pill p-abs">Structural</span></td><td class="ref">CT01</td><td>Titles the block beneath it, so it belongs to the section holding both</td></tr>
+      <tr><td class="ref">C006</td><td>Embedded Video</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT16</td><td>—</td></tr>
+      <tr><td class="ref">C007</td><td>Anchor Navbar</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT17</td><td>Distinct from site navigation: in-page anchors follow the page, not the site IA</td></tr>
+      <tr><td class="ref">C008</td><td>Split Banner</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT08</td><td>Parent of the split-banner merge</td></tr>
+      <tr><td class="ref">C009</td><td>Comparison Table</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT12</td><td>Structured, not free-form, so it can be made responsive</td></tr>
+      <tr><td class="ref">C010</td><td>Info Boxes</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT10</td><td>—</td></tr>
+      <tr><td class="ref">C011</td><td>Split Banner + Accordion</td><td><span class="pill p-merge">Unified</span></td><td class="ref">CT08</td><td>An accordion in the copy slot of the same type</td></tr>
+      <tr><td class="ref">C012</td><td>Promo Banner, image bg</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT09</td><td>Parent of the promo merge</td></tr>
+      <tr><td class="ref">C013</td><td>Card Carousel</td><td><span class="pill p-merge">Unified</span></td><td class="ref">CT18</td><td><code>layout=carousel</code></td></tr>
+      <tr><td class="ref">C014</td><td>Video Card</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT19</td><td>Container and card kept as separate types, as the analysis concluded</td></tr>
+      <tr><td class="ref">C015</td><td>Accordion</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT13</td><td>—</td></tr>
+      <tr><td class="ref">C016</td><td>News Card Grid</td><td><span class="pill p-merge">Unified</span></td><td class="ref">CT18</td><td><code>layout=grid</code></td></tr>
+      <tr><td class="ref">C017</td><td>Editorial Card</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT20</td><td>One card type serves both the grid and the carousel layout</td></tr>
+      <tr><td class="ref">C018</td><td>Button</td><td><span class="pill p-abs">Structural</span></td><td class="ref">cta</td><td>Always part of a parent block, so it travels with it as a field group</td></tr>
+      <tr><td class="ref">C019</td><td>Background Section</td><td><span class="pill p-abs">Container</span></td><td class="ref">CT01</td><td>Wraps, titles and spaces the blocks inside it — the structural layer</td></tr>
+      <tr><td class="ref">C020</td><td>Separator</td><td><span class="pill p-abs">Structural</span></td><td class="ref">CT01</td><td>Spacing and an optional rule on the section</td></tr>
+      <tr><td class="ref">C021</td><td>Split Banner, image right</td><td><span class="pill p-merge">Unified</span></td><td class="ref">CT08</td><td><code>mediaPosition=right</code> on the same type</td></tr>
+      <tr><td class="ref">C022</td><td>Hero with Breadcrumb</td><td><span class="pill p-merge">Unified</span></td><td class="ref">CT07</td><td>Breadcrumb comes from the page; the remaining difference is an optional eyebrow</td></tr>
+      <tr><td class="ref">C023</td><td>Breadcrumb</td><td><span class="pill p-recl">Page-level</span></td><td class="ref">template</td><td>Derived from the URL path, so it stays in step with where the page sits</td></tr>
+      <tr><td class="ref">C024</td><td>Lead Capture Form</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT22</td><td>Left column modelled inside the component, per the inventory question</td></tr>
+      <tr><td class="ref">C025</td><td>Promo Banner, colour bg</td><td><span class="pill p-merge">Unified</span></td><td class="ref">CT09</td><td><code>background=brand</code></td></tr>
+      <tr><td class="ref">C026</td><td>Article Header</td><td><span class="pill p-recl">Page-level</span></td><td class="ref">CT03</td><td>Renders from page metadata, so every article header is complete and consistent</td></tr>
+      <tr><td class="ref">C027</td><td>Rich Text</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT14</td><td>Footnotes are a style on the same type</td></tr>
+      <tr><td class="ref">C028</td><td>Stats Block</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT15</td><td>Standalone block, placeable in any section</td></tr>
+      <tr><td class="ref">C029</td><td>CTA Card with Icon</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT11</td><td>Distinct from info boxes: the CTA is mandatory here</td></tr>
+      <tr><td class="ref">C030</td><td>Calculator</td><td><span class="pill p-keep">Own type</span></td><td class="ref">CT23</td><td>Formula in the front end, copy in the CMS</td></tr>
+      <tr><td class="ref">C031</td><td>Testimonials</td><td><span class="pill p-merge">Unified</span></td><td class="ref">CT18+CT21</td><td>Container merges; the quote becomes its own card type</td></tr>
+      <tr><td class="ref">C032</td><td>Split Banner with CTA</td><td><span class="pill p-merge">Unified</span></td><td class="ref">CT08</td><td>A populated optional field</td></tr>
+      <tr><td class="ref">C033</td><td>Author Block</td><td><span class="pill p-recl">Page-level</span></td><td class="ref">CT06</td><td>Renders from the author reference held on the article</td></tr>
+      <tr><td class="ref">C034</td><td>Tags and Share</td><td><span class="pill p-recl">Page-level</span></td><td class="ref">CT03+CT04</td><td>Tags from page taxonomy, share row from meta info</td></tr>
+      <tr><td class="ref">C035</td><td>Page Feedback</td><td><span class="pill p-recl">Page-level</span></td><td class="ref">CT04</td><td>Site widget with a per-page toggle</td></tr>
+    </tbody>
+  </table>
+  </div>
+</Section>
+
+<Section n="03" id="types" title="The {{contentTypes}} content types" nav="Content types">
+  <p class="sec-note">Full property specifications — name, label, group, type, required, default, validation, localisable and authoring notes — are in the accompanying workbook.</p>
+  <ContentTypeTable />
+  <p>Three types carry L complexity — the card collection, the lead capture form and the calculator. Everything else is S or M, which is the shape you want: the risk is concentrated in three places rather than spread thinly across twenty-three.</p>
+</Section>
+
+<Section n="04" id="decisions" title="Modelling decisions">
+  <p class="sec-note">Ten decisions. Six bring components together under a single type; four keep types distinct where combining them would cost a validation or blur what an author reaches for. The four distinctions carry as much weight as the six unifications — together they show the count was reasoned rather than minimised.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:26%">Candidates</th><th style="width:13%">Outcome</th><th style="width:32%">Deciding test</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>C008, C021, C032, C011 split banners</td><td><span class="pill p-merge">Unified</span></td><td>Same content model throughout; the differences are media position, an optional CTA and one optional block slot</td><td><code>CT08</code></td></tr>
+      <tr><td>C013, C016, C031 collections</td><td><span class="pill p-merge">Unified</span></td><td>One container model; grid versus carousel is presentation, and the card type is a reference constraint</td><td><code>CT18</code></td></tr>
+      <tr><td>C004, C022 heroes</td><td><span class="pill p-merge">Unified</span></td><td>The breadcrumb comes from the page; the remaining difference is one optional eyebrow field</td><td><code>CT07</code></td></tr>
+      <tr><td>C012, C025 promo banners</td><td><span class="pill p-merge">Unified</span></td><td>Background treatment is presentation, as the analysis anticipated</td><td><code>CT09</code></td></tr>
+      <tr><td>C027 body and footnotes</td><td><span class="pill p-merge">Unified</span></td><td>Same content model; the footnote is a rendering style</td><td><code>CT14</code> with <code>style</code></td></tr>
+      <tr><td>C005, C019, C020</td><td><span class="pill p-abs">Structural</span></td><td>These carry no content of their own — they wrap, title and space the blocks inside them, and a heading stays tied to what it titles</td><td><code>CT01</code> — carries the presentation for every block</td></tr>
+      <tr><td>C029 CTA card and C010 info boxes</td><td><span class="pill p-keep">Kept distinct</span></td><td>The CTA is mandatory on one and absent on the other, and the cardinality differs — a single prompt versus a grid. They also do different editorial work: three inline conversion prompts across one article</td><td>Two types — <code>CT10</code> and <code>CT11</code></td></tr>
+      <tr><td>C014 video card and C017 editorial card</td><td><span class="pill p-keep">Kept distinct</span></td><td>The link is mandatory on the editorial card and has no meaning on the video card; combining them would trade a validation for one fewer type</td><td>Two types — <code>CT19</code> and <code>CT20</code>; shared front-end primitives</td></tr>
+      <tr><td>C007 anchor nav and site navigation</td><td><span class="pill p-keep">Kept distinct</span></td><td>Lifecycle differs: in-page anchors change when the page changes, site navigation when the site does. This settles the question raised during analysis</td><td><code>CT17</code> as its own type</td></tr>
+      <tr><td>CT07 hero and CT09 promo banner</td><td><span class="pill p-keep">Kept distinct</span></td><td>Different editorial job and different SEO role: the hero opens the page once and owns the h1, the promo band repeats and never does</td><td>Two types — <code>CT07</code> and <code>CT09</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+</Section>
+
+
+<Section n="05" id="coverage" title="The three templates">
+  <p class="sec-note">Each pilot page walked top to bottom, in the order the inventory recorded it, showing which content type renders each block and how it is configured. This is the proof the model reconstructs the pages: if a row had no content type, the model would be incomplete.</p>
+
+  <h3>P01 — Campaign landing page</h3>
+  <p><code>page</code> (CT02) with 12 sections. Uses 11 content types plus chrome.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:26%">Observed block</th><th style="width:14%">From</th><th style="width:14%">Content type</th><th>Configuration</th></tr></thead>
+    <tbody>
+      <tr><td>Header</td><td class="ref">C001</td><td class="ref">CT05</td><td>Chrome — referenced from CT04, not placed on the page</td></tr>
+      <tr><td>Cookie banner</td><td class="ref">C003</td><td class="ref">CT04</td><td>Global overlay from an external consent script</td></tr>
+      <tr><td>Hero banner</td><td class="ref">C004 + C018</td><td class="ref">CT07</td><td><code>layout=fullBleed</code>, <code>theme=dark</code>, <code>cta</code> set, <code>headingLevel=h1</code></td></tr>
+      <tr><td>Intro band with heading + video</td><td class="ref">C019 &gt; C005, C006</td><td class="ref">CT01 + CT16</td><td>Section carries the heading; video placed as a block inside it</td></tr>
+      <tr><td>Sticky anchor nav</td><td class="ref">C007</td><td class="ref">CT17</td><td><code>sticky=true</code>, <code>source=auto</code> — items derived from section anchors</td></tr>
+      <tr><td>Five feature bands</td><td class="ref">C008 ×3, C021 ×2</td><td class="ref">CT08 ×5</td><td>Three with <code>mediaPosition=left</code>, two with <code>right</code> — one type, one property</td></tr>
+      <tr><td>Heading + comparison table</td><td class="ref">C005, C009</td><td class="ref">CT01 + CT12</td><td>2–4 columns, caption required</td></tr>
+      <tr><td>Heading + info boxes</td><td class="ref">C005, C010</td><td class="ref">CT01 + CT10</td><td><code>columns=3</code></td></tr>
+      <tr><td>Split banner with accordion</td><td class="ref">C011 &gt; C015</td><td class="ref">CT08 + CT13</td><td><code>bodyBlock=CT13</code>, <code>body</code> empty — the accordion takes the copy side</td></tr>
+      <tr><td>Promo banner</td><td class="ref">C012 + C018</td><td class="ref">CT09</td><td><code>background=image</code>, <code>cta</code> required</td></tr>
+      <tr><td>Heading + video carousel</td><td class="ref">C005, C013 &gt; C014 &gt; C006</td><td class="ref">CT01 + CT18 + CT19 + CT16</td><td><code>layout=carousel</code>, <code>source=manual</code>, items are media cards each referencing a video</td></tr>
+      <tr><td>Heading + FAQ accordion</td><td class="ref">C005, C015</td><td class="ref">CT01 + CT13</td><td><code>isFaq=true</code> — emits FAQ structured data</td></tr>
+      <tr><td>Recommended-for-you grid</td><td class="ref">C016 &gt; C017 + C018</td><td class="ref">CT18 + CT20</td><td><code>layout=grid</code>, <code>columns=3</code>; source manual or query is open</td></tr>
+      <tr><td>Footer</td><td class="ref">C002</td><td class="ref">CT05</td><td>Chrome — footer columns are navigation entries</td></tr>
+      <tr><td>Separators between sections</td><td class="ref">C020</td><td class="ref">CT01</td><td><code>spacing</code> and <code>showDivider</code> — no block of its own</td></tr>
+      <tr><td>Section headings ×10</td><td class="ref">C005</td><td class="ref">CT01</td><td><code>heading</code> + <code>headingLevel</code> on the container that holds the block below</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>P02 — Join us with form</h3>
+  <p><code>page</code> (CT02) with 3 sections — structurally a subset of P01, which is why it needs no page type of its own. Uses 4 content types plus chrome.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:26%">Observed block</th><th style="width:14%">From</th><th style="width:14%">Content type</th><th>Configuration</th></tr></thead>
+    <tbody>
+      <tr><td>Header</td><td class="ref">C001</td><td class="ref">CT05</td><td>Chrome</td></tr>
+      <tr><td>Hero with breadcrumb</td><td class="ref">C022 &gt; C023</td><td class="ref">CT07 + CT02</td><td><code>eyebrow</code> set on the hero; breadcrumb comes from <code>CT02.showBreadcrumb=true</code> and is derived from the URL path, never authored</td></tr>
+      <tr><td>Form band</td><td class="ref">C019 &gt; C024 + C018</td><td class="ref">CT01 + CT22</td><td>Left column (logo, heading, copy) modelled inside the form component, not as a separate headline</td></tr>
+      <tr><td>Promo banner</td><td class="ref">C025 + C018</td><td class="ref">CT09</td><td><code>background=brand</code> — the same type as P01's promo band</td></tr>
+      <tr><td>Footer</td><td class="ref">C002</td><td class="ref">CT05</td><td>Chrome</td></tr>
+      <tr><td>Cookie banner</td><td class="ref">C003</td><td class="ref">CT04</td><td>Global overlay</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>P03 — Blog article</h3>
+  <p><code>articlePage</code> (CT03) with 16 sections. The only template needing its own page type, because author, date and taxonomy have nowhere else to live. Uses 12 content types plus chrome.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:26%">Observed block</th><th style="width:14%">From</th><th style="width:14%">Content type</th><th>Configuration</th></tr></thead>
+    <tbody>
+      <tr><td>Header</td><td class="ref">C001</td><td class="ref">CT05</td><td>Chrome</td></tr>
+      <tr><td>Breadcrumb</td><td class="ref">C023</td><td class="ref">template</td><td>Always rendered for articles, derived from the URL path</td></tr>
+      <tr><td>Article header</td><td class="ref">C026</td><td class="ref">CT03</td><td>Renders from <code>title</code>, <code>standfirst</code>, <code>author</code>, <code>publishedDate</code>, <code>heroImage</code> — not a placeable block</td></tr>
+      <tr><td>Anchor nav, 4 items</td><td class="ref">C007</td><td class="ref">CT17</td><td>Same type as P01, different item count</td></tr>
+      <tr><td>Body copy ×3</td><td class="ref">C027 ×3</td><td class="ref">CT14 ×3</td><td><code>style=default</code>, <code>width=reading</code></td></tr>
+      <tr><td>Stats block</td><td class="ref">C028</td><td class="ref">CT15</td><td>2–4 figures</td></tr>
+      <tr><td>Band with heading + video</td><td class="ref">C019 &gt; C005, C006</td><td class="ref">CT01 + CT16</td><td>Section heading plus a video block</td></tr>
+      <tr><td>CTA card ×3</td><td class="ref">C029 ×3</td><td class="ref">CT11 ×3</td><td>Repeated conversion device; <code>cta</code> required on each</td></tr>
+      <tr><td>Heading + calculator</td><td class="ref">C005, C030</td><td class="ref">CT01 + CT23</td><td>Formula selected by <code>calculatorKey</code>; labels and disclaimer authored</td></tr>
+      <tr><td>Heading + testimonials</td><td class="ref">C005, C031</td><td class="ref">CT01 + CT18 + CT21</td><td><code>layout=carousel</code>, items are testimonials — same container as P01's video carousel</td></tr>
+      <tr><td>Heading + stats block</td><td class="ref">C005, C028</td><td class="ref">CT01 + CT15</td><td>Second instance of the same type</td></tr>
+      <tr><td>Split banner with CTA</td><td class="ref">C032 + C018</td><td class="ref">CT08</td><td><code>cta</code> populated — a field, not a separate type</td></tr>
+      <tr><td>Heading + FAQ accordion</td><td class="ref">C005, C015</td><td class="ref">CT01 + CT13</td><td><code>isFaq=true</code></td></tr>
+      <tr><td>Author block</td><td class="ref">C033</td><td class="ref">CT06</td><td>Renders from <code>CT03.author</code>; the profile is reusable across articles</td></tr>
+      <tr><td>Tags and share</td><td class="ref">C034</td><td class="ref">CT03 + CT04</td><td>Tags from <code>topics</code> taxonomy, share row from <code>shareChannels</code> — neither is a component</td></tr>
+      <tr><td>Page feedback</td><td class="ref">C035 + C018</td><td class="ref">CT03 + CT04</td><td>Site widget with a per-article toggle</td></tr>
+      <tr><td>Recommended-for-you grid</td><td class="ref">C016 &gt; C017</td><td class="ref">CT18 + CT20</td><td>Identical configuration to P01 — the reuse the model is built for</td></tr>
+      <tr><td>Footnotes</td><td class="ref">C027</td><td class="ref">CT14</td><td><code>style=footnote</code> — the same type as body copy</td></tr>
+      <tr><td>Footer, separators, cookie banner</td><td class="ref">C002, C020, C003</td><td class="ref">CT05, CT01, CT04</td><td>Chrome and container spacing</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Type usage across the three templates</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:22%">Content type</th><th style="width:13%">P01</th><th style="width:13%">P02</th><th style="width:13%">P03</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td class="ref">CT01 section</td><td>12</td><td>3</td><td>16</td><td>Every block sits in one</td></tr>
+      <tr><td class="ref">CT07 heroBanner</td><td>1</td><td>1</td><td>—</td><td>Articles open with the article header instead</td></tr>
+      <tr><td class="ref">CT08 splitBanner</td><td>6</td><td>—</td><td>1</td><td>Covers four inventory entries</td></tr>
+      <tr><td class="ref">CT09 promoBanner</td><td>1</td><td>1</td><td>—</td><td>Image background on P01, brand colour on P02</td></tr>
+      <tr><td class="ref">CT10 infoBoxes</td><td>1</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td class="ref">CT11 ctaCard</td><td>—</td><td>—</td><td>3</td><td>Article-only conversion device</td></tr>
+      <tr><td class="ref">CT12 comparisonTable</td><td>1</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td class="ref">CT13 accordion</td><td>2</td><td>—</td><td>1</td><td>One nested inside CT08</td></tr>
+      <tr><td class="ref">CT14 richTextBlock</td><td>—</td><td>—</td><td>4</td><td>Three body, one footnote</td></tr>
+      <tr><td class="ref">CT15 statsBlock</td><td>—</td><td>—</td><td>2</td><td>—</td></tr>
+      <tr><td class="ref">CT16 embeddedVideo</td><td>2</td><td>—</td><td>1</td><td>One nested inside CT19</td></tr>
+      <tr><td class="ref">CT17 anchorNav</td><td>1</td><td>—</td><td>1</td><td>—</td></tr>
+      <tr><td class="ref">CT18 cardCollection</td><td>2</td><td>—</td><td>2</td><td>Covers three inventory containers</td></tr>
+      <tr><td class="ref">CT19 mediaCard</td><td>1</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td class="ref">CT20 editorialCard</td><td>1</td><td>—</td><td>1</td><td>Same card in grid and carousel</td></tr>
+      <tr><td class="ref">CT21 testimonial</td><td>—</td><td>—</td><td>1</td><td>—</td></tr>
+      <tr><td class="ref">CT22 leadCaptureForm</td><td>—</td><td>1</td><td>—</td><td>—</td></tr>
+      <tr><td class="ref">CT23 calculator</td><td>—</td><td>—</td><td>1</td><td>—</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Five types carry the three templates between them: the section container, the split banner, the card collection, the accordion and the video block. Six types appear on exactly one page — the comparison table, info boxes, form, calculator, testimonial and media card — which is expected at pilot scope and would be the first thing to re-test against the wider site.</p>
+</Section>
+
+
+
+<footer>
+  <p>Built from the internally approved live inventory (<Fact k="inventoryComponents" /> components, C001–C035) against the three pilot templates. As-is migration, pilot scope, historical matrix treated as reference. Full property specifications — type, required, default, validation, localisation and authoring notes — in the accompanying workbook.</p>
+</footer>

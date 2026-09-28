@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "verify:fidelity": "node scripts/verify-fidelity.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.2",
