@@ -1,0 +1,33 @@
+---
+import { getCollection, render } from 'astro:content';
+import Doc from '../../layouts/Doc.astro';
+import Section from '../../components/Section.astro';
+import { loadSiteData } from '../../lib/data';
+import { anchorFor, compareIds } from '../../lib/ids';
+
+await loadSiteData(); // validates cross-references before anything renders
+const entries = (await getCollection('decisions')).sort((a, b) => compareIds(a.data.id, b.data.id));
+const decisions = await Promise.all(entries.map(async (e) => ({ ...e.data, Content: (await render(e)).Content })));
+const groups = [
+  { n: '01', id: 'uc1', title: 'UC1 — cross-channel proof points', items: decisions.filter((d) => d.useCase === 'uc1') },
+  { n: '02', id: 'uc2', title: 'UC2 — partner web content model', items: decisions.filter((d) => d.useCase === 'uc2') },
+];
+---
+<Doc
+  title="Decision log"
+  kicker="Register"
+  lede="Decisions taken so far, why, and what would reopen each one — {{decisions}} recorded. The log is append-only: a changed mind is a new decision, not an edit."
+  kind="register"
+>
+  {groups.map((g) => (
+    <Section n={g.n} id={g.id} title={g.title}>
+      {g.items.map(({ id, title, resolves, Content }) => (
+        <article class="decide" id={anchorFor(id)} data-def={id}>
+          <h4><span class="stamp">{id}</span>{title}</h4>
+          <Content />
+          {resolves.length > 0 && <p><strong>Resolves:</strong> {resolves.join(', ')}</p>}
+        </article>
+      ))}
+    </Section>
+  ))}
+</Doc>

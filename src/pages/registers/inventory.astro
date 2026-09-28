@@ -1,0 +1,31 @@
+---
+import Doc from '../../layouts/Doc.astro';
+import Section from '../../components/Section.astro';
+import { loadSiteData } from '../../lib/data';
+import { anchorFor } from '../../lib/ids';
+
+const { inventory } = await loadSiteData();
+---
+<Doc
+  title="Component inventory"
+  kicker="Register"
+  lede="The {{inventoryComponents}} components in the internally approved live inventory, and the content type each one lands as. Client approval of the inventory is pending."
+  kind="register"
+>
+  <Section n="01" id="components" title="Components">
+    <div class="scroll">
+      <table>
+        <thead><tr><th>ID</th><th>Component</th><th>Type</th><th>Variation of</th><th>Matrix status</th><th>Reference</th><th>Screens</th><th>Lands as</th></tr></thead>
+        <tbody>
+          {inventory.map((c) => (
+            <tr id={anchorFor(c.id)} data-def={c.id}>
+              <td class="n">{c.id}</td><td>{c.name}</td><td>{c.type}</td>
+              <td class="ref">{c.variationOf ?? '—'}</td><td>{c.matrixStatus}</td><td class="ref">{c.reference ?? '—'}</td>
+              <td>{c.screens.join(', ')}</td><td class="ref">{c.contentTypes.length > 0 ? c.contentTypes.join(', ') : '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </Section>
+</Doc>

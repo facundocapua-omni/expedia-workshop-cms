@@ -1,0 +1,25 @@
+---
+import Doc from '../../layouts/Doc.astro';
+import Section from '../../components/Section.astro';
+import QuestionItem from '../../components/QuestionItem.astro';
+import { AGENDA_GROUPS } from '../../lib/agenda';
+import { loadSiteData } from '../../lib/data';
+
+const data = await loadSiteData();
+const ideaTitles = Object.fromEntries(data.ideas.map((i) => [i.slug, i.short]));
+const groups = AGENDA_GROUPS
+  .map((g) => ({ ...g, items: data.questions.filter((q) => q.group === g.group) }))
+  .filter((g) => g.items.length > 0);
+---
+<Doc
+  title="Question register"
+  kicker="Register"
+  lede="Every question raised across the pilot: {{questionsTotal}} in total — {{questionsOpen}} open, {{questionsAssumed}} assumed, {{questionsAnswered}} answered, {{questionsClosed}} closed. Settled questions stay here for the record."
+  kind="register"
+>
+  {groups.map((g, i) => (
+    <Section n={String(i + 1).padStart(2, '0')} id={g.group} title={g.title}>
+      {g.items.map((q) => <QuestionItem q={q} defines ideaTitles={ideaTitles} />)}
+    </Section>
+  ))}
+</Doc>

@@ -11,7 +11,9 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run --passWithNoTests",
-    "verify:fidelity": "node scripts/verify-fidelity.mjs"
+    "verify:fidelity": "node scripts/verify-fidelity.mjs",
+    "verify:anchors": "node scripts/verify-anchors.mjs",
+    "verify": "pnpm verify:anchors && pnpm verify:fidelity"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.2",

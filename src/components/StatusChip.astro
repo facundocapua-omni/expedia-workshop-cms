@@ -1,0 +1,7 @@
+---
+import { statusLabel } from '../lib/status';
+import type { Status } from '../lib/types';
+interface Props { status: Status; confirmed?: boolean }
+const { status, confirmed } = Astro.props;
+---
+<span class={`st st-${status}`}>{statusLabel({ status, confirmed })}</span>

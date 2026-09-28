@@ -1,0 +1,37 @@
+---
+import StatusChip from './StatusChip.astro';
+import { hasProposal } from '../lib/agenda';
+import { anchorFor } from '../lib/ids';
+import type { Question } from '../lib/types';
+
+interface Props {
+  q: Question;
+  /** True only on the register, which is where the ID is defined. */
+  defines?: boolean;
+  ideaTitles: Record<string, string>;
+}
+const { q, defines = false, ideaTitles } = Astro.props;
+const proposal = q.answer ?? q.position;
+const discussedIn = q.idea ? { href: `/ideas/${q.idea}/${q.section ? `#${q.section}` : ''}`, label: ideaTitles[q.idea] ?? q.idea } : undefined;
+---
+<article
+  class={`q-item ${hasProposal(q) ? 'to-confirm' : 'to-decide'}`}
+  id={defines ? anchorFor(q.id) : undefined}
+  data-def={defines ? q.id : undefined}
+>
+  <header>
+    <span class="qid">{q.id}</span>
+    <p class="qt">{q.question}</p>
+    <StatusChip status={q.status} confirmed={q.confirmedByEG} />
+  </header>
+  {q.detail && <p>{q.detail}</p>}
+  {q.why && <p>{q.why}</p>}
+  {proposal && <p class="proposal"><span class="label">{q.answer ? 'Answer' : 'Proposed position'}</span>{proposal}</p>}
+  {q.blocks && <p><span class="label">Blocks</span>{q.blocks}</p>}
+  {(q.owner || discussedIn) && (
+    <p class="q-meta">
+      {q.owner && <span><span class="label">Owner</span>{q.owner}</span>}
+      {discussedIn && <span><span class="label">Discussed in</span><a href={discussedIn.href}>{discussedIn.label}</a></span>}
+    </p>
+  )}
+</article>
