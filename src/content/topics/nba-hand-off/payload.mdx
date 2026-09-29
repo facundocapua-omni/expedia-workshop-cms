@@ -1,4 +1,5 @@
 import contentReference from '../../fragments/content-reference.html?raw';
+import optionB from '../../fragments/option-b-decision.html?raw';
 
   <div data-origin="uc1:position:1" class="decide">
     <h4><span class="stamp">Q1</span>Contentful stores the message template, never the partner's number</h4>
@@ -25,6 +26,10 @@ import contentReference from '../../fragments/content-reference.html?raw';
     <li><strong>Locale and channel travel beside it, not inside it.</strong> That is what makes "the same content ID everywhere" literally true across channels, which is the claim the pilot is testing.</li>
     <li><strong>Parameters are the partner's data and never persist in the CMS.</strong> They exist in the decision payload and in the resolved response.</li>
   </ul>
+
+<h3>Under option B</h3>
+<p>In <a href="#variant-metadata">option B</a> NBA hands off the decision instead of a reference, and the reference comes back in the response. The rest of this topic holds: channel travels beside the decision, parameters never persist, and the reference — returned by the resolver and written to the trace — is what "given this ID, show me the exact content" is asked of. It is also what a channel sends when it needs exactly what an earlier fetch returned. Identical <code>consistencyKey</code> values across channels still pass the consistency test, unless a republish falls between two fetches.</p>
+<Fragment set:html={optionB} />
 
 <h3>Alternatives considered</h3>
 

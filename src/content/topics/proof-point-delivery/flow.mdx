@@ -32,3 +32,14 @@ import uc1Fragment5 from '../../fragments/uc1-5.html?raw';
   <Fragment set:html={uc1Fragment5} />
   <p>Returning the template alongside the substituted string costs nothing and makes every substitution failure debuggable after the fact. The <code>consistencyKey</code> is what turns "the same content everywhere" from a visual judgement into an assertion a test can make.</p>
 </div>
+
+<h3>Under option B</h3>
+<p>The figure and the table describe option A. <a href="#resolution-layer">Option B</a> changes five interactions and leaves the rest as they are:</p>
+<ul class="tight">
+  <li><strong>1</strong> moves the latest-version pointer for each message, segment and tone instead of refreshing an index.</li>
+  <li><strong>3 goes away.</strong> NBA reads no variant index; it needs only the shared taxonomy.</li>
+  <li><strong>4 carries the decision.</strong> Message, segment and tone travel in place of the content reference, with the same partner, locale and parameters.</li>
+  <li><strong>5, 7 and 8 resolve when they fetch</strong>, to the latest published version. A channel that needs exactly what an earlier fetch returned sends the reference from that response.</li>
+  <li><strong>6 returns the resolved reference</strong>, and each resolution writes a record to EG's log system.</li>
+</ul>
+<p>Interaction 9 stays, and matters more: it is how NBA learns which variant its decision became.</p>

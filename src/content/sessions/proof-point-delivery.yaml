@@ -15,7 +15,7 @@ topics:
   - agenda: "The proposed resolution layer: what Contentful provides natively, what needs configuration, and what would be custom build"
     id: resolution-layer
     nav: Resolution layer
-    settles: [Q5]
+    settles: [Q5, DQ-11]
     decisions: [D-04, D-06]
   - agenda: "Ownership of any custom layer: who builds, hosts and supports it"
     id: ownership

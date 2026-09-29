@@ -1,3 +1,5 @@
+import optionB from '../../fragments/option-b-decision.html?raw';
+
   <div data-origin="uc1:position:4" class="decide risk">
     <h4><span class="stamp">new</span>A thin resolution service sits between Contentful and the channels</h4>
     <p>Channels do not call the Contentful delivery API directly. A small stateless service — the <strong>Content Resolution API</strong> — parses the reference, serves an immutable published snapshot, applies and <em>reports</em> translation fallback, composes the message, and shapes the channel payload.</p>
@@ -26,6 +28,54 @@
       <tr><td><strong>SFMC</strong></td><td>Receiving the decision, fetching by reference at send time, rendering, emitting the send event</td><td>Holding any content of its own. No local copy, no channel-specific authoring.</td></tr>
       <tr><td><strong>CRM / VMC</strong></td><td>Fetching by the same reference, rendering the channel payload, emitting the render event</td><td>Same — no separately authored copy anywhere.</td></tr>
       <tr><td><strong>Partner web</strong></td><td>Reading the current decision for the signed-in partner, fetching by reference with <code>channel=web</code>, rendering</td><td>Deciding anything. It is a fourth consumer of the same API, not a second system.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<h3>Who selects the variant: two options for EG</h3>
+
+<div>
+  <p class="sec-note">The table above describes option A, where NBA chooses the variant. There is a second option: NBA sends the decision — which message, for which segment, in which tone — and the Content Resolution API serves the published variant written for it. Both keep the resolution layer, and in both Contentful decides nothing. They differ on who picks the variant and on which version a channel receives. EG's choice is Q2.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:22%"></th><th style="width:39%">A — NBA selects the variant</th><th>B — the resolver finds the variant for NBA's decision</th></tr></thead>
+    <tbody>
+      <tr><td><strong>NBA sends</strong></td><td>A content reference, variant and version: <code>cr:1:7KxQ2mVn@14</code></td><td>The message, segment and tone, with partner, locale and parameters</td></tr>
+      <tr><td><strong>NBA needs</strong></td><td>The variant index, read before every decision</td><td>Only the shared taxonomy: messages, segments and tones</td></tr>
+      <tr><td><strong>Who picks the variant</strong></td><td>NBA, from the index</td><td>The resolver, by lookup: one published variant per message, segment and tone</td></tr>
+      <tr><td><strong>Version served</strong></td><td>The one in the reference, pinned</td><td>The latest published, unless the channel sends a reference</td></tr>
+      <tr><td><strong>Across channels</strong></td><td>Identical copy on every surface, whenever each one fetches</td><td>The same decision on every surface. A republish between two fetches gives them different copy, and the trace records both</td></tr>
+      <tr><td><strong>No variant for a segment and tone</strong></td><td>NBA cannot choose what the index does not list</td><td>The message's default copy goes out, and the response says so</td></tr>
+      <tr><td><strong>Traceability</strong></td><td>The reference is the record</td><td>One record per resolution in EG's log system</td></tr>
+      <tr><td><strong>A corrected variant reaches the channels</strong></td><td>When NBA picks up the new version from the index</td><td>On the next fetch after it is published, with nothing to do in NBA</td></tr>
+      <tr><td><strong>Custom build</strong></td><td>The resolver and the variant index feed</td><td>The resolver, with selection and the trace, and no index feed</td></tr>
+      <tr><td><strong>Work in NBA</strong></td><td>Reading the index and emitting a reference</td><td>Adding message, segment and tone to its payload</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Option B in detail</h3>
+  <Fragment set:html={optionB} />
+  <ul class="tight">
+    <li><strong>A reference wins.</strong> If the fetch carries <code>ref</code>, the resolver serves exactly that variant and version, as in option A. That is also how anyone replays what was sent.</li>
+    <li><strong>Otherwise, the one variant written for the decision.</strong> The resolver looks up the published variant of the message for that segment and tone and serves its latest published version. Publishing a second variant for the same message, segment and tone is blocked at authoring, so the lookup never has to choose between two.</li>
+    <li><strong>No such variant: the message's default copy.</strong> Reported as <code>selection: "default"</code>. No other variant is tried, so what goes out is either the copy written for this segment and tone or the approved generic copy, never a guess between them.</li>
+    <li><strong>Missing translation: the variant in the source locale.</strong> Reported with <code>fallbackApplied</code>, as in option A. The partner gets the specific message in English rather than generic copy in their language.</li>
+  </ul>
+  <p>Nobody filters by channel before the fetch, so publishing also checks that every variant fits every channel profile, or carries an override for the one it does not fit.</p>
+  <p>Every resolution writes one record to EG's log system: partner, channel, message, segment, tone, locale requested and served, the variant and version served or the default copy, and the <code>consistencyKey</code>. It is written off the request path. In this option the trace is the only answer to "what did this partner see, and where", because two surfaces can resolve the same decision to different versions. Channels still emit the served-variant event, and it becomes the only way NBA learns which variant its decision turned into.</p>
+  <p>Option B is not the Contentful alternative in <a href="/sessions/nba-hand-off/#variant-metadata">Session 2's variant metadata</a>, where a personalisation product resolves segment and tone. Here NBA still decides what to say and in which tone. The resolver only finds the copy written for that decision, with a lookup that gives the same answer every time for the same published content.</p>
+
+  <h3>Risks carried by option B</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>The CRM briefs copy the partner never saw</strong></td><td>An author republishes between the send and the Market Manager's view. The briefing describes version 15 while the email carried version 14.</td><td>The trace shows both, with different <code>consistencyKey</code> values. Where it matters, the CRM sends the reference the email received, which means that reference has to travel with the send record.</td></tr>
+      <tr><td><strong>Gaps in the variants go unnoticed</strong></td><td>A segment and tone with no variant receive the default copy on every send, and nobody is told.</td><td>Report the default-copy rate per message, segment and tone from the trace, and alert above a threshold agreed with EG content.</td></tr>
+      <tr><td><strong>Trace volume</strong></td><td>One record per resolution: a 1M send writes at least 1M records, plus every CRM and VMC view.</td><td>Confirm the log system, its retention and its intake before build (DQ-11).</td></tr>
     </tbody>
   </table>
   </div>

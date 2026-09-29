@@ -38,3 +38,6 @@
   </div>
   <p>Recommendation: Redis as the snapshot store and primary read path, with an in-process cache for the hot set. Whether nginx or a CDN sits in front depends on where EG hosts the service and which surfaces are public — a topology decision that belongs with the hosting owner.</p>
 </div>
+
+<h3>Under option B</h3>
+<p>The numbers hold in <a href="#resolution-layer">option B</a>. The snapshot store gains a pointer per message, segment, tone, locale and channel to the latest published version, moved on every publish, so the content is as cacheable as before and a send still generates no Contentful reads. The one addition is the trace: a record per resolution, written to EG's log system off the request path.</p>

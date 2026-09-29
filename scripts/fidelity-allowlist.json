@@ -1,5 +1,11 @@
 [
   {
+    "origin": "uc1:position:2",
+    "from": "NBA selects the variant; Contentful never decides",
+    "to": "Option A: NBA selects the variant; Contentful never decides",
+    "reason": "Who selects the variant is open with two options, A and B (Q2, owner decision 2026-09-29)"
+  },
+  {
     "origin": "uc1:authoring:*",
     "from": "This is where the platform constraint from the backlog bites:",
     "to": "This is where a platform constraint bites:",

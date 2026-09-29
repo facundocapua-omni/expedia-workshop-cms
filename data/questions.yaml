@@ -12,12 +12,11 @@
   confirmedByEG: false
 - id: Q2
   group: blocking
-  question: Who resolves the variant — NBA or Contentful?
+  question: Who resolves the variant — NBA, or the content side on the way out?
   detail: Do the channels fetch a fully-resolved variant ID that NBA has already chosen, or a base ID plus segment/locale parameters that Contentful resolves on the way out?
   why: The parameters say NBA decides and mark CMS-37 out of scope, but CMS-31 and CMS-38 are scored on content "resolving" for a segment/tone combination. If Contentful resolves, audience mapping is in scope and the pilot is larger than described. Segment and tone are the only inputs to that resolution; channel is not one, and Q6b settles why.
   owner: EG
-  status: answered
-  answer: NBA selects from a variant index; Contentful never decides
+  status: open
   confirmedByEG: false
 - id: Q3
   group: blocking
@@ -264,6 +263,13 @@
   question: Where is the service hosted, and is it internet-facing?
   status: assumed
   position: EG infra, internal-only
+  confirmedByEG: false
+- id: DQ-11
+  group: uc1-design
+  question: Which EG log system receives the resolution trace, and how long is it kept?
+  detail: Option B only (Q2). The resolver writes one record per resolution, so a 1M send writes at least 1M records, plus every CRM and VMC view. In that option the trace is the only record of which variant and version each partner received.
+  owner: EG
+  status: open
   confirmedByEG: false
 - id: Q27
   group: migration

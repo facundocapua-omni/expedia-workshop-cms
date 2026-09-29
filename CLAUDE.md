@@ -83,7 +83,7 @@ make xlsx | make check   # regenerate / sanity-check the UC2 workbook from model
 
 - **Client-facing terminology:** no "rejected", no "reclassified". Components are
   *unified*, *kept distinct*, or *structural*.
-- **Stable IDs, never renumber:** `Q1–Q35`, `Q6b`, `DQ-1–DQ-10`, `U1–U11`, `D-NN`,
+- **Stable IDs, never renumber:** `Q1–Q35`, `Q6b`, `DQ-1–DQ-11`, `U1–U11`, `D-NN`,
   `CT01–CT23`, `C001–C035`.
 - **Recording a decision:** update the question's `status`, `answer` and `confirmedByEG`
   (`data/questions.yaml`, or the JSON for U*), then add a new `decisions/D-NN.md` with
