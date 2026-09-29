@@ -89,7 +89,8 @@
   question: Where are the three pilot pages published?
   detail: Target environment, domain and CDN. I'm assuming not live partner.expediagroup.com, but that needs confirming along with who owns the DNS and certificate work if it's a new host.
   owner: EG
-  status: open
+  status: answered
+  answer: The domains partner web uses today, since this is a change of CMS rather than a move of the site. EG manages DNS
   confirmedByEG: false
 - id: Q11
   group: scope

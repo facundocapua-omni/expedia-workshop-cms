@@ -12,7 +12,6 @@ topics:
     id: front-end
     nav: Front end approach
     settles: [Q8, Q10]
-    prompt: true
   - agenda: Rendering, caching and page performance
     id: rendering
     nav: Rendering and caching

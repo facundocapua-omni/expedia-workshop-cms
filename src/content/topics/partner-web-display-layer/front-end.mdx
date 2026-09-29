@@ -1,0 +1,22 @@
+<p class="sec-note">One party owns the front end end to end. The question is less who builds it than how the work splits once it is live.</p>
+
+<div class="decide">
+  <h4>Globant builds and runs it, on EG's Vercel account</h4>
+  <p>Globant builds the partner web front end in Next.js and Tailwind, hosts it on Vercel and runs it in production. The Vercel account and contract are EG's; Globant administers them with delegated access (D-34).</p>
+</div>
+
+<h3>Who does what</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:14%">Area</th><th style="width:46%">Globant</th><th>EG</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Build</strong></td><td>Components, routing and the integration with Contentful</td><td>Designs and acceptance</td></tr>
+    <tr><td><strong>Hosting</strong></td><td>Administers the Vercel projects, environments and deployments</td><td>Owns the Vercel account, the contract and the billing</td></tr>
+    <tr><td><strong>Run</strong></td><td>Monitoring, incidents, dependency and security updates</td><td>—</td></tr>
+    <tr><td><strong>Domains</strong></td><td>—</td><td>The domains, which stay as they are today; DNS; the CDN in front of Vercel (Q30)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Where it sits during the AEM migration</h3>
+<p>Nothing changes at the domain level for visitors or search engines: partner web keeps its domains, and EG's DNS keeps pointing at EG's CDN (D-35). During <a href="/sessions/aem-migration/#coexistence">coexistence</a> Vercel is the second origin behind that CDN, which routes each business case to AEM or to Vercel until the last one has moved (D-28).</p>
