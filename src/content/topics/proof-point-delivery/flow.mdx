@@ -3,14 +3,14 @@ import uc1Fragment5 from '../../fragments/uc1-5.html?raw';
 import optionBFlow from '../../fragments/option-b-flow.html?raw';
 
 <div data-origin="uc1:consumption:*">
-  <p class="sec-note">Nine interactions. Two of them — the variant index and the served-variant signal — are not in the source document's flow, and the pattern does not work without them.</p>
+  <p class="sec-note">Nine interactions, and a trace of each resolution. Two of them — the variant index and the served-variant signal — are not in the source document's flow, and the pattern does not work without them.</p>
 
   <div class="legend"><span><span class="sw sw1"></span>Content platform</span> <span><span class="sw sw3"></span>Resolution layer</span> <span><span class="sw sw2"></span>Decisioning</span> <span><span class="sw sw4"></span>Channels</span></div>
 
   <div class="fig">
     <Fragment set:html={uc1Fragment4} />
   </div>
-  <p class="cap">Figure 3 — Consumption flow. Solid arrows are synchronous requests; dashed are asynchronous.</p>
+  <p class="cap">Figure 3 — Consumption flow. T is the trace to EG's log system. Solid arrows are synchronous requests; dashed are asynchronous.</p>
 
   <div class="scroll">
   <table>
@@ -25,6 +25,7 @@ import optionBFlow from '../../fragments/option-b-flow.html?raw';
       <tr><td class="n">7</td><td>VMC → Resolver</td><td class="ref">same ref, channel=vmc</td><td>Partner clicks through from the email. Same reference, same version, different profile — matching <code>consistencyKey</code> is the proof.</td></tr>
       <tr><td class="n">8</td><td>CRM → Resolver</td><td class="ref">same ref, channel=crm</td><td>Market Manager opens the record the next day. Version pinning is what makes this return yesterday's copy rather than whatever was published since.</td></tr>
       <tr><td class="n">9</td><td>Channels → NBA</td><td class="ref">served-variant event</td><td>What was actually served, per partner. <strong>Not in the source flow</strong> and explicitly deferred there — but without it the decision loop never closes and three capability rows cannot pass.</td></tr>
+      <tr><td class="n">T</td><td>Resolver → EG log system</td><td class="ref">one record per resolution</td><td>Partner, channel, the variant and version served, <code>localeServed</code>, <code>fallbackApplied</code> and <code>consistencyKey</code>. Written off the request path, so the log never slows a send. The reference says which content was meant; the trace says who received it, where and when.</td></tr>
     </tbody>
   </table>
   </div>
@@ -40,14 +41,14 @@ import optionBFlow from '../../fragments/option-b-flow.html?raw';
 <div class="fig">
   <Fragment set:html={optionBFlow} />
 </div>
-<p class="cap">Figure 4 — Consumption flow under option B. Same numbering as Figure 3: interaction 3 is gone, 4 carries the decision, and T is the trace. Solid arrows are synchronous requests; dashed are asynchronous.</p>
+<p class="cap">Figure 4 — Consumption flow under option B. Same numbering as Figure 3: interaction 3 is gone and 4 carries the decision. Solid arrows are synchronous requests; dashed are asynchronous.</p>
 
-<p>Five interactions change, and the rest stay as they are:</p>
+<p>Interactions 2, 9 and the trace are the same in both options. The others change:</p>
 <ul class="tight">
   <li><strong>1</strong> moves the latest-version pointer for each message, segment and tone instead of refreshing an index.</li>
   <li><strong>3 goes away.</strong> NBA reads no variant index; it needs only the shared taxonomy.</li>
   <li><strong>4 carries the decision.</strong> Message, segment and tone travel in place of the content reference, with the same partner, locale and parameters.</li>
   <li><strong>5, 7 and 8 resolve when they fetch</strong>, to the latest published version. A channel that needs exactly what an earlier fetch returned sends the reference from that response.</li>
-  <li><strong>6 returns the resolved reference</strong>, and each resolution writes a record to EG's log system (T).</li>
+  <li><strong>6 returns the reference the resolver chose</strong>, where in option A it echoes the one NBA sent.</li>
 </ul>
 <p>Interaction 9 stays, and matters more: it is how NBA learns which variant its decision became.</p>

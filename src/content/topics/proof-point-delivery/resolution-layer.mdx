@@ -23,7 +23,7 @@ import optionB from '../../fragments/option-b-decision.html?raw';
     <thead><tr><th style="width:19%">Component</th><th style="width:34%">Responsibility</th><th>Explicitly not responsible for</th></tr></thead>
     <tbody>
       <tr><td><strong>Contentful</strong></td><td>Authoring, taxonomy, variants as entries, localisation, approval gates, version history, publish events</td><td>Deciding anything. No audience rules, no conditional logic, no partner data.</td></tr>
-      <tr><td><strong>Content Resolution API</strong></td><td>Reference contract, immutable snapshots, locale fallback and reporting, variable substitution, channel shaping, variant index, caching, and the fallback behaviour set out in <a href="#failure">Failure handling and fallback</a></td><td>Choosing a variant. It answers, it never decides.</td></tr>
+      <tr><td><strong>Content Resolution API</strong></td><td>Reference contract, immutable snapshots, locale fallback and reporting, variable substitution, channel shaping, variant index, the trace to EG's log system, caching, and the fallback behaviour set out in <a href="#failure">Failure handling and fallback</a></td><td>Choosing a variant. It answers, it never decides.</td></tr>
       <tr><td><strong>NBA</strong></td><td>Selecting the variant from the index on segment and tone, filtering by channel availability, emitting the decision payload, consuming served-variant signals</td><td>Knowing how content is stored or modelled, and shaping content per channel. It sees references and tags, nothing else.</td></tr>
       <tr><td><strong>SFMC</strong></td><td>Receiving the decision, fetching by reference at send time, rendering, emitting the send event</td><td>Holding any content of its own. No local copy, no channel-specific authoring.</td></tr>
       <tr><td><strong>CRM / VMC</strong></td><td>Fetching by the same reference, rendering the channel payload, emitting the render event</td><td>Same — no separately authored copy anywhere.</td></tr>
@@ -48,9 +48,9 @@ import optionB from '../../fragments/option-b-decision.html?raw';
       <tr><td><strong>Version served</strong></td><td>The one in the reference, pinned</td><td>The latest published, unless the channel sends a reference</td></tr>
       <tr><td><strong>Across channels</strong></td><td>Identical copy on every surface, whenever each one fetches</td><td>The same decision on every surface. A republish between two fetches gives them different copy, and the trace records both</td></tr>
       <tr><td><strong>No variant for a segment and tone</strong></td><td>NBA cannot choose what the index does not list</td><td>The message's default copy goes out, and the response says so</td></tr>
-      <tr><td><strong>Traceability</strong></td><td>The reference is the record</td><td>One record per resolution in EG's log system</td></tr>
+      <tr><td><strong>Traceability</strong></td><td>One record per resolution in EG's log system, beside a reference that already names the exact content</td><td>The same record, and the only one: two surfaces can resolve the same decision to different versions</td></tr>
       <tr><td><strong>A corrected variant reaches the channels</strong></td><td>When NBA picks up the new version from the index</td><td>On the next fetch after it is published, with nothing to do in NBA</td></tr>
-      <tr><td><strong>Custom build</strong></td><td>The resolver and the variant index feed</td><td>The resolver, with selection and the trace, and no index feed</td></tr>
+      <tr><td><strong>Custom build</strong></td><td>The resolver and the variant index feed</td><td>The resolver, with selection, and no index feed</td></tr>
       <tr><td><strong>Work in NBA</strong></td><td>Reading the index and emitting a reference</td><td>Adding message, segment and tone to its payload</td></tr>
     </tbody>
   </table>
@@ -65,7 +65,7 @@ import optionB from '../../fragments/option-b-decision.html?raw';
     <li><strong>Missing translation: the variant in the source locale.</strong> Reported with <code>fallbackApplied</code>, as in option A. The partner gets the specific message in English rather than generic copy in their language.</li>
   </ul>
   <p>Nobody filters by channel before the fetch, so publishing also checks that every variant fits every channel profile, or carries an override for the one it does not fit.</p>
-  <p>Every resolution writes one record to EG's log system: partner, channel, message, segment, tone, locale requested and served, the variant and version served or the default copy, and the <code>consistencyKey</code>. It is written off the request path. In this option the trace is the only answer to "what did this partner see, and where", because two surfaces can resolve the same decision to different versions. Channels still emit the served-variant event, and it becomes the only way NBA learns which variant its decision turned into.</p>
+  <p>As in option A, every resolution writes one record to EG's log system, here with the decision in it: partner, channel, message, segment, tone, locale requested and served, the variant and version served or the default copy, and the <code>consistencyKey</code>. It is written off the request path. In this option the trace is the only answer to "what did this partner see, and where", because two surfaces can resolve the same decision to different versions. Channels still emit the served-variant event, and it becomes the only way NBA learns which variant its decision turned into.</p>
   <p>Option B is not the Contentful alternative in <a href="/sessions/nba-hand-off/#variant-metadata">Session 2's variant metadata</a>, where a personalisation product resolves segment and tone. Here NBA still decides what to say and in which tone. The resolver only finds the copy written for that decision, with a lookup that gives the same answer every time for the same published content.</p>
 
   <h3>Risks carried by option B</h3>
@@ -75,7 +75,6 @@ import optionB from '../../fragments/option-b-decision.html?raw';
     <tbody>
       <tr><td><strong>The CRM briefs copy the partner never saw</strong></td><td>An author republishes between the send and the Market Manager's view. The briefing describes version 15 while the email carried version 14.</td><td>The trace shows both, with different <code>consistencyKey</code> values. Where it matters, the CRM sends the reference the email received, which means that reference has to travel with the send record.</td></tr>
       <tr><td><strong>Gaps in the variants go unnoticed</strong></td><td>A segment and tone with no variant receive the default copy on every send, and nobody is told.</td><td>Report the default-copy rate per message, segment and tone from the trace, and alert above a threshold agreed with EG content.</td></tr>
-      <tr><td><strong>Trace volume</strong></td><td>One record per resolution: a 1M send writes at least 1M records, plus every CRM and VMC view.</td><td>Confirm the log system, its retention and its intake before build (DQ-11).</td></tr>
     </tbody>
   </table>
   </div>
@@ -96,6 +95,7 @@ import optionB from '../../fragments/option-b-decision.html?raw';
   <tbody>
       <tr data-origin="uc1:risks:1"><td><strong>Grammatical agreement deferred out of the POC</strong></td><td>CMS-47 is demonstrated rather than proven, and a value of 1 produces visibly wrong copy in every locale that inflects.</td><td>Use values above 1 in pilot content so the demo isn't undermined by an avoidable artefact, and state the deferral in the readout rather than leaving EG to notice it. Scope the production solution in the same conversation.</td></tr>
       <tr data-origin="uc1:risks:4"><td><strong>The resolution service reads as scope creep</strong></td><td>EG hears "you want to build middleware for a CMS evaluation".</td><td>Frame it as what it is: the place the consistency and immutability guarantees are enforced, and the reason a send of any size never touches the CMS. Without it, three of the seven validation points cannot pass. <a href="#ownership">The ownership topic</a> names who builds, hosts and supports it, which is usually the real question behind the objection.</td></tr>
+      <tr><td><strong>Trace volume</strong></td><td>One record per resolution, in both options: a 1M send writes at least 1M records, plus every CRM and VMC view.</td><td>Confirm the log system, its retention and its intake before build (DQ-11).</td></tr>
   </tbody>
 </table>
 </div>

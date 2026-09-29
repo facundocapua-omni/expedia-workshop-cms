@@ -208,5 +208,41 @@
     "from": "Automatic tone and channel generation moves outside the platform.",
     "to": "Automatic generation of tone variants and briefings moves outside the platform.",
     "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
+  },
+  {
+    "origin": "uc1:consumption:*",
+    "from": "Nine interactions.",
+    "to": "Nine interactions, and a trace of each resolution.",
+    "reason": "The Content Resolution API traces each resolution to EG's log system in both options (owner decision 2026-09-29)"
+  },
+  {
+    "origin": "uc1:consumption:*",
+    "from": "version history Content Resolution API",
+    "to": "version history EG log system one record per resolution variant@version served retention: DQ-11 Content Resolution API",
+    "reason": "The Content Resolution API traces each resolution to EG's log system in both options (owner decision 2026-09-29)"
+  },
+  {
+    "origin": "uc1:consumption:*",
+    "from": "payload match only 1 2 3",
+    "to": "payload match only 1 2 T trace 3",
+    "reason": "The Content Resolution API traces each resolution to EG's log system in both options (owner decision 2026-09-29)"
+  },
+  {
+    "origin": "uc1:consumption:*",
+    "from": "Figure 3 — Consumption flow. Solid",
+    "to": "Figure 3 — Consumption flow. T is the trace to EG's log system. Solid",
+    "reason": "The Content Resolution API traces each resolution to EG's log system in both options (owner decision 2026-09-29)"
+  },
+  {
+    "origin": "uc1:consumption:*",
+    "from": "three capability rows cannot pass.",
+    "to": "three capability rows cannot pass. T Resolver → EG log system one record per resolution Partner, channel, the variant and version served, localeServed, fallbackApplied and consistencyKey. Written off the request path, so the log never slows a send. The reference says which content was meant; the trace says who received it, where and when.",
+    "reason": "The Content Resolution API traces each resolution to EG's log system in both options (owner decision 2026-09-29)"
+  },
+  {
+    "origin": "uc1:components:*",
+    "from": "variant index, caching,",
+    "to": "variant index, the trace to EG's log system, caching,",
+    "reason": "The Content Resolution API traces each resolution to EG's log system in both options (owner decision 2026-09-29)"
   }
 ]

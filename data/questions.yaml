@@ -268,7 +268,7 @@
 - id: DQ-11
   group: uc1-design
   question: Which EG log system receives the resolution trace, and how long is it kept?
-  detail: Option B only (Q2). The resolver writes one record per resolution, so a 1M send writes at least 1M records, plus every CRM and VMC view. In that option the trace is the only record of which variant and version each partner received.
+  detail: The resolver writes one record per resolution, in both options (Q2), so a 1M send writes at least 1M records, plus every CRM and VMC view. In option B the trace is also the only record of which variant and version each partner received.
   owner: EG
   status: open
   confirmedByEG: false
