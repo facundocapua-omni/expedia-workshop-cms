@@ -3,7 +3,10 @@ import pipeline from '../../fragments/mig-pipeline.html?raw';
 <p class="sec-note">With coexistence by business case, cutover is not a single day but a procedure that repeats for every business case. It has three parts: the tooling that moves the content, the steps that move the traffic, and the checks that protect search.</p>
 
 <h3>Migration tooling</h3>
-<Fragment set:html={pipeline} />
+<div class="fig">
+  <Fragment set:html={pipeline} />
+</div>
+<p class="cap">Figure 7 — Migration pipeline. Four stages, from the rows the disposition log marks migrate to validated entries in Contentful, into the post-rebrand content types. Loads are idempotent, so the same pipeline runs from the first rehearsal to the final delta.</p>
 <p>A scripted pipeline, built by Globant for this programme and discarded after it (D-31). Two of its properties matter more than the rest:</p>
 <ul class="tight">
   <li><strong>Idempotent loads.</strong> Every entry is upserted by a stable ID derived from its AEM path, so the pipeline can run any number of times: full rehearsals first, then delta runs of what changed since the last run, and a final delta immediately before the content freeze.</li>

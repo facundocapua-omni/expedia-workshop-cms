@@ -1,12 +1,125 @@
-<pre>URL, with its blocks
- │
- ▼
- 1  Keep?            traffic · conversions · owner · legal duty · duplicate intent
- │   no ─────────────────────────────▶ <span class="k">RETIRE</span>    301 to the closest equivalent, 410 if none
- │   yes
- ▼
- 2  Fits the post-rebrand model?      directly, or by a mapping rule in the pipeline
- │   no ─────────────────────────────▶ <span class="k">REBUILD</span>   re-authored on the model
- │   yes
- ▼
-    <span class="k">MIGRATE</span>   automated, once, by the pipeline</pre>
+<svg class="dg" viewBox="0 0 900 500" role="img" aria-label="Disposition framework: each URL, with its blocks, passes two gates. Gate 1, keep: if not, it is retired with a 301 or a 410. Gate 2, fits the post-rebrand model: if not, it is rebuilt; if it does, it is migrated by the pipeline. Every disposition goes into the disposition log that EG signs off, which generates the redirect map, the rebuild list and the pipeline load list">
+  <defs>
+    <marker id="dfa-ar" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--ink-soft)"/>
+    </marker>
+    <marker id="dfa-yes" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--ok)"/>
+    </marker>
+    <marker id="dfa-no" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--flag)"/>
+    </marker>
+  </defs>
+
+  <text x="440" y="16" font-size="11" fill="var(--ink-soft)" text-anchor="middle">Globant pulls the data and proposes; EG's content owners decide (D-26)</text>
+  <path d="M200,32 V26 H680 V32" fill="none" stroke="var(--rule)"/>
+
+  <rect x="10" y="44" width="150" height="120" rx="4" fill="var(--card)" stroke="var(--rule)"/>
+  <rect x="22" y="56" width="50" height="64" rx="3" fill="var(--card)" stroke="var(--warm)"/>
+  <rect x="26" y="60" width="42" height="7" rx="1.5" fill="var(--warm)" opacity=".75"/>
+  <rect x="26" y="71" width="42" height="18" rx="1.5" fill="var(--warm-soft)" stroke="var(--warm)" stroke-opacity=".5"/>
+  <rect x="26" y="93" width="20" height="12" rx="1.5" fill="var(--warm-soft)" stroke="var(--warm)" stroke-opacity=".5"/>
+  <rect x="48" y="93" width="20" height="12" rx="1.5" fill="var(--warm-soft)" stroke="var(--warm)" stroke-opacity=".5"/>
+  <rect x="26" y="109" width="42" height="6" rx="1.5" fill="var(--warm)" opacity=".75"/>
+  <text x="80" y="66" font-size="10" fill="var(--ink-soft)">header</text>
+  <text x="80" y="84" font-size="10" fill="var(--ink-soft)">hero</text>
+  <text x="80" y="103" font-size="10" fill="var(--ink-soft)">blocks</text>
+  <text x="80" y="117" font-size="10" fill="var(--ink-soft)">footer</text>
+  <text x="22" y="140" font-size="12.5" font-weight="600" fill="var(--ink)">URL, with its blocks</text>
+  <text x="22" y="156" font-size="11" fill="var(--ink-soft)">the unit of decision</text>
+  <line x1="160" y1="104" x2="197" y2="104" stroke="var(--ink-soft)" stroke-width="1.4" marker-end="url(#dfa-ar)"/>
+
+  <rect x="200" y="44" width="220" height="120" rx="4" fill="var(--card)" stroke="var(--ink-soft)" stroke-opacity=".55"/>
+  <polygon points="224,56 236,68 224,80 212,68" fill="var(--ink)"/>
+  <text x="224" y="72" font-size="11" font-weight="700" fill="var(--card)" text-anchor="middle">1</text>
+  <text x="244" y="73" font-size="15" font-weight="700" fill="var(--ink)">Keep?</text>
+  <rect x="212" y="88" width="54" height="20" rx="10" fill="var(--rule-soft)"/>
+  <text x="239" y="102" font-size="11" fill="var(--ink)" text-anchor="middle">traffic</text>
+  <rect x="271" y="88" width="80" height="20" rx="10" fill="var(--rule-soft)"/>
+  <text x="311" y="102" font-size="11" fill="var(--ink)" text-anchor="middle">conversions</text>
+  <rect x="356" y="88" width="52" height="20" rx="10" fill="var(--rule-soft)"/>
+  <text x="382" y="102" font-size="11" fill="var(--ink)" text-anchor="middle">owner</text>
+  <rect x="212" y="113" width="70" height="20" rx="10" fill="var(--rule-soft)"/>
+  <text x="247" y="127" font-size="11" fill="var(--ink)" text-anchor="middle">legal duty</text>
+  <rect x="287" y="113" width="104" height="20" rx="10" fill="var(--rule-soft)"/>
+  <text x="339" y="127" font-size="11" fill="var(--ink)" text-anchor="middle">duplicate intent</text>
+  <text x="212" y="153" font-size="10.5" fill="var(--ink-soft)">twelve months of data (Q28); EG decides (Q29)</text>
+
+  <line x1="420" y1="104" x2="457" y2="104" stroke="var(--ok)" stroke-width="1.4" marker-end="url(#dfa-yes)"/>
+  <text x="438" y="97" font-size="11" font-weight="600" fill="var(--ok)" text-anchor="middle">yes</text>
+
+  <rect x="460" y="44" width="220" height="120" rx="4" fill="var(--card)" stroke="var(--ink-soft)" stroke-opacity=".55"/>
+  <polygon points="484,56 496,68 484,80 472,68" fill="var(--ink)"/>
+  <text x="484" y="72" font-size="11" font-weight="700" fill="var(--card)" text-anchor="middle">2</text>
+  <text x="504" y="73" font-size="15" font-weight="700" fill="var(--ink)">Fits the model?</text>
+  <rect x="472" y="89" width="90" height="22" rx="3" fill="var(--warm-soft)" stroke="var(--warm)" stroke-opacity=".6"/>
+  <text x="517" y="104" font-size="10.5" fill="var(--ink)" text-anchor="middle">AEM component</text>
+  <line x1="562" y1="100" x2="583" y2="100" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#dfa-ar)"/>
+  <rect x="586" y="89" width="82" height="22" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-opacity=".6"/>
+  <text x="627" y="104" font-size="10.5" fill="var(--ink)" text-anchor="middle">content type</text>
+  <text x="472" y="130" font-size="11" fill="var(--ink)">directly, or by a mapping rule</text>
+  <text x="472" y="153" font-size="10.5" fill="var(--ink-soft)">post-rebrand model; UC2 disposition</text>
+
+  <path d="M680,104 H805 V227" fill="none" stroke="var(--ok)" stroke-width="1.4" marker-end="url(#dfa-yes)"/>
+  <text x="742" y="97" font-size="11" font-weight="600" fill="var(--ok)" text-anchor="middle">yes</text>
+
+  <line x1="310" y1="164" x2="310" y2="227" stroke="var(--flag)" stroke-width="1.4" marker-end="url(#dfa-no)"/>
+  <text x="318" y="200" font-size="11" font-weight="600" fill="var(--flag)">no</text>
+  <line x1="570" y1="164" x2="570" y2="227" stroke="var(--flag)" stroke-width="1.4" marker-end="url(#dfa-no)"/>
+  <text x="578" y="200" font-size="11" font-weight="600" fill="var(--flag)">no</text>
+
+  <rect x="10" y="230" width="150" height="80" rx="4" fill="none" stroke="var(--rule)" stroke-dasharray="4 3"/>
+  <text x="22" y="252" font-size="12" font-weight="600" fill="var(--ink)">Rules first</text>
+  <text x="22" y="269" font-size="10.5" fill="var(--ink-soft)">per business case or</text>
+  <text x="22" y="284" font-size="10.5" fill="var(--ink-soft)">template, then exceptions</text>
+  <text x="22" y="299" font-size="10.5" fill="var(--ink-soft)">per URL</text>
+
+  <rect x="200" y="230" width="220" height="80" rx="4" fill="var(--flag-soft)" stroke="var(--flag)"/>
+  <text x="216" y="258" font-size="16" font-weight="700" fill="var(--flag)">Retire</text>
+  <text x="216" y="279" font-size="11.5" fill="var(--ink)">301 to the closest equivalent</text>
+  <text x="216" y="296" font-size="11.5" fill="var(--ink-soft)">410 if there is none</text>
+
+  <rect x="460" y="230" width="220" height="80" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/>
+  <text x="476" y="258" font-size="16" font-weight="700" fill="var(--accent)">Rebuild</text>
+  <text x="476" y="279" font-size="11.5" fill="var(--ink)">re-authored on the model</text>
+  <text x="476" y="296" font-size="11.5" fill="var(--ink-soft)">EG accepts the cost</text>
+
+  <rect x="720" y="230" width="170" height="80" rx="4" fill="var(--ok-soft)" stroke="var(--ok)"/>
+  <text x="736" y="258" font-size="16" font-weight="700" fill="var(--ok)">Migrate</text>
+  <text x="736" y="279" font-size="11.5" fill="var(--ink)">automated, once,</text>
+  <text x="736" y="296" font-size="11.5" fill="var(--ink-soft)">by the pipeline</text>
+
+  <line x1="310" y1="310" x2="310" y2="345" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#dfa-ar)"/>
+  <line x1="570" y1="310" x2="570" y2="345" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#dfa-ar)"/>
+  <line x1="805" y1="310" x2="805" y2="345" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#dfa-ar)"/>
+
+  <text x="186" y="372" font-size="10.5" fill="var(--ink-soft)" text-anchor="end">agreed at the</text>
+  <text x="186" y="387" font-size="10.5" fill="var(--ink-soft)" text-anchor="end">close of discovery</text>
+  <rect x="200" y="348" width="690" height="56" rx="4" fill="var(--card)" stroke="var(--ink)" stroke-width="1.3"/>
+  <rect x="216" y="361" width="20" height="26" rx="2" fill="var(--card)" stroke="var(--ink-soft)"/>
+  <line x1="220" y1="368" x2="232" y2="368" stroke="var(--ink-soft)"/>
+  <line x1="220" y1="374" x2="232" y2="374" stroke="var(--ink-soft)"/>
+  <line x1="220" y1="380" x2="228" y2="380" stroke="var(--ink-soft)"/>
+  <text x="248" y="371" font-size="14" font-weight="700" fill="var(--ink)">Disposition log</text>
+  <text x="248" y="391" font-size="11" fill="var(--ink-soft)">URL, business case, rule applied, disposition, redirect target, owner, rationale</text>
+  <rect x="764" y="364" width="112" height="24" rx="12" fill="var(--ok-soft)" stroke="var(--ok)" stroke-opacity=".5"/>
+  <text x="820" y="380" font-size="11" font-weight="600" fill="var(--ok)" text-anchor="middle">signed off by EG</text>
+
+  <line x1="310" y1="404" x2="310" y2="435" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#dfa-ar)"/>
+  <line x1="570" y1="404" x2="570" y2="435" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#dfa-ar)"/>
+  <line x1="805" y1="404" x2="805" y2="435" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#dfa-ar)"/>
+
+  <text x="186" y="468" font-size="10.5" fill="var(--ink-soft)" text-anchor="end">generated from it</text>
+  <rect x="200" y="438" width="220" height="52" rx="3" fill="var(--card)" stroke="var(--rule)"/>
+  <rect x="200" y="438" width="4" height="52" fill="var(--flag)"/>
+  <text x="216" y="459" font-size="12.5" font-weight="600" fill="var(--ink)">Redirect map</text>
+  <text x="216" y="477" font-size="11" fill="var(--ink-soft)">served by the CDN at cutover</text>
+  <rect x="460" y="438" width="220" height="52" rx="3" fill="var(--card)" stroke="var(--rule)"/>
+  <rect x="460" y="438" width="4" height="52" fill="var(--accent)"/>
+  <text x="476" y="459" font-size="12.5" font-weight="600" fill="var(--ink)">Rebuild list</text>
+  <text x="476" y="477" font-size="11" fill="var(--ink-soft)">what is re-authored on the model</text>
+  <rect x="720" y="438" width="170" height="52" rx="3" fill="var(--card)" stroke="var(--rule)"/>
+  <rect x="720" y="438" width="4" height="52" fill="var(--ok)"/>
+  <text x="736" y="459" font-size="12.5" font-weight="600" fill="var(--ink)">Pipeline load list</text>
+  <text x="736" y="477" font-size="11" fill="var(--ink-soft)">what the pipeline loads</text>
+</svg>

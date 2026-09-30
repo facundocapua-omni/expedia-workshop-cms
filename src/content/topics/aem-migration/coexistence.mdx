@@ -20,7 +20,10 @@ import ramp from '../../fragments/mig-ramp.html?raw';
 <p>Keeping visitors in one cohort is not only about their experience. A visitor who bounces between origins sees two brands on consecutive pages, and blurs the conversion figures of both cohorts.</p>
 
 <h3>The ramp</h3>
-<Fragment set:html={ramp} />
+<div class="fig">
+  <Fragment set:html={ramp} />
+</div>
+<p class="cap">Figure 6 — The ramp of one business case. The CDN routes by path, then by cohort; the share on the new front end steps up only after each go/no-go. The lanes below show what AEM, content and redirects are doing at each step.</p>
 <p>Each step lasts at least one full weekly traffic cycle and ends with a go/no-go that EG signs. The proposed gates (Q31):</p>
 <ul class="tight">
   <li><strong>Technical</strong> — 5xx rate, Core Web Vitals at or above the AEM baseline, no open P1.</li>

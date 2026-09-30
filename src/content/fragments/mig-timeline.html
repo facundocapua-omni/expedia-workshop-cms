@@ -1,10 +1,114 @@
-<pre>Rebrand model   ━━━━━━━━━━┫ frozen
-Discovery       gate 1 ━━━━━━━━━━┫ gate 2 ┫ scope sign-off ⇒ AEM feature freeze
-Build           model · front end · pipeline ━━━━━━┫
-BC 1 (pilot)                          ▶ w0 · 20 · 50 · 100
-BC 2                                        ▶ w0 · 20 · 50 · 100
-BC n                                                ▶ w0 · 20 · 50 · 100 ▶ rollback window ▶ AEM off
+<svg class="dg" viewBox="0 0 900 440" role="img" aria-label="Programme timeline, planned backwards from the AEM contract end. The rebrand model is frozen before gate 2 of discovery; scope sign-off closes discovery and starts the AEM feature freeze. Build covers the model, front end and pipeline. Business cases ramp one after another and overlap: the pilot's first, then the highest value, the long tail last. After the last ramp comes its rollback window, then AEM off, a buffer, and the contract end. A checkpoint at contract end minus notice period minus negotiation time decides whether an extension is negotiated, only if business cases are still to move">
+  <defs>
+    <marker id="tla-back" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--flag)"/>
+    </marker>
+    <marker id="tla-dep" markerWidth="7" markerHeight="7" refX="6.3" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 z" fill="var(--flag)"/>
+    </marker>
+    <pattern id="tla-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill="var(--warm-soft)"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="var(--warm)" stroke-width="1.5" opacity=".35"/>
+    </pattern>
+  </defs>
 
-<span class="k">AEM off</span>      no later than contract end − buffer
-<span class="k">checkpoint</span>   contract end − notice period − negotiation time
-             ⇒ an extension is negotiated only if business cases remain</pre>
+  <line x1="380" y1="48" x2="380" y2="344" stroke="var(--ink-soft)" stroke-dasharray="4 3"/>
+  <text x="380" y="24" font-size="11.5" font-weight="600" fill="var(--ink)" text-anchor="middle">AEM feature freeze</text>
+  <text x="380" y="40" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">from scope sign-off (Q32)</text>
+
+  <line x1="560" y1="48" x2="560" y2="344" stroke="var(--warm)" stroke-width="1.4" stroke-dasharray="4 3"/>
+  <polygon points="560,44 566,50 560,56 554,50" fill="var(--warm)"/>
+  <text x="560" y="24" font-size="11.5" font-weight="600" fill="var(--warm)" text-anchor="middle">Checkpoint</text>
+  <text x="560" y="40" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">contract end − notice − negotiation</text>
+
+  <line x1="850" y1="48" x2="850" y2="344" stroke="var(--flag)" stroke-width="2.5"/>
+  <polygon points="850,48 868,54 850,60" fill="var(--flag)"/>
+  <text x="890" y="24" font-size="13" font-weight="700" fill="var(--flag)" text-anchor="end">AEM contract end</text>
+  <text x="890" y="40" font-size="10.5" fill="var(--ink-soft)" text-anchor="end">the one fixed date</text>
+  <line x1="842" y1="68" x2="604" y2="68" stroke="var(--flag)" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#tla-back)"/>
+  <text x="723" y="62" font-size="10.5" fill="var(--flag)" text-anchor="middle">planned backwards from here (D-33)</text>
+
+  <line x1="170" y1="344" x2="880" y2="344" stroke="var(--rule)"/>
+
+  <text x="10" y="94" font-size="12.5" font-weight="600" fill="var(--ink)">Rebrand model</text>
+  <text x="10" y="108" font-size="10.5" fill="var(--flag)">critical path (Q27)</text>
+  <rect x="170" y="86" width="130" height="18" rx="3" fill="var(--rule-soft)" stroke="var(--ink-soft)" stroke-opacity=".5"/>
+  <text x="178" y="99" font-size="10.5" fill="var(--ink)">brand refresh model</text>
+  <polygon points="300,87 308,95 300,103 292,95" fill="var(--ink)"/>
+  <text x="312" y="99" font-size="11" font-weight="600" fill="var(--ink)">frozen</text>
+  <line x1="300" y1="104" x2="300" y2="124" stroke="var(--flag)" stroke-width="1.3" marker-end="url(#tla-dep)"/>
+
+  <text x="10" y="134" font-size="12.5" font-weight="600" fill="var(--ink)">Discovery</text>
+  <text x="10" y="148" font-size="10.5" fill="var(--ink-soft)">the disposition log</text>
+  <rect x="200" y="126" width="100" height="18" rx="3" fill="var(--ok-soft)" stroke="var(--ok)" stroke-opacity=".6"/>
+  <text x="208" y="139" font-size="10.5" fill="var(--ok)">gate 1: keep?</text>
+  <rect x="300" y="126" width="80" height="18" rx="3" fill="var(--ok-soft)" stroke="var(--ok)" stroke-opacity=".6"/>
+  <text x="308" y="139" font-size="10.5" fill="var(--ok)">gate 2: fits?</text>
+  <polygon points="380,127 388,135 380,143 372,135" fill="var(--ok)"/>
+  <text x="394" y="139" font-size="11" font-weight="600" fill="var(--ok)">scope sign-off</text>
+
+  <text x="10" y="178" font-size="12.5" font-weight="600" fill="var(--ink)">Build</text>
+  <rect x="290" y="166" width="180" height="18" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-opacity=".6"/>
+  <text x="298" y="179" font-size="10.5" fill="var(--accent)">model, front end, pipeline</text>
+
+  <text x="10" y="222" font-size="12.5" font-weight="600" fill="var(--ink)">BC 1</text>
+  <text x="10" y="236" font-size="10.5" fill="var(--ink-soft)">the pilot's</text>
+  <rect x="340" y="214" width="22" height="18" fill="var(--rule-soft)" stroke="var(--rule)"/>
+  <rect x="362" y="214" width="22" height="18" fill="var(--accent)" opacity=".22"/>
+  <rect x="384" y="214" width="22" height="18" fill="var(--accent)" opacity=".42"/>
+  <rect x="406" y="214" width="22" height="18" fill="var(--accent)" opacity=".66"/>
+  <rect x="428" y="214" width="22" height="18" fill="var(--accent)"/>
+  <rect x="450" y="214" width="40" height="18" fill="url(#tla-hatch)" stroke="var(--warm)" stroke-opacity=".5"/>
+
+  <text x="10" y="262" font-size="12.5" font-weight="600" fill="var(--ink)">BC 2</text>
+  <text x="10" y="276" font-size="10.5" fill="var(--ink-soft)">highest value</text>
+  <rect x="430" y="254" width="22" height="18" fill="var(--rule-soft)" stroke="var(--rule)"/>
+  <rect x="452" y="254" width="22" height="18" fill="var(--accent)" opacity=".22"/>
+  <rect x="474" y="254" width="22" height="18" fill="var(--accent)" opacity=".42"/>
+  <rect x="496" y="254" width="22" height="18" fill="var(--accent)" opacity=".66"/>
+  <rect x="518" y="254" width="22" height="18" fill="var(--accent)"/>
+  <rect x="540" y="254" width="40" height="18" fill="url(#tla-hatch)" stroke="var(--warm)" stroke-opacity=".5"/>
+
+  <text x="14" y="296" font-size="13" fill="var(--ink-soft)">⋮</text>
+  <line x1="580" y1="263" x2="590" y2="312" stroke="var(--ink-soft)" stroke-dasharray="2 3"/>
+
+  <text x="10" y="320" font-size="12.5" font-weight="600" fill="var(--ink)">BC n</text>
+  <text x="10" y="334" font-size="10.5" fill="var(--ink-soft)">the long tail</text>
+  <rect x="590" y="312" width="22" height="18" fill="var(--rule-soft)" stroke="var(--rule)"/>
+  <rect x="612" y="312" width="22" height="18" fill="var(--accent)" opacity=".22"/>
+  <rect x="634" y="312" width="22" height="18" fill="var(--accent)" opacity=".42"/>
+  <rect x="656" y="312" width="22" height="18" fill="var(--accent)" opacity=".66"/>
+  <rect x="678" y="312" width="22" height="18" fill="var(--accent)"/>
+  <rect x="700" y="312" width="60" height="18" fill="url(#tla-hatch)" stroke="var(--warm)" stroke-opacity=".5"/>
+  <polygon points="760,312 769,321 760,330 751,321" fill="var(--flag)"/>
+  <text x="774" y="325" font-size="11.5" font-weight="700" fill="var(--flag)">AEM off</text>
+
+  <line x1="560" y1="214" x2="596" y2="214" stroke="var(--warm)" stroke-width="1.3"/>
+  <rect x="596" y="198" width="240" height="84" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+  <text x="608" y="219" font-size="12" font-weight="700" fill="var(--warm)">At the checkpoint</text>
+  <text x="608" y="237" font-size="11" fill="var(--ink)">business cases still to move?</text>
+  <text x="608" y="255" font-size="11" fill="var(--ink-soft)"><tspan font-weight="600" fill="var(--ink)">yes:</tspan> negotiate a short extension</text>
+  <text x="608" y="272" font-size="11" fill="var(--ink-soft)"><tspan font-weight="600" fill="var(--ink)">none:</tspan> AEM off as planned</text>
+
+  <path d="M700,350 V356 H758 V350" fill="none" stroke="var(--ink-soft)"/>
+  <text x="729" y="370" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">rollback</text>
+  <text x="729" y="383" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">window (Q34)</text>
+  <path d="M762,350 V356 H850 V350" fill="none" stroke="var(--flag)"/>
+  <text x="806" y="370" font-size="10.5" fill="var(--flag)" text-anchor="middle">buffer</text>
+  <path d="M560,396 V402 H850 V396" fill="none" stroke="var(--warm)"/>
+  <text x="705" y="417" font-size="10.5" fill="var(--warm)" text-anchor="middle">notice period + negotiation time (Q35)</text>
+
+  <text x="10" y="372" font-size="10.5" fill="var(--ink-soft)">each ramp, about five weeks</text>
+  <rect x="10" y="380" width="22" height="14" fill="var(--rule-soft)" stroke="var(--rule)"/>
+  <rect x="32" y="380" width="22" height="14" fill="var(--accent)" opacity=".22"/>
+  <rect x="54" y="380" width="22" height="14" fill="var(--accent)" opacity=".42"/>
+  <rect x="76" y="380" width="22" height="14" fill="var(--accent)" opacity=".66"/>
+  <rect x="98" y="380" width="22" height="14" fill="var(--accent)"/>
+  <rect x="120" y="380" width="30" height="14" fill="url(#tla-hatch)" stroke="var(--warm)" stroke-opacity=".5"/>
+  <text x="21" y="408" font-size="9.5" fill="var(--ink-soft)" text-anchor="middle">prep</text>
+  <text x="43" y="408" font-size="9.5" fill="var(--ink-soft)" text-anchor="middle">w0</text>
+  <text x="65" y="408" font-size="9.5" fill="var(--ink-soft)" text-anchor="middle">20</text>
+  <text x="87" y="408" font-size="9.5" fill="var(--ink-soft)" text-anchor="middle">50</text>
+  <text x="109" y="408" font-size="9.5" fill="var(--ink-soft)" text-anchor="middle">100</text>
+  <text x="156" y="391" font-size="9.5" fill="var(--ink-soft)">rollback window</text>
+</svg>
