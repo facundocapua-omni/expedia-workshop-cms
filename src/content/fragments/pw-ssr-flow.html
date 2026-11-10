@@ -1,0 +1,68 @@
+<svg class="dg" viewBox="0 0 900 346" role="img" aria-label="Private sections with SSR. Every request passes the EG CDN and the page cache without being cached. Next.js checks who is signed in, reads current content from Contentful and returns a page for that visitor, which is stored nowhere. A publish has nothing to refresh.">
+      <defs>
+        <marker id="pwssra" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--accent)"/>
+        </marker>
+        <marker id="pwssrg" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--ok)"/>
+        </marker>
+        <marker id="pwssrs" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--ink-soft)"/>
+        </marker>
+      </defs>
+
+      <rect x="5" y="14" width="150" height="46" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+      <text x="80" y="34" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Visitor</text>
+      <text x="80" y="51" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">signed in</text>
+      <rect x="190" y="14" width="150" height="46" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+      <text x="265" y="34" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">EG CDN</text>
+      <text x="265" y="51" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">routes by path</text>
+      <rect x="375" y="14" width="150" height="46" rx="4" fill="var(--ok-soft)" stroke="var(--ok)"/>
+      <text x="450" y="34" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Page cache</text>
+      <text x="450" y="51" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">on AWS</text>
+      <rect x="560" y="14" width="150" height="46" rx="4" fill="var(--card)" stroke="var(--ok)"/>
+      <text x="635" y="34" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Next.js</text>
+      <text x="635" y="51" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">renders pages</text>
+      <rect x="745" y="14" width="150" height="46" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="820" y="34" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Contentful</text>
+      <text x="820" y="51" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">delivery API</text>
+      <line x1="80" y1="60" x2="80" y2="338" stroke="var(--rule)" stroke-dasharray="3 4"/>
+      <line x1="265" y1="60" x2="265" y2="338" stroke="var(--rule)" stroke-dasharray="3 4"/>
+      <line x1="450" y1="60" x2="450" y2="338" stroke="var(--rule)" stroke-dasharray="3 4"/>
+      <line x1="635" y1="60" x2="635" y2="338" stroke="var(--rule)" stroke-dasharray="3 4"/>
+      <line x1="820" y1="60" x2="820" y2="338" stroke="var(--rule)" stroke-dasharray="3 4"/>
+
+      <line x1="8" y1="70" x2="892" y2="70" stroke="var(--rule)"/>
+      <rect x="8" y="74" width="195" height="17" fill="var(--card)"/>
+      <text x="14" y="86" font-size="10.5" font-weight="600" fill="var(--ink-soft)">Every request, for each visitor</text>
+      <line x1="84" y1="106" x2="259" y2="106" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pwssra)"/>
+      <circle cx="98" cy="106" r="9" fill="var(--accent)"/>
+      <text x="98" y="109.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">1</text>
+      <text x="184.5" y="99" font-size="10.5" fill="var(--ink)" text-anchor="middle">asks for a private page</text>
+      <line x1="269" y1="136" x2="444" y2="136" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pwssra)"/>
+      <circle cx="283" cy="136" r="9" fill="var(--accent)"/>
+      <text x="283" y="139.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">2</text>
+      <text x="369.5" y="129" font-size="10.5" fill="var(--ink)" text-anchor="middle">routes it to AWS</text>
+      <line x1="454" y1="166" x2="629" y2="166" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pwssra)"/>
+      <circle cx="468" cy="166" r="9" fill="var(--accent)"/>
+      <text x="468" y="169.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">3</text>
+      <text x="554.5" y="159" font-size="10.5" fill="var(--ink)" text-anchor="middle">passes it on, uncached</text>
+      <rect x="555" y="182" width="160" height="26" rx="3" fill="var(--ok-soft)" stroke="var(--ok)"/>
+      <circle cx="571" cy="195" r="9" fill="var(--ok)"/>
+      <text x="571" y="198.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">4</text>
+      <text x="585" y="199" font-size="10.5" fill="var(--ink)">checks who is signed in</text>
+      <line x1="639" y1="236" x2="814" y2="236" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pwssra)"/>
+      <circle cx="653" cy="236" r="9" fill="var(--accent)"/>
+      <text x="653" y="239.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">5</text>
+      <text x="739.5" y="229" font-size="10.5" fill="var(--ink)" text-anchor="middle">reads current content</text>
+      <line x1="631" y1="266" x2="86" y2="266" stroke="var(--ok)" stroke-width="1.8" marker-end="url(#pwssrg)"/>
+      <circle cx="617" cy="266" r="9" fill="var(--ok)"/>
+      <text x="617" y="269.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">6</text>
+      <text x="345.5" y="259" font-size="10.5" fill="var(--ink)" text-anchor="middle">a page for this visitor, stored nowhere</text>
+
+      <line x1="8" y1="286" x2="892" y2="286" stroke="var(--rule)"/>
+      <rect x="8" y="290" width="154" height="17" fill="var(--card)"/>
+      <text x="14" y="302" font-size="10.5" font-weight="600" fill="var(--ink-soft)">When an author publishes</text>
+      <rect x="190" y="306" width="705" height="28" rx="3" fill="var(--paper)" stroke="var(--rule)"/>
+      <text x="542.5" y="324" font-size="11" fill="var(--ink)" text-anchor="middle">Nothing to refresh: no page was stored, so the next request reads the new content</text>
+    </svg>

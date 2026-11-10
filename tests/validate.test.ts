@@ -63,10 +63,6 @@ describe('findProblems: sessions', () => {
     const data = withTopics([topic({ id: 'ownership', settles: ['Q99'] })], ['proof-point-delivery/ownership']);
     expect(findProblems(data)).toContain('proof-point-delivery/ownership: settles unknown question Q99');
   });
-  it('reports a topic listing an unknown decision', () => {
-    const data = withTopics([topic({ id: 'ownership', decisions: ['D-99'] })], ['proof-point-delivery/ownership']);
-    expect(findProblems(data)).toContain('proof-point-delivery/ownership: unknown decision D-99');
-  });
   it('reports a question settled in two topics', () => {
     const data = withTopics(
       [topic({ id: 'ownership', settles: ['DQ-9'] }), topic({ id: 'performance', settles: ['DQ-9'] })],
@@ -91,6 +87,10 @@ describe('findProblems: sessions', () => {
     expect(findProblems(data)).toContain(
       'proof-point-delivery/reference-implementations: a discussion prompt has no material, but src/content/topics/proof-point-delivery/reference-implementations.mdx exists',
     );
+  });
+  it('reports a hidden topic that settles a question', () => {
+    const data = withTopics([topic({ id: 'ownership', settles: ['DQ-9'], hidden: true })], ['proof-point-delivery/ownership']);
+    expect(findProblems(data)).toContain('proof-point-delivery/ownership: a hidden topic is not on the page, so it cannot settle DQ-9');
   });
   it('reports a material file no session declares', () => {
     const data = siteData({ materials: ['proof-point-delivery/ownership', 'proof-point-delivery/fallback'] });

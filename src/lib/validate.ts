@@ -37,7 +37,6 @@ export function findProblems(data: SiteData): string[] {
   }
 
   // Sessions: every question is settled in at most one topic, and every topic's material exists.
-  const decisionIds = new Set(data.decisions.map((d) => d.id));
   const materials = new Set(data.materials);
   const declared = new Set<string>();
   const settledIn = new Map<string, string>();
@@ -62,7 +61,7 @@ export function findProblems(data: SiteData): string[] {
         if (before) problems.push(`${id}: settled in both ${before} and ${where}`);
         else settledIn.set(id, where);
       }
-      for (const id of t.decisions) if (!decisionIds.has(id)) problems.push(`${where}: unknown decision ${id}`);
+      if (t.hidden && t.settles.length > 0) problems.push(`${where}: a hidden topic is not on the page, so it cannot settle ${t.settles.join(', ')}`);
       if (t.prompt && materials.has(where)) problems.push(`${where}: a discussion prompt has no material, but src/content/topics/${where}.mdx exists`);
       if (!t.prompt && !materials.has(where)) problems.push(`${where}: no material — add src/content/topics/${where}.mdx or mark the topic prompt: true`);
     }

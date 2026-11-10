@@ -1,0 +1,70 @@
+import refScale from '../../fragments/ref-scale.html?raw';
+
+<p class="sec-note">Globant built a custom middleware for a client's order management system (OMS). Like the Content Resolution API, it is custom code that other systems call in production: Magento Cloud calls it, and it runs on AWS, on one EC2 node behind a load balancer, with an RDS database. Its production metrics are the reference for running a custom layer of this kind.</p>
+
+<div class="decide">
+  <h4>What the reference shows, and what it does not</h4>
+  <p>It shows a custom middleware in production with no timeouts, 2 server errors in 24 hours (0.003%), no failed status check, and recovery from a node failure in minutes. It runs on one fixed node, without autoscaling, and its daily peak uses under 13% of that node's estimated capacity.</p>
+  <p>It does not show EG's volume. Its peak is about 6 requests a second, and the burst after a 1M send is estimated at 300 to 1,000. The resolver meets that through its design, not through the reference's sizing: every payload is cached in memory, nothing external is called on the request path, and instances are stateless, so they scale out (<a href="#performance">Performance at volume</a>).</p>
+</div>
+
+<div class="fig">
+  <Fragment set:html={refScale} />
+</div>
+<p class="cap">The reference and the resolver's volume, on a log scale. Each gridline is ten times the one before: the burst after a 1M send is 50 to 160 times the reference's daily peak, and still well inside one resolver instance.</p>
+
+<h3>Latency</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:24%">Metric</th><th style="width:30%">Measured</th><th>Source and basis</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Response time p50 / p95 / p99</strong></td><td>p50: under 1 ms, 1.08 s at peak<br />p95: 121.7 ms, 1.72 s at peak<br />p99: 167 ms, 2.03 s at peak</td><td>Target response time at the load balancer, in AWS CloudWatch: the stable base against the daily maximum</td></tr>
+    <tr><td><strong>Average response time</strong></td><td>35–50 ms at the load balancer<br />127, 295 and 430 ms seen from Magento</td><td>CloudWatch average at the load balancer. The New Relic figures are measured by the caller, so they include the network round trip and the TLS handshake from Magento Cloud</td></tr>
+    <tr><td><strong>Performance under peak load</strong></td><td>Stable, no server errors</td><td>At the peak of 374 requests a minute (20:30 UTC), p50 rose to 1.08 s with no failures</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Traffic and capacity</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:24%">Metric</th><th style="width:30%">Measured</th><th>Source and basis</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Usual traffic</strong></td><td>20–60 requests a minute<br />0.33–1.0 a second</td><td>Request count at the load balancer, aggregated per minute</td></tr>
+    <tr><td><strong>Peak production traffic</strong></td><td>374 requests a minute, about 6.2 a second</td><td>The highest recorded, at 20:30 UTC</td></tr>
+    <tr><td><strong>Maximum sustained throughput</strong></td><td>About 200 a minute sustained today<br />3,000–6,000 a minute, estimated capacity</td><td>Estimate for the fixed node: one EC2 m7a.large, 2 vCPU and 8 GB</td></tr>
+    <tr><td><strong>Concurrent requests</strong></td><td>About 6.2 a second at peak<br />6–12 active connections</td><td>Active connections at the load balancer, and Little's law: L = λ × W</td></tr>
+    <tr><td><strong>Headroom over the current peak</strong></td><td>87.5–93.7% free</td><td>The peak of 374 a minute uses under 12.5% of the node's estimated capacity</td></tr>
+    <tr><td><strong>CPU and memory at peak</strong></td><td>CPU: 27.88% at most<br />Memory: not measured</td><td>CPU from EC2 monitoring. Memory needs the CloudWatch agent on the instance</td></tr>
+    <tr><td><strong>Database connection pool</strong></td><td>Under 10% used</td><td>Amazon RDS: fewer than 15 active connections on average</td></tr>
+    <tr><td><strong>Autoscaling time</strong></td><td>Not applicable</td><td>One fixed EC2 node, with no Auto Scaling group</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Errors and availability</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:24%">Metric</th><th style="width:30%">Measured</th><th>Source and basis</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Success rate</strong></td><td>99.997%</td><td>100% less the 5xx rate: requests the middleware processed without a server error</td></tr>
+    <tr><td><strong>4xx rate</strong></td><td>About 20.7% (13,420 requests)</td><td>Target 4xx count at the load balancer: requests refused at the origin, such as 404, 401 and invalid payloads</td></tr>
+    <tr><td><strong>5xx rate</strong></td><td>0.003% (2 in 24 hours)</td><td>Target 5xx count 2, load balancer 5xx count 0</td></tr>
+    <tr><td><strong>Timeout rate</strong></td><td>0%</td><td>No 504 Gateway Timeout at the load balancer</td></tr>
+    <tr><td><strong>Availability</strong></td><td>100%</td><td>EC2 status checks: 2 of 2 passed, none failed</td></tr>
+    <tr><td><strong>Dependency failure rate</strong></td><td>Under 0.01%</td><td>Read from the near absence of 502 Bad Gateway and 504 at the load balancer</td></tr>
+    <tr><td><strong>Retry success rate</strong></td><td>Over 98%</td><td>Retries seen from Magento Cloud, in New Relic</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Recovery</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:24%">Metric</th><th style="width:30%">Measured</th><th>Source and basis</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Mean time to recovery</strong></td><td>Under 15 minutes</td><td>The standard operating SLA for detection and manual intervention on the EC2 node</td></tr>
+    <tr><td><strong>Recovery after a node failure</strong></td><td>About 2–5 minutes</td><td>The target group's health check, then the EC2 instance's auto-recovery or reboot</td></tr>
+  </tbody>
+</table>
+</div>

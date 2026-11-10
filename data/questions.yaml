@@ -261,9 +261,10 @@
   confirmedByEG: false
 - id: DQ-10
   group: uc1-design
-  question: Where is the service hosted, and is it internet-facing?
-  status: assumed
-  position: EG infra, internal-only
+  question: "Where is the Content Resolution API hosted: on Akamai, or as a Contentful app?"
+  detail: "Either way it runs on a managed platform under EG's accounts, not on EG's infrastructure, and it is internet-facing, because SFMC and partner web call it from outside EG. On Akamai it runs as EdgeWorkers on EG's Akamai account, the one in front of partner web. As a Contentful app it runs inside EG's Contentful organisation, within the limits Contentful sets for apps."
+  owner: EG
+  status: open
   confirmedByEG: false
 - id: DQ-11
   group: uc1-design
@@ -274,9 +275,9 @@
   confirmedByEG: false
 - id: Q27
   group: migration
-  question: Does the 2027 brand refresh change the content model, when is that model frozen, and does the refresh have a fixed public launch date?
-  detail: A visual refresh is absorbed by the front end, because presentation fields already hold roles (background light, dark or brand) rather than colours. Only a breaking change to a content type affects the migration — a field renamed, split or removed, a new required field, a type restructured. A fixed public date also decides whether AEM pages can keep the current brand until their business case moves (D-30).
-  why: Content migrates once, into the post-rebrand model (D-27), so the freeze of that model sits on the critical path of the whole programme.
+  question: Do the non-parity enhancements change the content model, when is that model frozen, and do they have a fixed public launch date?
+  detail: A visual enhancement is absorbed by the front end, because presentation fields already hold roles (background light, dark or brand) rather than colours. Only a breaking change to a content type affects the migration — a field renamed, split or removed, a new required field, a type restructured. A fixed public date also decides whether AEM pages can stay as they are until their business case moves (D-30).
+  why: Content migrates once, into the model with the non-parity enhancements (D-27), so the freeze of that model sits on the critical path of the whole programme.
   owner: EG brand and design
   status: open
   confirmedByEG: false
@@ -295,11 +296,12 @@
   status: open
   confirmedByEG: false
 - id: Q30
-  group: migration
-  question: Which CDN fronts partner web, and can it split traffic by percentage between two origins with a sticky cookie?
-  detail: Coexistence is routed at the edge (D-28). Paths decide which business case is exposed and a sticky cohort decides who sees it. The same configuration serves the redirects (D-32) and makes rollback a routing change.
+  group: partner-web
+  question: Which CDN does EG put in front of partner web?
+  detail: EG has no CDN of its own. Partner web is served through Adobe's, which comes with AEM and is decommissioned with it. Coexistence is routed at the edge (D-28), so the CDN has to send each business case to AEM or to the new front end by path and sticky cohort, serve the redirects (D-32) and make rollback a routing change. It goes live before the first business case moves and stays in front of the new front end after AEM is gone.
   owner: EG platform
   status: open
+  position: "Akamai, on an account EG owns. It goes live sending all traffic to AEM, so moving DNS to it changes nothing for visitors, and every routing change after that happens at the edge."
   confirmedByEG: false
 - id: Q31
   group: migration
@@ -337,4 +339,49 @@
   detail: The plan runs backwards from the contract end with an explicit buffer. The checkpoint that decides whether to negotiate an extension sits at contract end minus notice period minus negotiation time, so it needs all three.
   owner: EG procurement
   status: open
+  confirmedByEG: false
+- id: Q36
+  group: partner-web
+  question: Can every partner site run from a single Contentful space?
+  detail: One space shares content types, components and assets across sites, and keeps each site's pages, navigation and locales apart inside it. A space per site isolates them fully, but duplicates the model and every piece of shared content.
+  owner: EG and Contentful
+  status: open
+  position: "Yes: one space for all partner sites, with each site's content kept apart by structure and roles. To be validated with Contentful against the platform's limits and with EG against its governance."
+  confirmedByEG: false
+- id: Q37
+  group: partner-web
+  question: Can the partner sites share one front end codebase?
+  detail: A monorepo holds one Next.js app per site on shared packages — the component library, the design tokens and the Contentful integration — so a component is built once and every site gets it.
+  owner: EG
+  status: open
+  position: "Yes: a monorepo with one app per site. Each app deploys on its own, so a release of one site does not touch the others."
+  confirmedByEG: false
+- id: Q38
+  group: partner-web
+  question: What differs from one partner site to another?
+  detail: "Globant's starting list: brand, as design tokens over the shared components; languages; navigation and footer; domain; and who can edit. Each difference is either configuration or a new component, and the earlier it is known, the cheaper it is."
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q39
+  group: partner-web
+  question: What security requirements does EG set for the front end and its hosting?
+  detail: For example who can access the AWS environments and how, security headers, dependency scanning, and penetration testing before go-live. EG sets the requirements; Globant builds and runs the front end to them.
+  owner: EG security
+  status: open
+  confirmedByEG: false
+- id: Q40
+  group: partner-web
+  question: Which accessibility standard and level does partner web have to meet?
+  detail: Accessibility is built into development (D-43). The standard it is measured against — for example WCAG 2.2 AA — is EG's to set, together with any legal obligation in the markets partner web serves.
+  owner: EG
+  status: open
+  confirmedByEG: false
+- id: Q41
+  group: partner-web
+  question: Where is the partner web front end hosted, and who runs it in production?
+  detail: "EG has confirmed that Globant builds the front end, in Next.js and Tailwind. Still open: where it is hosted, whose account and contract the hosting sits on, and who runs it once it is live: deployments, monitoring, dependency and security updates, and incidents."
+  owner: EG
+  status: open
+  position: "Next.js on OpenNext, in EG's own AWS account. Globant deploys and runs the front end there with delegated access. EG keeps the infrastructure, so a change of supplier is a handover of access rather than a hosting migration."
   confirmedByEG: false

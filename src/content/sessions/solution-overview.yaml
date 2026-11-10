@@ -1,0 +1,20 @@
+title: Solution overview, plan and target dates
+short: Solution overview
+order: 5
+topics:
+  - agenda: High-level target architecture and key integrations
+    id: architecture
+    nav: Target architecture
+    settles: [Q7, Q19]
+  - agenda: Build vs. configure
+    id: build-vs-configure
+    nav: Build vs. configure
+    settles: [Q23, U11]
+  - agenda: High-level phases and milestones
+    id: phases
+    nav: Phases and milestones
+    settles: [Q25]
+  - agenda: Key constraints and dependencies on EG, including EG resourcing
+    id: eg-dependencies
+    nav: EG dependencies
+    settles: [Q21]

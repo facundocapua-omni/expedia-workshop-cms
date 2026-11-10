@@ -17,18 +17,18 @@ import ramp from '../../fragments/mig-ramp.html?raw';
   </tbody>
 </table>
 </div>
-<p>Keeping visitors in one cohort is not only about their experience. A visitor who bounces between origins sees two brands on consecutive pages, and blurs the conversion figures of both cohorts.</p>
+<p>Keeping visitors in one cohort is not only about their experience. A visitor who bounces between origins sees two versions of the site on consecutive pages, and blurs the conversion figures of both cohorts.</p>
 
 <h3>The ramp</h3>
 <div class="fig">
   <Fragment set:html={ramp} />
 </div>
 <p class="cap">Figure 6 — The ramp of one business case. The CDN routes by path, then by cohort; the share on the new front end steps up only after each go/no-go. The lanes below show what AEM, content and redirects are doing at each step.</p>
-<p>Each step lasts at least one full weekly traffic cycle and ends with a go/no-go that EG signs. The proposed gates (Q31):</p>
+<p>Each step lasts at least one full weekly traffic cycle and ends with a go/no-go that EG signs. The proposed gates:</p>
 <ul class="tight">
   <li><strong>Technical</strong> — 5xx rate, Core Web Vitals at or above the AEM baseline, no open P1.</li>
   <li><strong>Business</strong> — conversion and leads of the new cohort against the cohort still on AEM. The percentage split gives the programme a control group at no extra cost.</li>
-  <li><strong>Tracking</strong> — the data layer (U10) and consent (U7) behave the same on both sides.</li>
+  <li><strong>Tracking</strong> — the data layer and consent behave the same on both sides.</li>
   <li><strong>SEO</strong> — no rise in 404s or crawl errors for the business case.</li>
 </ul>
 <p>Rollback at any step is a routing change at the edge. It takes effect in minutes and does not touch DNS, which points at the CDN throughout. A business case that fails rolls back alone; the ones already at 100% are not affected.</p>
@@ -39,9 +39,9 @@ import ramp from '../../fragments/mig-ramp.html?raw';
 <h3>What has to work on both sides</h3>
 <ul class="tight">
   <li><strong>Header, footer and navigation</strong>, including links that cross from one system to the other.</li>
-  <li><strong>Consent</strong> (U7) and the <strong>analytics data layer</strong> (U10), so a journey that crosses origins is still one journey in the data.</li>
+  <li><strong>Consent</strong> and the <strong>analytics data layer</strong>, so a journey that crosses origins is still one journey in the data.</li>
   <li><strong>Sitemaps and robots.txt</strong>, served consistently from the edge.</li>
   <li><strong>Images</strong> referenced from both systems, and the <strong>form back ends</strong> behind lead capture.</li>
   <li>The <strong>cohort cookie</strong>, which AEM must leave alone.</li>
 </ul>
-<p>One cost is accepted: while business cases are split across the two systems, a visitor can meet the new brand in one and the current brand in another. <a href="#code-freeze">Development vs. freeze</a> explains why AEM is not reskinned to hide it (D-30).</p>
+<p>One cost is accepted: while business cases are split across the two systems, a visitor can meet the non-parity enhancements in one and the current site in another. <a href="#code-freeze">Development vs. freeze</a> explains why the enhancements are not added to AEM to hide it (D-30).</p>

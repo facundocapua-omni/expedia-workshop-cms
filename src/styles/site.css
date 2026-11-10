@@ -55,15 +55,7 @@ dialog.search::backdrop{background:rgb(0 0 0 / .35)}
 .search-results .r-excerpt{display:block;font-size:.84375rem;color:var(--ink-soft);margin-top:2px}
 .search-results mark{background:var(--warm-soft);color:inherit}
 
-.mast .outcomes{margin-top:22px;max-width:72ch}
-.mast .outcomes .label{font-family:var(--mono);font-size:.6875rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:0 0 6px}
-.mast .outcomes ul,.outcome-list,.open-list,.settle-decisions{margin:0 0 16px;padding-left:19px;max-width:78ch}
-.mast .outcomes li,.outcome-list li,.open-list li,.settle-decisions li{margin:0 0 5px}
-.agenda-list{padding-left:24px;max-width:80ch}
-.agenda-list li{margin:0 0 9px}
-.st-discussion{background:var(--warm-soft);color:var(--warm)}
 .sec-note.prompt,p.moved{border-left:3px solid var(--warm);padding-left:12px}
 p.moved{border-left-color:var(--accent);color:var(--ink-soft);font-size:.9375rem;max-width:74ch}
 .see{font-size:.9375rem}
-.settle{margin-top:28px}
 .card.session{border-left:3px solid var(--accent)}

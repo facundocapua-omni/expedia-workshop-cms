@@ -5,15 +5,15 @@ export function question(overrides: Partial<Question> & Pick<Question, 'id'>): Q
 }
 
 export function topic(overrides: Partial<TopicMeta> & Pick<TopicMeta, 'id'>): TopicMeta {
-  return { agenda: `Topic ${overrides.id}`, nav: `Topic ${overrides.id}`, settles: [], decisions: [], prompt: false, ...overrides };
+  return { agenda: `Topic ${overrides.id}`, nav: `Topic ${overrides.id}`, settles: [], prompt: false, hidden: false, ...overrides };
 }
 
 export function session(overrides: Partial<SessionMeta> = {}): SessionMeta {
   return {
-    slug: 'proof-point-delivery', title: 'Proof point delivery', short: 'Delivery', track: 'Cross-channel proof points',
-    owner: 'Globant', order: 1, outcomes: ['Pattern agreed'],
+    slug: 'proof-point-delivery', title: 'Proof point delivery', short: 'Delivery',
+    order: 1,
     topics: [
-      topic({ id: 'ownership', nav: 'Ownership', settles: ['DQ-9'], decisions: ['D-05'] }),
+      topic({ id: 'ownership', nav: 'Ownership', settles: ['DQ-9'] }),
       topic({ id: 'reference-implementations', prompt: true }),
     ],
     ...overrides,

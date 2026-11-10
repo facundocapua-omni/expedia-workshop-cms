@@ -1,0 +1,34 @@
+import livePreview from '../../fragments/pw-live-preview.html?raw';
+
+<p class="sec-note">Authors need to build pages without a developer, and to see them as visitors will before they publish. Both happen in Contentful, and the preview is the production front end rather than a separate preview application.</p>
+
+<div class="decide">
+  <h4>A live preview of the front end, opened in preview mode</h4>
+  <p>Contentful's live preview is connected to the partner web front end. It opens the site in preview mode: the same Next.js app, reading unpublished content, not public and never cached (D-38).</p>
+</div>
+
+<div class="fig">
+  <Fragment set:html={livePreview} />
+</div>
+<p class="cap">The live preview. The author edits on the left and sees the page change on the right. The page is the partner web front end itself, in preview mode; visitors get the same front end with published content only.</p>
+
+<div class="decide">
+  <h4>Pages are composed in Contentful, with the preview beside the editor</h4>
+  <p>A page holds sections and each section holds blocks. As the author edits, the preview updates, and clicking an element in it opens the field that holds it (D-39).</p>
+</div>
+
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:24%"></th><th>The live preview</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Opened from</strong></td><td>The entry being edited, in a pane beside the editor</td></tr>
+    <tr><td><strong>Shows</strong></td><td>The page as it will look once published, with its unpublished changes</td></tr>
+    <tr><td><strong>Updates</strong></td><td>As the author types, without saving or reloading</td></tr>
+    <tr><td><strong>Clicking an element</strong></td><td>Opens the entry and the field behind it</td></tr>
+    <tr><td><strong>Who sees it</strong></td><td>Authors signed in to Contentful: never public, never cached</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>How a page is composed</h3>
+<p>A page holds sections, and each section holds the blocks. Theme, background, spacing and the section heading live on the section, so no block has to carry them (D-20). Background and theme are roles — light, dark, brand — rather than colours, so a visual non-parity enhancement changes the design tokens and the pages follow.</p>

@@ -1,46 +1,33 @@
 title: Partner web display layer and front end architecture
 short: Partner web
-track: Partner web content
-owner: ContenExceltful w/ Globant
 order: 3
-outcomes:
-  - Display layer architecture and ownership understood
-  - Split of self-serve versus engineering work agreed
-  - Hosting and security requirements identified for EG review
 topics:
   - agenda: "Front end approach: who builds, hosts and maintains it"
     id: front-end
     nav: Front end approach
-    settles: [Q8, Q10]
+    settles: [Q8, Q10, Q30, Q41]
   - agenda: Rendering, caching and page performance
     id: rendering
     nav: Rendering and caching
     settles: [U1]
-    prompt: true
     see:
       href: /sessions/proof-point-delivery/#performance
       label: "Session 1: where the cache sits"
   - agenda: Live preview and visual editing
     id: preview
     nav: Live preview
-    prompt: true
-  - agenda: Mapping content types to front end components and the design system, including the 2027 brand refresh
+  - agenda: Mapping content types to front end components and the design system, including the non-parity enhancements
     id: components
     nav: Components and design system
-    settles: [Q9, U2, U3, U4, U8]
   - agenda: What Web Ops can change without engineering versus what needs a developer
     id: self-serve
     nav: Self-serve vs. engineering
     settles: [U9]
-    prompt: true
   - agenda: Running multiple partner sites from one instance
     id: multi-site
     nav: Multiple partner sites
-    settles: [U5]
-    prompt: true
+    settles: [Q36, Q37, Q38, U5]
   - agenda: SEO, tracking, consent, accessibility and EG security requirements
     id: requirements
     nav: SEO, consent, security
-    settles: [U7, U10]
-    decisions: [D-24]
-    prompt: true
+    settles: [Q39, Q40, U7, U10]

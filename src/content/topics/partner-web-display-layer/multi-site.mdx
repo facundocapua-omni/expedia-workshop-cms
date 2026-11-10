@@ -1,0 +1,28 @@
+import sites from '../../fragments/pw-multi-site.html?raw';
+
+<p class="sec-note">Several partner sites, one platform: what they share is built once, and what differs is set per site. This topic is Globant's starting position, to be validated with EG and Contentful in the session.</p>
+
+<div class="decide">
+  <h4><span class="stamp">proposal</span>One Contentful space, one monorepo with an app per site</h4>
+  <p>All partner sites share one Contentful space: the same content types, components and assets, with each site's pages and navigation kept apart inside it. The front end is a monorepo with one Next.js app per site, built on shared packages: the component library, the design tokens and the Contentful integration.</p>
+</div>
+
+<div class="fig">
+  <Fragment set:html={sites} />
+</div>
+<p class="cap">What partner sites share and what each one owns. A component is built once and every site gets it; each app deploys on its own.</p>
+
+<h3>What differs from one site to another</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:24%">Difference</th><th>Where it lives</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Brand</strong></td><td>The site's own design tokens, over the shared components</td></tr>
+    <tr><td><strong>Languages</strong></td><td>The locales the site publishes in</td></tr>
+    <tr><td><strong>Navigation and footer</strong></td><td>The site's own entries in the shared space</td></tr>
+    <tr><td><strong>Domain</strong></td><td>Its own, served by the site's app (D-35)</td></tr>
+    <tr><td><strong>Who can edit</strong></td><td>Roles scoped to the site's content</td></tr>
+  </tbody>
+</table>
+</div>
+<p>The list is for EG to confirm. A difference it misses becomes either configuration or a new component, and the earlier it is known, the cheaper it is.</p>

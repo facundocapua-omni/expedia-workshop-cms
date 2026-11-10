@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { discussedIn, placementOf, stillOpen, topicDecisions, topicHref } from '../src/lib/sessions';
-import type { Decision } from '../src/lib/types';
+import { discussedIn, placementOf, topicHref, visibleTopics } from '../src/lib/sessions';
 import { question, session, siteData, topic } from './fixtures';
 
 describe('placementOf', () => {
@@ -38,39 +37,9 @@ describe('discussedIn', () => {
   });
 });
 
-describe('stillOpen', () => {
-  const s = session({ topics: [topic({ id: 'a', settles: ['Q5', 'Q2'] }), topic({ id: 'b', settles: ['Q6', 'Q3'] })] });
-  const questions = [
-    question({ id: 'Q2', status: 'answered', answer: 'NBA', confirmedByEG: true }),
-    question({ id: 'Q3', status: 'answered', answer: 'One reference' }),
-    question({ id: 'Q5', status: 'assumed', position: 'In the resolver' }),
-    question({ id: 'Q6' }),
-    question({ id: 'Q9' }),
-  ];
-  const open = stillOpen(s, questions);
-
-  it('drops what EG has confirmed and what the session does not settle', () => {
-    expect([...open.toConfirm, ...open.toDecide].map((q) => q.id).sort()).toEqual(['Q3', 'Q5', 'Q6']);
-  });
-  it('splits like /decide, in the order the topics raise them', () => {
-    expect(open.toConfirm.map((q) => q.id)).toEqual(['Q5', 'Q3']);
-    expect(open.toDecide.map((q) => q.id)).toEqual(['Q6']);
-  });
-});
-
-describe('topicDecisions', () => {
-  const decisions: Decision[] = [
-    { id: 'D-04', title: 'A thin Content Resolution API', useCase: 'uc1', resolves: [] },
-    { id: 'D-26', title: 'SFMC fetches per recipient', useCase: 'uc1', resolves: ['Q6'] },
-    { id: 'D-27', title: 'Pilot scope', useCase: 'uc1', resolves: ['Q7'] },
-  ];
-
-  it('lists the topic decisions, then any decision recorded later that resolves a question it settles', () => {
-    const t = topic({ id: 'sfmc', settles: ['Q6', 'Q22'], decisions: ['D-04'] });
-    expect(topicDecisions(t, decisions).map((d) => d.id)).toEqual(['D-04', 'D-26']);
-  });
-  it('shows a decision once when it is both listed and resolving', () => {
-    const t = topic({ id: 'sfmc', settles: ['Q6'], decisions: ['D-26'] });
-    expect(topicDecisions(t, decisions).map((d) => d.id)).toEqual(['D-26']);
+describe('visibleTopics', () => {
+  it('leaves out hidden topics, keeping the agenda order', () => {
+    const s = session({ topics: [topic({ id: 'flow' }), topic({ id: 'reference-implementations', hidden: true }), topic({ id: 'failure' })] });
+    expect(visibleTopics(s).map((t) => t.id)).toEqual(['flow', 'failure']);
   });
 });

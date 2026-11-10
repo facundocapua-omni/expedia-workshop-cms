@@ -1,0 +1,82 @@
+<svg class="dg" viewBox="0 0 900 414" role="img" aria-label="Public pages with ISR. On every visit the EG CDN routes the request to the front end, where the page cache serves the page without rendering it. When an author publishes, a Contentful webhook tells Next.js, which marks the pages that use the entry. The next visit to a marked page has Next.js render it once from Contentful and store it in the page cache, which serves it from then on.">
+      <defs>
+        <marker id="pwisra" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--accent)"/>
+        </marker>
+        <marker id="pwisrg" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--ok)"/>
+        </marker>
+        <marker id="pwisrs" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--ink-soft)"/>
+        </marker>
+      </defs>
+
+      <rect x="5" y="14" width="150" height="46" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+      <text x="80" y="34" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Visitor</text>
+      <text x="80" y="51" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">public page</text>
+      <rect x="190" y="14" width="150" height="46" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+      <text x="265" y="34" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">EG CDN</text>
+      <text x="265" y="51" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">routes by path</text>
+      <rect x="375" y="14" width="150" height="46" rx="4" fill="var(--ok-soft)" stroke="var(--ok)"/>
+      <text x="450" y="34" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Page cache</text>
+      <text x="450" y="51" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">on AWS</text>
+      <rect x="560" y="14" width="150" height="46" rx="4" fill="var(--card)" stroke="var(--ok)"/>
+      <text x="635" y="34" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Next.js</text>
+      <text x="635" y="51" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">renders pages</text>
+      <rect x="745" y="14" width="150" height="46" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="820" y="34" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Contentful</text>
+      <text x="820" y="51" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">delivery API</text>
+      <line x1="80" y1="60" x2="80" y2="406" stroke="var(--rule)" stroke-dasharray="3 4"/>
+      <line x1="265" y1="60" x2="265" y2="406" stroke="var(--rule)" stroke-dasharray="3 4"/>
+      <line x1="450" y1="60" x2="450" y2="406" stroke="var(--rule)" stroke-dasharray="3 4"/>
+      <line x1="635" y1="60" x2="635" y2="406" stroke="var(--rule)" stroke-dasharray="3 4"/>
+      <line x1="820" y1="60" x2="820" y2="406" stroke="var(--rule)" stroke-dasharray="3 4"/>
+
+      <line x1="8" y1="70" x2="892" y2="70" stroke="var(--rule)"/>
+      <rect x="8" y="74" width="77" height="17" fill="var(--card)"/>
+      <text x="14" y="86" font-size="10.5" font-weight="600" fill="var(--ink-soft)">Every visit</text>
+      <line x1="84" y1="106" x2="259" y2="106" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pwisra)"/>
+      <circle cx="98" cy="106" r="9" fill="var(--accent)"/>
+      <text x="98" y="109.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">1</text>
+      <text x="184.5" y="99" font-size="10.5" fill="var(--ink)" text-anchor="middle">asks for a page</text>
+      <line x1="269" y1="136" x2="444" y2="136" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pwisra)"/>
+      <circle cx="283" cy="136" r="9" fill="var(--accent)"/>
+      <text x="283" y="139.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">2</text>
+      <text x="369.5" y="129" font-size="10.5" fill="var(--ink)" text-anchor="middle">routes it to AWS</text>
+      <line x1="446" y1="166" x2="86" y2="166" stroke="var(--ok)" stroke-width="1.8" marker-end="url(#pwisrg)"/>
+      <circle cx="432" cy="166" r="9" fill="var(--ok)"/>
+      <text x="432" y="169.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">3</text>
+      <text x="253" y="159" font-size="10.5" fill="var(--ink)" text-anchor="middle">the page, from cache: nothing rendered</text>
+
+      <line x1="8" y1="186" x2="892" y2="186" stroke="var(--rule)"/>
+      <rect x="8" y="190" width="154" height="17" fill="var(--card)"/>
+      <text x="14" y="202" font-size="10.5" font-weight="600" fill="var(--ink-soft)">When an author publishes</text>
+      <line x1="816" y1="222" x2="641" y2="222" stroke="var(--ink-soft)" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#pwisrs)"/>
+      <circle cx="802" cy="222" r="9" fill="var(--ink-soft)"/>
+      <text x="802" y="225.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">4</text>
+      <text x="715.5" y="215" font-size="10.5" fill="var(--ink)" text-anchor="middle">webhook: entry changed</text>
+      <line x1="631" y1="252" x2="456" y2="252" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pwisra)"/>
+      <circle cx="617" cy="252" r="9" fill="var(--accent)"/>
+      <text x="617" y="255.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">5</text>
+      <text x="530.5" y="245" font-size="10.5" fill="var(--ink)" text-anchor="middle">marks the pages using it</text>
+
+      <line x1="8" y1="272" x2="892" y2="272" stroke="var(--rule)"/>
+      <rect x="8" y="276" width="407" height="17" fill="var(--card)"/>
+      <text x="14" y="288" font-size="10.5" font-weight="600" fill="var(--ink-soft)">Next visit to a marked page, or the first ever: steps 1 and 2, then</text>
+      <line x1="454" y1="308" x2="629" y2="308" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pwisra)"/>
+      <circle cx="468" cy="308" r="9" fill="var(--accent)"/>
+      <text x="468" y="311.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">6</text>
+      <text x="554.5" y="301" font-size="10.5" fill="var(--ink)" text-anchor="middle">renders it once</text>
+      <line x1="639" y1="338" x2="814" y2="338" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pwisra)"/>
+      <circle cx="653" cy="338" r="9" fill="var(--accent)"/>
+      <text x="653" y="341.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">7</text>
+      <text x="739.5" y="331" font-size="10.5" fill="var(--ink)" text-anchor="middle">reads the content</text>
+      <line x1="631" y1="368" x2="456" y2="368" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pwisra)"/>
+      <circle cx="617" cy="368" r="9" fill="var(--accent)"/>
+      <text x="617" y="371.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">8</text>
+      <text x="530.5" y="361" font-size="10.5" fill="var(--ink)" text-anchor="middle">stores the new page</text>
+      <line x1="446" y1="398" x2="86" y2="398" stroke="var(--ok)" stroke-width="1.8" marker-end="url(#pwisrg)"/>
+      <circle cx="432" cy="398" r="9" fill="var(--ok)"/>
+      <text x="432" y="401.5" font-size="10" font-weight="600" fill="var(--paper)" text-anchor="middle">9</text>
+      <text x="253" y="391" font-size="10.5" fill="var(--ink)" text-anchor="middle">the new page, cached from now on</text>
+    </svg>

@@ -15,7 +15,7 @@
   <p>The split is deliberate and worth confirming with EG rather than assuming: it says an internal user is trusted to notice an empty panel, and a partner is not expected to notice generic copy.</p>
 
   <h3>Fallback content is authored, not hardcoded</h3>
-  <p>Every message carries its own fallback: the mandatory default copy, which uses no variables and makes no partner-specific claim. It goes through the same authoring, translation and approval path as everything else, which means it is reviewable, localised into all five locales, and versioned. Copy embedded in the resolver would be none of those things, and it would be the one piece of partner-facing English nobody ever reviews.</p>
+  <p>Every proof point carries its own fallback: the mandatory default copy, which uses no variables and makes no partner-specific claim. It goes through the same authoring, translation and approval path as everything else, which means it is reviewable, localised into all five locales, and versioned. Copy embedded in the resolver would be none of those things, and it would be the one piece of partner-facing English nobody ever reviews.</p>
 
   <h3>Failure modes</h3>
   <div class="scroll">
@@ -37,13 +37,13 @@
 </div>
 
 <h3>Under option B</h3>
-<p>The surface policies and the authored fallback are the same in <a href="#resolution-layer">option B</a>. Three failure modes change, because the resolver selects the variant and serves the latest version:</p>
+<p>The surface policies and the authored fallback are the same in <a href="#flow">option B</a>. Three failure modes change, because the resolver selects the variant and serves the latest version:</p>
 <div class="scroll">
 <table>
   <thead><tr><th style="width:26%">Failure</th><th style="width:30%">Behaviour</th><th>Note</th></tr></thead>
   <tbody>
-    <tr><td>No variant for the segment and tone</td><td>The message's default copy, reported</td><td>Cannot happen in option A, where NBA only chooses what the index lists. In option B it is the expected result of a gap, and the trace counts it</td></tr>
-    <tr><td>Unknown message</td><td>Module omitted on every surface, and alert</td><td>Takes the place of the unknown reference. There is no default copy to serve, because the default belongs to the message. Still a decisioning or data-contract defect, and still noisy</td></tr>
+    <tr><td>No variant for the segment and tone</td><td>The proof point's default copy, reported</td><td>Cannot happen in option A, where NBA only chooses what the index lists. In option B it is the expected result of a gap, and the trace counts it</td></tr>
+    <tr><td>Unknown proof point</td><td>Module omitted on every surface, and alert</td><td>Takes the place of the unknown reference. There is no default copy to serve, because the default belongs to the proof point. Still a decisioning or data-contract defect, and still noisy</td></tr>
     <tr><td>Variant unpublished after the send</td><td>The next fetch resolves again: another published version, or the default copy</td><td>Nothing is pinned unless the channel sends the reference from an earlier response</td></tr>
   </tbody>
 </table>

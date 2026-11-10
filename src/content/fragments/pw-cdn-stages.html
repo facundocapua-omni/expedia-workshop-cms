@@ -1,0 +1,84 @@
+<svg class="dg" viewBox="0 0 900 346" role="img" aria-label="From Adobe's CDN to EG's, in four stages. 1, today: DNS points at Adobe's CDN, which comes with AEM, and EG has no CDN of its own. 2, before the first business case moves: DNS moves once, to Akamai as EG's CDN, which still sends all traffic to AEM through Adobe's CDN, so visitors see no change. 3, during the migration: Akamai routes each business case to AEM or to the front end on AWS, by path and cohort, and a rollback is a routing change at the edge. 4, after AEM: AEM is decommissioned together with Adobe's CDN, and Akamai fronts the front end on AWS alone; DNS and the edge stay as they are.">
+      <defs>
+        <marker id="pwcdna" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--ink-soft)"/>
+        </marker>
+        <marker id="pwcdnw" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--warm)"/>
+        </marker>
+      </defs>
+
+      <line x1="224" y1="10" x2="224" y2="338" stroke="var(--rule)" stroke-dasharray="3 4"/>
+      <line x1="446" y1="10" x2="446" y2="338" stroke="var(--rule)" stroke-dasharray="3 4"/>
+      <line x1="668" y1="10" x2="668" y2="338" stroke="var(--rule)" stroke-dasharray="3 4"/>
+
+      <text x="10" y="22" font-size="12" font-weight="600" fill="var(--ink)">1 · Today</text>
+      <text x="10" y="38" font-size="10.5" fill="var(--ink-soft)">served through Adobe's CDN</text>
+      <rect x="10" y="52" width="206" height="32" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+      <text x="113" y="72" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="middle">Visitor</text>
+      <line x1="113" y1="84" x2="113" y2="125" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#pwcdna)"/>
+      <text x="121" y="109" font-size="10.5" fill="var(--ink-soft)">DNS</text>
+      <rect x="10" y="128" width="206" height="46" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+      <text x="113" y="148" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Adobe CDN</text>
+      <text x="113" y="165" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">comes with AEM</text>
+      <line x1="113" y1="174" x2="113" y2="223" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#pwcdna)"/>
+      <rect x="10" y="226" width="206" height="46" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+      <text x="113" y="246" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">AEM</text>
+      <text x="113" y="263" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">partner web today</text>
+      <text x="10" y="300" font-size="10.5" fill="var(--ink-soft)">EG has no CDN of its own.</text>
+      <text x="10" y="316" font-size="10.5" fill="var(--ink-soft)">Adobe's goes when AEM does.</text>
+
+      <text x="232" y="22" font-size="12" font-weight="600" fill="var(--ink)">2 · EG's CDN in place</text>
+      <text x="232" y="38" font-size="10.5" fill="var(--ink-soft)">before the first business case</text>
+      <rect x="232" y="52" width="206" height="32" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+      <text x="335" y="72" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="middle">Visitor</text>
+      <line x1="335" y1="84" x2="335" y2="125" stroke="var(--warm)" stroke-width="1.6" marker-end="url(#pwcdnw)"/>
+      <text x="343" y="109" font-size="10.5" font-weight="600" fill="var(--warm)">DNS moves, once</text>
+      <rect x="232" y="128" width="206" height="46" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+      <text x="335" y="148" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Akamai</text>
+      <text x="335" y="165" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">EG's CDN</text>
+      <line x1="335" y1="174" x2="335" y2="223" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#pwcdna)"/>
+      <rect x="232" y="226" width="206" height="46" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+      <text x="335" y="246" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">AEM</text>
+      <text x="335" y="263" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">through Adobe's CDN</text>
+      <text x="232" y="300" font-size="10.5" fill="var(--ink-soft)">Everything still goes to AEM:</text>
+      <text x="232" y="316" font-size="10.5" fill="var(--ink-soft)">visitors see no change.</text>
+
+      <text x="454" y="22" font-size="12" font-weight="600" fill="var(--ink)">3 · Migration</text>
+      <text x="454" y="38" font-size="10.5" fill="var(--ink-soft)">one business case at a time</text>
+      <rect x="454" y="52" width="206" height="32" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+      <text x="557" y="72" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="middle">Visitor</text>
+      <line x1="557" y1="84" x2="557" y2="125" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#pwcdna)"/>
+      <text x="565" y="109" font-size="10.5" fill="var(--ink-soft)">DNS</text>
+      <rect x="454" y="128" width="206" height="46" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+      <text x="557" y="148" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Akamai</text>
+      <text x="557" y="165" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">routes by path and cohort</text>
+      <line x1="517" y1="174" x2="504" y2="223" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#pwcdna)"/>
+      <line x1="597" y1="174" x2="610" y2="223" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#pwcdna)"/>
+      <rect x="454" y="226" width="100" height="46" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+      <text x="504" y="246" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">AEM</text>
+      <text x="504" y="263" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">via Adobe CDN</text>
+      <rect x="560" y="226" width="100" height="46" rx="4" fill="var(--ok-soft)" stroke="var(--ok)"/>
+      <text x="610" y="246" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">EG AWS</text>
+      <text x="610" y="263" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">new front end</text>
+      <text x="454" y="300" font-size="10.5" fill="var(--ink-soft)">Each business case goes to AEM</text>
+      <text x="454" y="316" font-size="10.5" fill="var(--ink-soft)">or to the new front end. A rollback</text>
+      <text x="454" y="332" font-size="10.5" fill="var(--ink-soft)">is a routing change at the edge.</text>
+
+      <text x="676" y="22" font-size="12" font-weight="600" fill="var(--ink)">4 · After AEM</text>
+      <text x="676" y="38" font-size="10.5" fill="var(--ink-soft)">AWS is the only origin</text>
+      <rect x="676" y="52" width="206" height="32" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+      <text x="779" y="72" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="middle">Visitor</text>
+      <line x1="779" y1="84" x2="779" y2="125" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#pwcdna)"/>
+      <text x="787" y="109" font-size="10.5" fill="var(--ink-soft)">DNS</text>
+      <rect x="676" y="128" width="206" height="46" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+      <text x="779" y="148" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Akamai</text>
+      <text x="779" y="165" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">EG's CDN</text>
+      <line x1="779" y1="174" x2="779" y2="223" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#pwcdna)"/>
+      <rect x="676" y="226" width="206" height="46" rx="4" fill="var(--ok-soft)" stroke="var(--ok)"/>
+      <text x="779" y="246" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">EG AWS</text>
+      <text x="779" y="263" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">new front end</text>
+      <text x="676" y="300" font-size="10.5" fill="var(--ink-soft)">AEM is decommissioned, and</text>
+      <text x="676" y="316" font-size="10.5" fill="var(--ink-soft)">Adobe's CDN with it. DNS and</text>
+      <text x="676" y="332" font-size="10.5" fill="var(--ink-soft)">the edge stay as they are.</text>
+    </svg>

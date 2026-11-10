@@ -1,0 +1,57 @@
+import isrFlow from '../../fragments/pw-isr-flow.html?raw';
+import ssrFlow from '../../fragments/pw-ssr-flow.html?raw';
+import cacheLevels from '../../fragments/pw-cache-levels.html?raw';
+
+<p class="sec-note">Most of partner web is the same for every visitor and changes only when an author publishes. Pages are therefore built once and served from cache, and only what differs per visitor is rendered on each request.</p>
+
+<div class="decide">
+  <h4>ISR by default, SSR only where the page is private</h4>
+  <p>Public pages use incremental static regeneration (ISR): they are rendered once, served from cache and regenerated when their content changes. Private sections, whose content depends on who is signed in, use server-side rendering (SSR) and are rendered for every request (D-36).</p>
+</div>
+
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:14%">Pages</th><th style="width:18%">Rendering</th><th>When the content changes</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Public</strong></td><td>ISR</td><td>A Contentful webhook tells the front end, which regenerates the pages that use the entry. Only those pages are rebuilt, not the site</td></tr>
+    <tr><td><strong>Private</strong></td><td>SSR</td><td>Nothing to refresh: every request reads current content, and the result is never stored in a shared cache</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="legend"><span><span class="sw sw2"></span>EG</span> <span><span class="sw sw3"></span>Front end on AWS</span> <span><span class="sw sw1"></span>Content platform</span></div>
+
+<h3>How a public page is served</h3>
+<div class="fig">
+  <Fragment set:html={isrFlow} />
+</div>
+<p class="cap">Public pages with ISR. Most visits end at step 3: the page comes from the cache, and nothing is rendered or read from Contentful. A publish marks only the pages that use the entry, and each one is rendered again on its next visit. Solid arrows are requests; the dashed one is asynchronous.</p>
+
+<h3>How a private page is served</h3>
+<div class="fig">
+  <Fragment set:html={ssrFlow} />
+</div>
+<p class="cap">Private sections with SSR. Every request is rendered for the visitor who made it and stored nowhere, so a publish has nothing to refresh on the front end.</p>
+
+<h3>Cache levels</h3>
+<div class="fig">
+  <Fragment set:html={cacheLevels} />
+</div>
+<p class="cap">The four cache levels between a visitor and Contentful, in the order a request meets them. A public page stops at level 2. A private page goes through to Contentful without being stored on the way.</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:20%">Level</th><th style="width:44%">What it holds</th><th>How it is refreshed</th></tr></thead>
+  <tbody>
+    <tr><td><strong>1 · EG CDN</strong></td><td>No pages. It routes each path to AEM or to the front end and serves the redirects</td><td>Nothing to refresh</td></tr>
+    <tr><td><strong>2 · Page cache</strong></td><td>Public pages rendered by ISR, and the front end's scripts, styles and fonts</td><td>Pages: the publish webhook regenerates the ones that use the entry. Static files: each deployment</td></tr>
+    <tr><td><strong>3 · Next.js data cache</strong></td><td>The Contentful responses the public pages are built from</td><td>The publish webhook, together with the pages</td></tr>
+    <tr><td><strong>4 · Contentful CDN</strong></td><td>Delivery API responses</td><td>Contentful, on publish</td></tr>
+  </tbody>
+</table>
+</div>
+<p>EG's CDN holds no pages on purpose. A page stored there would outlive the publish that replaced it, and every publish would then need a second purge, in a CDN the front end does not control. Private pages are never stored at levels 1 or 2, whoever asks for them.</p>
+
+<h3>Performance</h3>
+<p>Lighthouse runs during development and again in the deployment pipeline, against thresholds set to green scores. A deployment below them stops. It can still go out by an explicit bypass, and the regression is then logged as a bug (D-37).</p>
+<p>Lighthouse measures in the lab, before release. The Core Web Vitals gate in the <a href="/sessions/aem-migration/#coexistence">migration ramp</a> measures real visitors after it. The first catches a regression before it ships; the second confirms the new front end is at least as fast as AEM on real traffic.</p>

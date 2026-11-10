@@ -1,7 +1,7 @@
 import { z } from 'astro/zod';
 
 export const STATUSES = ['open', 'assumed', 'answered', 'closed'] as const;
-export const GROUPS = ['blocking', 'scope', 'inputs', 'commercial', 'uc1-design', 'uc2-model', 'migration'] as const;
+export const GROUPS = ['blocking', 'scope', 'inputs', 'commercial', 'uc1-design', 'uc2-model', 'migration', 'partner-web'] as const;
 
 const status = z.enum(STATUSES);
 const POSITION_RULE = { message: 'an assumed question needs a position', path: ['position'] };
@@ -19,7 +19,7 @@ export const ideaSchema = z.object({
 export const questionSchema = z
   .object({
     id: z.string().regex(/^(Q\d+b?|DQ-\d+)$/),
-    group: z.enum(['blocking', 'scope', 'inputs', 'commercial', 'uc1-design', 'migration']),
+    group: z.enum(['blocking', 'scope', 'inputs', 'commercial', 'uc1-design', 'migration', 'partner-web']),
     question: z.string().min(1),
     detail: z.string().optional(),
     why: z.string().optional(),
@@ -63,9 +63,10 @@ export const topicSchema = z.object({
   id: z.string().regex(SLUG),
   nav: z.string().min(1),
   settles: z.array(z.string().regex(/^(Q\d+b?|DQ-\d+|U\d+)$/)).default([]),
-  decisions: z.array(z.string().regex(/^D-\d{2}$/)).default([]),
   /** A topic with no prepared material: shown as a discussion prompt, and has no MDX file. */
   prompt: z.boolean().default(false),
+  /** Kept in the data with its material, but left off the session page until it is ready to present. */
+  hidden: z.boolean().default(false),
   see: z.object({ href: z.string().startsWith('/'), label: z.string().min(1) }).strict().optional(),
 }).strict();
 
@@ -73,10 +74,7 @@ export const sessionSchema = z.object({
   id: z.string().regex(SLUG),
   title: z.string().min(1),
   short: z.string().min(1),
-  track: z.string().min(1),
-  owner: z.string().min(1),
   order: z.number().int().positive(),
-  outcomes: z.array(z.string().min(1)).min(1),
   topics: z.array(topicSchema).min(1),
 }).strict();
 

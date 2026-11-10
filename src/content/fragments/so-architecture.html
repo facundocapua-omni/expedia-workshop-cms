@@ -1,0 +1,122 @@
+<svg class="dg" viewBox="0 0 900 540" role="img" aria-label="Target architecture across both tracks, once AEM is retired, read from left to right as a request travels. On the left, the channels where traffic arrives: the headless channels, any other client of the two content APIs, which fetch proof points from the Content Resolution API and the rest of their content from Contentful; SFMC, CRM and VMC, which receive NBA's decision and fetch proof points by reference from the Content Resolution API; and the partner sites, whose visitors' requests go through Akamai, EG's CDN, to the partner web front end. EG systems: NBA decides what to say, to whom and in which tone, and in option A receives the variant index from the resolver; EG's log system receives a trace of every resolution; Figma is the source of every component, for its content type and its front-end code. Globant builds the Content Resolution API, on Akamai or as a Contentful app, which receives publish events from the proofPoints space, and the partner web front end, hosted on AWS, which fetches proof points from the Content Resolution API and the rest of the page from the partner web space. On the right, Contentful holds two spaces: proofPoints, with proof points, variants and channel profiles, and the partner web space, with pages, sections and blocks for every partner site. A translation service, Babel Prime or a connector, exchanges locales with Contentful.">
+  <defs>
+    <marker id="soaa" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--ink-soft)"/>
+    </marker>
+    <marker id="soab" markerWidth="8" markerHeight="8" refX="0.8" refY="4" orient="auto">
+      <path d="M8,0 L0,4 L8,8 z" fill="var(--ink-soft)"/>
+    </marker>
+  </defs>
+
+  <text x="10" y="22" font-size="12" font-weight="600" fill="var(--ink)">Channels</text>
+  <text x="10" y="38" font-size="10.5" fill="var(--ink-soft)">where traffic arrives</text>
+  <text x="230" y="22" font-size="12" font-weight="600" fill="var(--ink)">EG systems</text>
+  <text x="230" y="38" font-size="10.5" fill="var(--ink-soft)">connected, not replaced</text>
+  <text x="450" y="22" font-size="12" font-weight="600" fill="var(--ink)">Built by Globant</text>
+  <text x="450" y="38" font-size="10.5" fill="var(--ink-soft)">on EG's accounts</text>
+  <text x="700" y="22" font-size="12" font-weight="600" fill="var(--ink)">Content platform</text>
+  <text x="700" y="38" font-size="10.5" fill="var(--ink-soft)">Contentful, configured</text>
+
+  <rect x="10" y="54" width="174" height="56" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+  <text x="97" y="74" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Headless channels</text>
+  <text x="97" y="90" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">any other client of</text>
+  <text x="97" y="103" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">the two content APIs</text>
+  <line x1="184" y1="72" x2="698" y2="72" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+  <text x="315" y="65" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">the rest of the content</text>
+  <path d="M184,94 H610 V194" fill="none" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+  <text x="315" y="87" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">proof points</text>
+
+  <rect x="230" y="116" width="170" height="58" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+  <text x="315" y="137" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">NBA</text>
+  <text x="315" y="153" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">decides what to say,</text>
+  <text x="315" y="167" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">to whom, in which tone</text>
+  <path d="M230,145 H97 V184" fill="none" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+  <text x="163" y="139" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">decision</text>
+
+  <rect x="10" y="186" width="174" height="146" rx="6" fill="none" stroke="var(--rule)"/>
+  <rect x="20" y="194" width="154" height="38" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+  <text x="97" y="210" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="middle">SFMC</text>
+  <text x="97" y="225" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">email, fetched at send time</text>
+  <rect x="20" y="240" width="154" height="38" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+  <text x="97" y="256" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="middle">CRM</text>
+  <text x="97" y="271" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">Market Manager briefing</text>
+  <rect x="20" y="286" width="154" height="38" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+  <text x="97" y="302" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="middle">VMC</text>
+  <text x="97" y="317" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">the partner's view</text>
+
+  <line x1="184" y1="236" x2="448" y2="236" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+  <text x="315" y="229" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">fetch by reference</text>
+
+  <rect x="230" y="256" width="170" height="50" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+  <text x="315" y="277" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">EG log system</text>
+  <text x="315" y="293" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">who received what, where</text>
+
+  <rect x="450" y="196" width="190" height="90" rx="4" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="1.6"/>
+  <text x="545" y="222" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Content Resolution API</text>
+  <text x="545" y="240" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">resolves one reference</text>
+  <text x="545" y="254" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">for every channel (D-04)</text>
+  <text x="545" y="272" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">Akamai or a Contentful app</text>
+
+  <path d="M470,196 V145 H402" fill="none" stroke="var(--ink-soft)" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#soaa)"/>
+  <text x="478" y="162" font-size="10.5" fill="var(--ink-soft)">variant index,</text>
+  <text x="478" y="176" font-size="10.5" fill="var(--ink-soft)">option A only</text>
+  <line x1="450" y1="276" x2="402" y2="276" stroke="var(--ink-soft)" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#soaa)"/>
+  <text x="426" y="269" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">trace</text>
+
+  <rect x="700" y="54" width="190" height="398" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
+  <text x="712" y="77" font-size="13" font-weight="700" fill="var(--ink)">Contentful</text>
+  <text x="712" y="92" font-size="10.5" fill="var(--ink-soft)">authoring, approval, versions</text>
+  <rect x="712" y="196" width="166" height="88" rx="4" fill="var(--card)" stroke="var(--accent)"/>
+  <text x="795" y="220" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="middle">proofPoints space</text>
+  <text x="795" y="238" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">proof points, variants,</text>
+  <text x="795" y="252" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">channel profiles</text>
+  <text x="795" y="270" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">shared taxonomy (D-05)</text>
+  <rect x="712" y="348" width="166" height="92" rx="4" fill="var(--card)" stroke="var(--accent)"/>
+  <text x="795" y="372" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="middle">Partner web space</text>
+  <text x="795" y="390" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">pages, sections, blocks</text>
+  <text x="795" y="404" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">for every partner site</text>
+  <text x="795" y="422" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">live preview (D-38)</text>
+
+  <line x1="712" y1="240" x2="642" y2="240" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+  <text x="671" y="233" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">publish</text>
+
+  <rect x="10" y="362" width="174" height="58" rx="4" fill="var(--card)" stroke="var(--ink-soft)"/>
+  <text x="97" y="384" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Partner sites</text>
+  <text x="97" y="400" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">visitors, on the current</text>
+  <text x="97" y="414" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">domains (D-35)</text>
+  <line x1="184" y1="391" x2="228" y2="391" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+  <text x="206" y="384" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">requests</text>
+
+  <rect x="230" y="362" width="170" height="58" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+  <text x="315" y="384" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Akamai</text>
+  <text x="315" y="400" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">EG's CDN (D-35)</text>
+  <text x="315" y="414" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">cache and redirects</text>
+  <line x1="400" y1="391" x2="448" y2="391" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+
+  <rect x="450" y="346" width="190" height="90" rx="4" fill="var(--ok-soft)" stroke="var(--ok)"/>
+  <text x="545" y="372" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Partner web front end</text>
+  <text x="545" y="390" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">Next.js, one app per site</text>
+  <text x="545" y="406" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">hosted on AWS (D-34)</text>
+
+  <line x1="545" y1="344" x2="545" y2="288" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+  <text x="537" y="320" font-size="10.5" fill="var(--ink-soft)" text-anchor="end">proof points</text>
+
+  <line x1="640" y1="394" x2="710" y2="394" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+  <text x="671" y="374" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">the rest of</text>
+  <text x="671" y="387" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">the content</text>
+
+  <rect x="230" y="466" width="170" height="60" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+  <text x="315" y="488" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Figma</text>
+  <text x="315" y="504" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">source of every</text>
+  <text x="315" y="518" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">component (D-40)</text>
+  <path d="M400,496 H724 V455" fill="none" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+  <line x1="545" y1="496" x2="545" y2="439" stroke="var(--ink-soft)" stroke-width="1.3" marker-end="url(#soaa)"/>
+  <text x="553" y="470" font-size="10.5" fill="var(--ink-soft)">code</text>
+  <text x="640" y="489" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">content types</text>
+
+  <rect x="742" y="480" width="148" height="44" rx="4" fill="var(--warm-soft)" stroke="var(--warm)" stroke-dasharray="4 3"/>
+  <text x="816" y="498" font-size="12.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Translation</text>
+  <text x="816" y="514" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">Babel Prime or a connector</text>
+  <line x1="816" y1="478" x2="816" y2="454" stroke="var(--ink-soft)" stroke-width="1.3" stroke-dasharray="3 3" marker-start="url(#soab)" marker-end="url(#soaa)"/>
+  <text x="824" y="470" font-size="10.5" fill="var(--ink-soft)">locales</text>
+</svg>

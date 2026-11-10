@@ -1,0 +1,24 @@
+import uc1Fragment4 from '../../fragments/uc1-4.html?raw';
+
+<p class="sec-note">The Content Resolution API reports what was served. Every resolution, whichever channel fetched, writes one record to EG's log system, fallbacks included. It is the trace, T, of the <a href="/sessions/proof-point-delivery/#flow">consumption flow</a> in Session 1.</p>
+
+<div class="fig" data-focus="trace">
+  <Fragment set:html={uc1Fragment4} />
+</div>
+<p class="cap">The consumption flow of <a href="/sessions/proof-point-delivery/#flow">Figure 3</a>, focused on the trace: T runs from the Content Resolution API to EG's log system, and the rest of the flow is faded. Solid arrows are synchronous requests; dashed are asynchronous.</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:22%"></th><th>The trace to EG's log system</th></tr></thead>
+  <tbody>
+    <tr><td><strong>From, to</strong></td><td>The Content Resolution API → EG's log system</td></tr>
+    <tr><td><strong>When</strong></td><td>On every resolution: each fetch by SFMC, VMC or CRM. Written off the request path, so the log never slows a send. A 1M send writes at least 1M records, plus every CRM and VMC view.</td></tr>
+    <tr><td><strong>What it answers</strong></td><td>Who received what, where and when: partner, channel, the variant and version served, and the <code>consistencyKey</code>. The reference says which content was meant; the trace says who received it.</td></tr>
+    <tr><td><strong>Fallbacks</strong></td><td>The locale requested and the locale served, and <code>fallbackApplied</code>. In option B, the default copy when it went out in place of a variant.</td></tr>
+    <tr><td><strong>Under option B</strong></td><td>The record also carries the decision: proof point, segment and tone. It is the only answer to what a partner saw on each surface, because two surfaces can resolve the same decision to different versions.</td></tr>
+    <tr><td><strong>Where it lands</strong></td><td>An EG log system, which EG names, with the retention EG sets.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>A default copy or a source-locale fallback is never silent: the Content Resolution API records it with the resolution that served it.</p>

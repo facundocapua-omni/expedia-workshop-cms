@@ -1,5 +1,5 @@
 export type Status = 'open' | 'assumed' | 'answered' | 'closed';
-export type QuestionGroup = 'blocking' | 'scope' | 'inputs' | 'commercial' | 'uc1-design' | 'uc2-model' | 'migration';
+export type QuestionGroup = 'blocking' | 'scope' | 'inputs' | 'commercial' | 'uc1-design' | 'uc2-model' | 'migration' | 'partner-web';
 
 export interface Question {
   id: string;
@@ -69,8 +69,8 @@ export interface TopicMeta {
   agenda: string;
   nav: string;
   settles: string[];
-  decisions: string[];
   prompt: boolean;
+  hidden: boolean;
   see?: { href: string; label: string };
 }
 
@@ -78,10 +78,7 @@ export interface SessionMeta {
   slug: string;
   title: string;
   short: string;
-  track: string;
-  owner: string;
   order: number;
-  outcomes: string[];
   topics: TopicMeta[];
 }
 

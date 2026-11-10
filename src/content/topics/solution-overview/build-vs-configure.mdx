@@ -1,0 +1,44 @@
+import Fact from '../../../components/Fact.astro';
+import buildConfigure from '../../fragments/so-build-configure.html?raw';
+
+<p class="sec-note">Most of the solution is configuration: two content models, a taxonomy, channel profiles, approval gates and edge rules. Globant builds only where no platform can meet a requirement, and every build has an owner for after go-live.</p>
+
+<div class="fig">
+  <Fragment set:html={buildConfigure} />
+</div>
+<p class="cap">Figure 10 — Configure and build. Of what Globant builds, only the front end, with its live preview, personalisation and data layer, runs on EG's infrastructure, hosted on AWS. The Content Resolution API runs on Akamai or as a Contentful app, and the pipeline is retired with AEM. A dashed card depends on a choice still open: whether the tier includes Contentful Personalization, and the translation route.</p>
+
+<h3>Why each build is a build</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:20%">Build</th><th style="width:50%">Why configuration is not enough</th><th>Who runs it after go-live</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Content Resolution API</strong></td><td>The delivery API serves only the latest version, falls back between locales without saying so, and would take the burst after a large send directly (D-04)</td><td>Runs on Akamai or as a Contentful app, on EG's accounts. Who supports it is still to decide (D-09)</td></tr>
+    <tr><td><strong>Partner web front end</strong></td><td>Contentful stores and previews content but does not serve pages. Every partner site needs a front end, whichever CMS sits behind it</td><td>Globant, hosted by EG on AWS (D-34)</td></tr>
+    <tr><td><strong>Live preview</strong></td><td>Contentful opens the preview, but what it shows is the front end. Preview mode, which reads drafts and is never cached, and the tags that let a click open the field behind it, are code in the front end (D-38, D-39)</td><td>Globant, with the front end</td></tr>
+    <tr><td><strong>Analytics</strong></td><td>Parity is code: each component emits the data layer partner web emits today, and consent decides what loads (D-42). Content reporting puts what was served next to how it performed: the proof point variants each partner received, from the resolver's trace, and the pages and blocks on partner web, tagged with their Contentful entries. Neither Contentful nor the analytics tool joins the two on its own</td><td>Globant, with the front end. The reports, with EG analytics, to agree</td></tr>
+    <tr><td><strong>Publishing checks</strong></td><td>Contentful validates one field at a time. Checking that copy uses exactly the variables its proof point declares and fits every channel profile, and under option B that a segment and tone have only one variant, looks across entries, so it needs a small app in the editor</td><td>Globant, with the content model</td></tr>
+    <tr><td><strong>Custom workflows</strong></td><td>Contentful's workflows take a whole entry through their steps, and publishing puts every locale live at once. The approvals that go further, such as approving each locale on its own, are built as an app in the editor</td><td>Globant, with the content model</td></tr>
+    <tr><td><strong>Migration pipeline</strong></td><td>Content moves one business case at a time and is re-run until each cutover, so it has to be scripted and repeatable (D-31)</td><td>Globant, until the last business case has moved</td></tr>
+    <tr><td><strong>Personalisation</strong></td><td>Contentful Personalization holds the audiences and the experiences. Applying them on the page is code in the front end: its SDK, the visitor's audience and consent, and serving the chosen variant without breaking the page cache. Proof points are still decided by NBA (D-02)</td><td>Globant, with the front end. Audiences and experiences are managed in Contentful, like content</td></tr>
+    <tr><td><strong>Translation connector</strong></td><td>Only if EG chooses Babel Prime and no supported connector exists</td><td>Whoever builds it</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>What depends on the Contentful tier</h3>
+<p>Part of what the solution configures depends on what EG licenses. Where the tier does not include a capability, the solution works around it, most often with more build.</p>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:20%">Capability</th><th style="width:38%">What the solution uses it for</th><th>If the tier does not include it</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Workflows and tasks</strong></td><td>The approval gates: generated copy, each locale, release</td><td>Approvals enforced through roles and the custom workflows. More build, the same gates</td></tr>
+    <tr><td><strong>Multiple environments</strong></td><td>Changing a content model without disturbing authors, and rehearsing each migration run</td><td>Model changes applied straight to the live space by script, and rehearsals in a second space</td></tr>
+    <tr><td><strong>AI actions</strong></td><td>Drafting tone variants and briefings from the approved copy</td><td>An external generation step that writes drafts through the management API. More moving parts, the same gates</td></tr>
+    <tr><td><strong>Scheduled publishing</strong></td><td>Releasing content with a campaign, and ending a content freeze on time</td><td>Publishing by hand at the agreed time</td></tr>
+    <tr><td><strong>SSO</strong></td><td>Authors and Web Ops sign in with their EG accounts</td><td>Separate Contentful accounts to manage</td></tr>
+    <tr><td><strong>Content types and locales per space</strong></td><td>The partner web model, with its <Fact k="contentTypes" /> content types, and every locale</td><td>The model has to fit the limits, or be split across spaces</td></tr>
+    <tr><td><strong>Personalisation</strong></td><td>Audiences and experiences on partner web pages, applied by the front end. Proof points are still decided by NBA (D-02)</td><td>Partner web pages are the same for every visitor, unless audience rules are built into the front end: much more build</td></tr>
+  </tbody>
+</table>
+</div>

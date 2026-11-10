@@ -1,9 +1,9 @@
 [
   {
     "origin": "uc1:position:2",
-    "from": "NBA selects the variant; Contentful never decides",
+    "from": "Q2NBA selects the variant; Contentful never decides",
     "to": "Option A: NBA selects the variant; Contentful never decides",
-    "reason": "Who selects the variant is open with two options, A and B (Q2, owner decision 2026-09-29)"
+    "reason": "Who selects the variant is open with two options, A and B (owner decision 2026-09-29); the Q2 stamp goes because session pages carry no question references (owner decision 2026-09-30)"
   },
   {
     "origin": "uc1:authoring:*",
@@ -44,8 +44,8 @@
   {
     "origin": "uc1:position:1",
     "from": "See the deferred-scope note below",
-    "to": "See the deferred-scope note in Session 1",
-    "reason": "The deferred-scope note moved to the resolution-layer topic of Session 1"
+    "to": "See the deferred-scope note in UC1",
+    "reason": "The deferred-scope note sits in the resolution layer section of the UC1 page"
   },
   {
     "origin": "uc1:components:*",
@@ -100,20 +100,19 @@
     "retire": true,
     "reason": "The six positions now sit with the session topic each one answers, so a note introducing them together no longer applies"
   },
-  { "origin": "uc1:model:0", "retire": true, "reason": "Content model rewritten as message / messageVariant / channelProfile (owner decision 2026-09-28)" },
-  { "origin": "uc1:model:1", "retire": true, "reason": "Figure 1 redrawn for message / messageVariant / channelProfile (owner decision 2026-09-28)" },
-  { "origin": "uc1:model:2", "retire": true, "reason": "Figure 1 caption rewritten for the generic model (owner decision 2026-09-28)" },
+  { "origin": "uc1:model:0", "retire": true, "reason": "Content model rewritten as proofPoint / proofPointVariant / channelProfile in the proofPoints space (owner decision 2026-09-28)" },
+  { "origin": "uc1:model:1", "retire": true, "reason": "Figure 1 redrawn for proofPoint / proofPointVariant / channelProfile in the proofPoints space (owner decision 2026-09-28)" },
+  { "origin": "uc1:model:2", "retire": true, "reason": "Figure 1 caption rewritten for the new model (owner decision 2026-09-28)" },
   { "origin": "uc1:model:3", "retire": true, "reason": "Content model block rewritten; the heading is carried into the new block (owner decision 2026-09-28)" },
-  { "origin": "uc1:model:4", "retire": true, "reason": "Rewritten: the message, not a base proof point, is what would otherwise be addressable (owner decision 2026-09-28)" },
+  { "origin": "uc1:model:4", "retire": true, "reason": "Rewritten: NBA's decision names the proof point, segment and tone, and one variant answers it in either option (owner decision 2026-09-28)" },
   { "origin": "uc1:model:5", "retire": true, "reason": "Content model block rewritten; the heading is carried into the new block (owner decision 2026-09-28)" },
   { "origin": "uc1:model:6", "retire": true, "reason": "Approvals now cover briefing and overrides instead of channel renderings (owner decision 2026-09-28)" },
   { "origin": "uc1:position:5", "retire": true, "reason": "Tone and register unified as tone; the channel only shapes the copy (owner decision 2026-09-28)" },
-  { "origin": "uc1:ref:1", "retire": true, "reason": "Content reference diagram now names messageVariant (owner decision 2026-09-28)" },
   { "origin": "uc1:ref:5", "retire": true, "reason": "Dimensions table without register, channel picks the channel profile (owner decision 2026-09-28)" },
   { "origin": "uc1:ref:6", "retire": true, "reason": "Tone and register unified as tone (owner decision 2026-09-28)" },
   { "origin": "uc1:ref:7", "retire": true, "reason": "Audience moves to the channel profile and the variant's briefing (owner decision 2026-09-28)" },
   { "origin": "uc1:sizing:0", "retire": true, "reason": "Sizing block rewritten; the note is carried into the new block (owner decision 2026-09-28)" },
-  { "origin": "uc1:sizing:1", "retire": true, "reason": "Sizing recomputed for message / messageVariant / channel profiles (owner decision 2026-09-28)" },
+  { "origin": "uc1:sizing:1", "retire": true, "reason": "Sizing recomputed for proof points, variants and channel profiles (owner decision 2026-09-28)" },
   { "origin": "uc1:sizing:2", "retire": true, "reason": "Sizing commentary rewritten for the new review volume (owner decision 2026-09-28)" },
   {
     "origin": "uc1:ref:8",
@@ -130,8 +129,8 @@
   {
     "origin": "uc1:position:1",
     "from": "A proof-point entry holds localised copy with named variables",
-    "to": "A message holds localised copy with named variables, declared once on the message",
-    "reason": "Generic message model (owner decision 2026-09-28)"
+    "to": "A proof point holds localised copy with named variables, declared once on the proof point",
+    "reason": "Variables are declared on the proof point (owner decision 2026-09-28)"
   },
   {
     "origin": "uc1:position:3",
@@ -142,7 +141,7 @@
   {
     "origin": "uc1:consumption:*",
     "from": "Pulls the full localised entry with its channel renderings.",
-    "to": "Pulls the full localised variant, its message and the channel profiles.",
+    "to": "Pulls the full localised variant, its proof point and the channel profiles.",
     "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
   },
   {
@@ -154,7 +153,7 @@
   {
     "origin": "uc1:consumption:*",
     "from": "variants · channel renderings · 5 locales · version history",
-    "to": "messages · variants · channel profiles · 5 locales",
+    "to": "proof points · variants · channel profiles · 5 locales",
     "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)"
   },
   {
@@ -166,8 +165,8 @@
   {
     "origin": "uc1:failure:*",
     "from": "A fallback variant exists per opportunity type, carrying no parameters and making no partner-specific claim.",
-    "to": "Every message carries its own fallback: the mandatory default copy, which uses no variables and makes no partner-specific claim.",
-    "reason": "One fallback per message (owner decision 2026-09-28)"
+    "to": "Every proof point carries its own fallback: the mandatory default copy, which uses no variables and makes no partner-specific claim.",
+    "reason": "One fallback per proof point (owner decision 2026-09-28)"
   },
   {
     "origin": "uc1:authoring:*",
@@ -184,11 +183,10 @@
   {
     "origin": "uc1:authoring:*",
     "from": "drops, renames or duplicates a parameter from parameterSchema.",
-    "to": "drops, renames or duplicates a variable declared on the message.",
-    "reason": "Variables are declared on the message (owner decision 2026-09-28)"
+    "to": "drops, renames or duplicates a variable declared on the proof point.",
+    "reason": "Variables are declared on the proof point (owner decision 2026-09-28)"
   },
-  { "origin": "uc1:authoring:*", "from": "proofPoint entry", "to": "message entry", "reason": "Generic message model (owner decision 2026-09-28)" },
-  { "origin": "uc1:authoring:*", "from": "template + parameterSchema", "to": "default copy + variables", "reason": "Generic message model (owner decision 2026-09-28)" },
+  { "origin": "uc1:authoring:*", "from": "template + parameterSchema", "to": "default copy + variables", "reason": "The proof point carries the default copy and declares its variables (owner decision 2026-09-28)" },
   { "origin": "uc1:authoring:*", "from": "AI action · per channel", "to": "check · per channel profile", "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)" },
   { "origin": "uc1:authoring:*", "from": "applies constraints", "to": "flags needed overrides", "reason": "Channel profiles replace per-channel renderings (owner decision 2026-09-28)" },
   {
@@ -200,7 +198,7 @@
   {
     "origin": "uc1:validation:*",
     "from": "Generated copy preserves every parameter in parameterSchema; the placeholder check rejects any output that drops or renames one; the partner tone survives into every channel rendering while the register changes with the surface; the author can accept, edit or reject without leaving the editor; provenance is recorded on the entry.",
-    "to": "Generated copy uses every variable declared on the message and no other; the placeholder check rejects any output that drops or renames one; the partner tone survives into every channel, including the CRM briefing; the author can accept, edit or reject without leaving the editor; provenance is recorded on the entry; the number of variants that needed a hand-authored override is reported — that count is the CMS-01 result.",
+    "to": "Generated copy uses every variable declared on the proof point and no other; the placeholder check rejects any output that drops or renames one; the partner tone survives into every channel, including the CRM briefing; the author can accept, edit or reject without leaving the editor; provenance is recorded on the entry; the number of variants that needed a hand-authored override is reported — that count is the CMS-01 result.",
     "reason": "Channel profiles replace per-channel renderings; tone unified (owner decision 2026-09-28)"
   },
   {
@@ -218,8 +216,8 @@
   {
     "origin": "uc1:consumption:*",
     "from": "version history Content Resolution API",
-    "to": "version history EG log system one record per resolution variant@version served retention: DQ-11 Content Resolution API",
-    "reason": "The Content Resolution API traces each resolution to EG's log system in both options (owner decision 2026-09-29)"
+    "to": "version history EG log system one record per resolution variant@version served retention set by EG Content Resolution API",
+    "reason": "The Content Resolution API traces each resolution to EG's log system in both options (owner decision 2026-09-29); the retention is shown without its question ID, since session pages carry no question references (owner decision 2026-09-30)"
   },
   {
     "origin": "uc1:consumption:*",
@@ -244,5 +242,32 @@
     "from": "variant index, caching,",
     "to": "variant index, the trace to EG's log system, caching,",
     "reason": "The Content Resolution API traces each resolution to EG's log system in both options (owner decision 2026-09-29)"
-  }
+  },
+  {
+    "origin": "uc1:position:1",
+    "from": "Q1Contentful stores the message template",
+    "to": "D-01Contentful stores the message template",
+    "reason": "Session pages are presented and carry no question references (owner decision 2026-09-30); the box states decision D-01"
+  },
+  {
+    "origin": "uc1:position:3",
+    "from": "Q3One content reference everywhere",
+    "to": "D-03One content reference everywhere",
+    "reason": "Session pages are presented and carry no question references (owner decision 2026-09-30); the box states decision D-03"
+  },
+  {
+    "origin": "uc1:risks:6",
+    "from": "Settle DQ-9 during design",
+    "to": "Name the support owner during design",
+    "reason": "Session pages are presented and carry no question references (owner decision 2026-09-30)"
+  },
+  { "origin": "uc1:performance:4", "retire": true, "reason": "Section \"Where the cache sits is a hosting decision, not a design one\" taken off the site (owner decision 2026-09-30)" },
+  { "origin": "uc1:performance:5", "retire": true, "reason": "Section \"Where the cache sits is a hosting decision, not a design one\" taken off the site (owner decision 2026-09-30)" },
+  { "origin": "uc1:performance:6", "retire": true, "reason": "Section \"Where the cache sits is a hosting decision, not a design one\" taken off the site (owner decision 2026-09-30)" },
+  { "origin": "uc1:performance:7", "retire": true, "reason": "Section \"Where the cache sits is a hosting decision, not a design one\" taken off the site (owner decision 2026-09-30)" },
+  {"origin": "uc1:ownership:*", "from": "Host and run it EG EG infrastructure. This also decides the cache topology set out in Performance at production volume and whether the service is internet-facing", "to": "Host and run it Akamai or Contentful Apps On a managed platform under EG's accounts, not on EG infrastructure: EdgeWorkers on EG's Akamai account, the one in front of partner web, or an app in EG's Contentful organisation. EG chooses which. Either way the service is internet-facing, because SFMC and partner web call it from outside EG", "reason": "The Content Resolution API is hosted on Akamai or as a Contentful app, not on EG infrastructure (owner decision 2026-10-01)"},
+  {"origin": "uc1:open:*", "from": "Where is the service hosted, and is it internet-facing?", "to": "Where is the Content Resolution API hosted: on Akamai, or as a Contentful app?", "reason": "The Content Resolution API is hosted on Akamai or as a Contentful app, not on EG infrastructure (owner decision 2026-10-01)"},
+  {"origin": "uc1:open:*", "from": "EG infrastructure, internal-only", "to": "One of the two, on EG's accounts. Internet-facing either way", "reason": "The Content Resolution API is hosted on Akamai or as a Contentful app, not on EG infrastructure (owner decision 2026-10-01)"},
+  {"origin": "uc1:open:*", "from": "Decides the cache topology set out in Performance at production volume — nginx inside the perimeter versus a CDN in front", "to": "Who runs the platform and which limits apply: EdgeWorkers on EG's Akamai account, the one in front of partner web, or an app inside EG's Contentful organisation. Neither puts a server on EG's infrastructure", "reason": "The Content Resolution API is hosted on Akamai or as a Contentful app, not on EG infrastructure (owner decision 2026-10-01)"},
+  {"origin": "uc1:risks:6", "from": "The build and hosting owners are already named; only support is open.", "to": "The builder is named and the hosting narrowed to Akamai or a Contentful app; support is the one owner still missing.", "reason": "The Content Resolution API is hosted on Akamai or as a Contentful app, not on EG infrastructure (owner decision 2026-10-01)"}
 ]

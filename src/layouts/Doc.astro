@@ -8,11 +8,9 @@ interface Props {
   kicker: string;
   lede?: string;
   meta?: string[];
-  /** A session's expected outcomes, shown in the masthead. */
-  outcomes?: string[];
   kind: 'idea' | 'agenda' | 'register' | 'session';
 }
-const { title, kicker, kind, outcomes = [] } = Astro.props;
+const { title, kicker, kind } = Astro.props;
 const facts = computeFacts(await loadSiteData());
 const lede = Astro.props.lede ? interpolateFacts(Astro.props.lede, facts) : undefined;
 const meta = (Astro.props.meta ?? []).map((m) => interpolateFacts(m, facts));
@@ -24,12 +22,6 @@ const meta = (Astro.props.meta ?? []).map((m) => interpolateFacts(m, facts));
       <h1>{title}</h1>
       {lede && <p class="lede">{lede}</p>}
       {meta.length > 0 && <p class="meta">{meta.map((m) => <span>{m}</span>)}</p>}
-      {outcomes.length > 0 && (
-        <div class="outcomes">
-          <p class="label">Expected outcomes</p>
-          <ul>{outcomes.map((o) => <li>{o}</li>)}</ul>
-        </div>
-      )}
     </header>
     <div class="cols">
       <nav class="index" aria-label="Contents" data-index></nav>

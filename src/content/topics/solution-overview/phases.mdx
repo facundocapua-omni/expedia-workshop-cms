@@ -1,0 +1,41 @@
+import phases from '../../fragments/so-phases.html?raw';
+
+<p class="sec-note">The plan has no dates yet, on purpose. Each milestone's date follows from an input EG holds, listed in the table below, and the partner web dates are planned backwards from the AEM contract end (D-33).</p>
+
+<div class="decide">
+  <h4><span class="stamp">proposal</span>One plan, from platform setup to the last business case</h4>
+  <p>Platform setup comes first, and everything else builds on it. Discovery runs alongside the design of the non-parity enhancements, and closes only once the enhanced model is frozen (M3). Build starts when discovery closes (M4), and covers the models and authoring, the resolver and the channel integrations, and the front end, so the first proof points can go live (M2) while partner web is still being built.</p>
+  <p>Content migration is a phase of its own: the pipeline, and the runs that move each business case before it ramps (D-31). Training comes before anyone goes live: authors and approvers, native reviewers and Web Ops learn the models, the approval gates and the live preview, with the authoring manual, proof point authors before M2 and Web Ops before the first business case ramps.</p>
+  <p>Hypercare starts with the first go-live (M2) and ends a month after the last business case goes live (M7). After it, the platform moves into continuous enhancement, with 24/7 support if EG chooses it.</p>
+</div>
+
+<div class="legend"><span><span class="sw sw1"></span>Phases and milestones</span> <span><span class="sw sw4"></span>Fixed date and critical path</span> <span><span class="sw sw2"></span>Checkpoint</span></div>
+
+<div class="fig">
+  <Fragment set:html={phases} />
+</div>
+<p class="cap">Figure 11 — Phases and milestones, relative and not to scale. The business case ramps are <a href="/sessions/aem-migration/#timing">Figure 8</a> seen from the programme level: each business case ramps through wave 0, 20%, 50% and 100%.</p>
+
+<h3>Milestones</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:5%">#</th><th style="width:20%">Milestone</th><th style="width:40%">What it means</th><th>The date follows from</th></tr></thead>
+  <tbody>
+    <tr><td class="n">M1</td><td><strong>Platform ready</strong></td><td>Contentful spaces, roles and locales set up. EG's AWS environments for the front end and its Akamai account in place, with Akamai in front of AEM and still sending everything to it. Akamai or a Contentful app chosen for the resolver</td><td>The start date, EG's access and the Contentful tier</td></tr>
+    <tr><td class="n">M2</td><td><strong>First proof points live</strong></td><td>One opportunity end to end: authored, approved, translated, resolved, sent by SFMC and seen in CRM and VMC, with every resolution traced</td><td>M4, EG's choice between options A and B, the resolver's support owner, and time from NBA and the channel teams</td></tr>
+    <tr><td class="n">M3</td><td><strong>Enhanced model frozen</strong></td><td>The model with the non-parity enhancements is fixed, so content migrates once (D-27)</td><td>The design dates of the non-parity enhancements</td></tr>
+    <tr><td class="n">M4</td><td><strong>Scope sign-off</strong></td><td>Discovery closes and EG agrees the disposition log (D-26). AEM takes no new features from here</td><td>M3, and how quickly EG works through the disposition log</td></tr>
+    <tr><td class="n">M5</td><td><strong>First business case at 100%</strong></td><td>The pipeline and the ramp proven on one business case</td><td>M4, the build, and the first business case's migration</td></tr>
+    <tr><td class="n">M6</td><td><strong>Checkpoint</strong></td><td>The business cases still to move decide whether an AEM extension is negotiated</td><td>AEM contract end − notice period − negotiation time</td></tr>
+    <tr><td class="n">M7</td><td><strong>Last business case at 100%</strong></td><td>Partner web is served entirely by the new front end</td><td>AEM contract end − buffer − rollback window</td></tr>
+    <tr><td class="n">M8</td><td><strong>AEM off</strong></td><td>AEM is decommissioned, and Adobe's CDN with it</td><td>Before the AEM contract end, with a buffer</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>What sets the pace</h3>
+<ul class="tight">
+  <li><strong>Partner web has the fixed end.</strong> Its critical path runs through the enhanced model (M3), then discovery (M4) and build. Once the pipeline is proven, how many ramps overlap is limited by EG's QA capacity and by how many content freezes can run at once.</li>
+  <li><strong>Proof points are paced by decisions, not by build.</strong> The resolver is a small service, built once discovery closes (M4). What moves M2 is EG's choice between options A and B, the support owner, and the time NBA and the channel teams can give.</li>
+  <li><strong>One link between proof points and partner web.</strong> Partner web shows proof points through the resolver, so that needs M2 and a business case live on the new front end. Neither waits for it.</li>
+</ul>

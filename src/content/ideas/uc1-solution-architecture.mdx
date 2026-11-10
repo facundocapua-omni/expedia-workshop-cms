@@ -14,9 +14,76 @@ import Section from '../../components/Section.astro';
 import Fact from '../../components/Fact.astro';
 import uc1Fragment3 from '../fragments/uc1-3.html?raw';
 
-<p class="moved">The delivery pattern and the Content Resolution API are presented in <a href="/sessions/proof-point-delivery/">Session 1</a>, and the NBA hand-off, the content model and the content reference in <a href="/sessions/nba-hand-off/">Session 2</a>. The authoring flow, the validation plan, the POC sizing, the design questions and two risks remain here.</p>
+<p class="moved">The delivery pattern is presented in <a href="/sessions/proof-point-delivery/">Session 1</a>, and the NBA hand-off, the content model and the content reference in <a href="/sessions/nba-hand-off/">Session 2</a>. The resolution layer behind them, the authoring flow, the validation plan, the POC sizing, the design questions and the risks remain here.</p>
 
-<Section n="01" id="authoring" title="Authoring flow">
+<Section n="01" id="resolution-layer" title="The resolution layer" nav="Resolution layer">
+  <div data-origin="uc1:position:4" class="decide risk">
+    <h4><span class="stamp">new</span>A thin resolution service sits between Contentful and the channels</h4>
+    <p>Channels do not call the Contentful delivery API directly. A small stateless service — the <strong>Content Resolution API</strong> — parses the reference, serves an immutable published snapshot, applies and <em>reports</em> translation fallback, composes the message, and shapes the channel payload.</p>
+    <p>This is the one net-new component in the design, and it needs saying plainly: the delivery API alone cannot satisfy three of the stated requirements. It serves only the latest published version, so "exactly the same content" breaks the moment an author republishes mid-campaign. Its locale fallback is silent, so a consumer cannot report on it. And it will not survive a burst of concurrent fetches after a newsletter send without a cache in front of it. If the guarantee is that every channel gets identical content, that guarantee has to be enforced in one place — otherwise the pilot proves consistency of input, not of output.</p>
+  </div>
+
+  <div data-origin="uc1:position:6" class="decide risk">
+    <h4><span class="stamp">deferred</span>Grammatical agreement is out of POC scope, and has to be solved before production</h4>
+    <p>For the POC, copy is plain text with named variables and a straight substitution at resolution time. Authors write one sentence per locale with no syntax beyond the variable itself. Number formatting follows the locale — thousands separators and decimal marks — but nothing in the sentence adapts to the value.</p>
+    <p><strong>What this knowingly leaves broken.</strong> A value of 1 produces "seen 1 times". German and Thai degrade the same way. Arabic is worse: six plural categories, with the noun and any surrounding adjective changing alongside the number, so one sentence cannot be correct across the range. Ordinals and any gendered noun driven by the variable have the same problem.</p>
+    <p><strong>Why it is acceptable here and nowhere else.</strong> The POC tests whether one authored source reaches every channel consistently, translated and versioned. Substitution proves that. But CMS-47 — composing the metric into a grammatically correct, locale-appropriate sentence — is one of the capabilities EG is evaluating, and the one they describe as a capability gain rather than an efficiency gain. Deferring it means that capability is <strong>demonstrated in principle, not proven</strong>, and the readout should say so rather than let it pass unremarked.</p>
+    <p><strong>What full implementation needs.</strong> A plural-aware message format — ICU is the standard and every translation tool already parses it — with authoring that keeps the syntax away from the author: a plain source sentence expanded into plural categories by a generation step, approved once, and stored in the machine-readable form. Two things drive the cost: whether the real parameter types are counts only or also currency, dates and ordinals, and whether Arabic stays in the locale set. Four of the five pilot locales need at most two forms; Arabic alone accounts for most of the work.</p>
+  </div>
+
+<h3>System responsibilities</h3>
+
+<div data-origin="uc1:components:*">
+  <p class="sec-note">Worth being explicit, because three of these five owners are teams the pilot parameters currently exclude from doing development work.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:19%">Component</th><th style="width:34%">Responsibility</th><th>Explicitly not responsible for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Contentful</strong></td><td>Authoring, taxonomy, variants as entries, localisation, approval gates, version history, publish events</td><td>Deciding anything. No audience rules, no conditional logic, no partner data.</td></tr>
+      <tr><td><strong>Content Resolution API</strong></td><td>Reference contract, immutable snapshots, locale fallback and reporting, variable substitution, channel shaping, variant index, the trace to EG's log system, caching, and the fallback behaviour set out in <a href="/sessions/proof-point-delivery/#failure">Failure handling and fallback</a></td><td>Choosing a variant. It answers, it never decides.</td></tr>
+      <tr><td><strong>NBA</strong></td><td>Selecting the variant from the index on segment and tone, filtering by channel availability, emitting the decision payload, consuming served-variant signals</td><td>Knowing how content is stored or modelled, and shaping content per channel. It sees references and tags, nothing else.</td></tr>
+      <tr><td><strong>SFMC</strong></td><td>Receiving the decision, fetching by reference at send time, rendering, emitting the send event</td><td>Holding any content of its own. No local copy, no channel-specific authoring.</td></tr>
+      <tr><td><strong>CRM / VMC</strong></td><td>Fetching by the same reference, rendering the channel payload, emitting the render event</td><td>Same — no separately authored copy anywhere.</td></tr>
+      <tr><td><strong>Partner web</strong></td><td>Reading the current decision for the signed-in partner, fetching by reference with <code>channel=web</code>, rendering</td><td>Deciding anything. It is a fourth consumer of the same API, not a second system.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<h3>Alternatives considered</h3>
+
+  <div data-origin="uc1:alternatives:0" class="decide risk">
+    <h4>Tone and channel as a single dimension</h4>
+    <p>The argument for it is real: the channel does determine the voice of a communication, so a separate tone dimension could look redundant. Collapsing the two would simplify the model and cut the variant count by roughly a third.</p>
+    <p>Not adopted, because it works against the source document's thesis rather than simplifying it. Step 5 states that the CRM shows the Market Manager the same tone of voice the partner already received, and the partner walkthrough presents persistent, persona-matched framing as the benefit being tested. If tone is a property of the channel, a partner's voice changes every time they move between the email, the portal and a call — the drift the pilot exists to eliminate.</p>
+    <p>It would also cost three capability results at once: CMS-19 loses half its pass condition because tone stops being decisioning metadata, CMS-31's criterion collapses from segment plus tone to segment alone, and CMS-06 becomes trivially satisfiable since no cross-channel constant remains.</p>
+    <p>The observation underneath it is kept: a channel does impose something — a shape, and for CRM a different reader — and both are modelled, as the channel profile and the variant's briefing, without a second voice. Should EG's operating model genuinely treat tone as channel-determined, the change is one field plus a re-scoping of those three capabilities — an explicit client decision, which is why it is raised as a question rather than assumed either way.</p>
+  </div>
+
+  <div data-origin="uc1:alternatives:1" class="decide risk">
+    <h4>Channels calling the delivery API directly, no resolution layer</h4>
+    <p>Fewest moving parts and closest to the source document's description. Not taken, for three reasons: the delivery API serves only the current published version, so version pinning is impossible and a mid-campaign republish silently changes what was sent; locale fallback is silent, so no consumer can report on it; and every channel would have to implement message composition independently, which reintroduces exactly the drift the pilot exists to eliminate.</p>
+    <p>If EG wants the minimal version anyway, it is viable for the CRM and VMC payload comparison — but not for SFMC, and not for anything claiming immutability.</p>
+  </div>
+
+  <div data-origin="uc1:alternatives:2" class="decide risk">
+    <h4>One entry per partner, holding the partner's metric</h4>
+    <p>The literal reading of the scale note. Not taken: it puts partner data in a content store, makes the entry count a function of the partner base, and makes every metric refresh a content operation. Nothing about it is a content-management problem.</p>
+  </div>
+
+  <div data-origin="uc1:alternatives:3" class="decide risk">
+    <h4>Contentful resolving segment and tone to a variant</h4>
+    <p>Fewer round trips and closer to how personalisation products work. Not taken because it contradicts the stated parameter that NBA decides, pulls a licensed personalisation capability onto the critical path, and makes the fetch non-deterministic and harder to cache. Worth revisiting after the pilot if EG wants decisioning closer to the content.</p>
+  </div>
+
+  <div data-origin="uc1:alternatives:4" class="decide risk">
+    <h4>An opaque hashed content ID</h4>
+    <p>Tidier on the wire. Not taken: an opaque token cannot be read in a log, a support ticket or an SFMC preview, and the traceability requirement is precisely about being able to answer "what was this" long after the send.</p>
+  </div>
+</Section>
+
+
+<Section n="02" id="authoring" title="Authoring flow">
 <div data-origin="uc1:authoring:*">
   <p class="sec-note">Four phases, three human gates. Generation is automated; approval never is. Nothing reaches a channel without a named person having accepted it.</p>
 
@@ -28,7 +95,7 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
   <h3>Phase B — generated tone variants and briefings</h3>
   <p>An AI action runs against the approved base template and produces a draft variant per tone — partner copy and a briefing for the Market Manager — then checks each variant against every channel profile and flags the ones that need an override. The author sees a diff and accepts, edits or rejects. Two things make this safe enough to put in front of a client:</p>
   <ul class="tight">
-    <li><strong>Placeholders are validated, not trusted.</strong> Generated copy is rejected automatically if it drops, renames or duplicates a variable declared on the message. A tone rewrite that loses <code>\{views\}</code> is a broken send, and it is the most likely generation failure.</li>
+    <li><strong>Placeholders are validated, not trusted.</strong> Generated copy is rejected automatically if it drops, renames or duplicates a variable declared on the proof point. A tone rewrite that loses <code>\{views\}</code> is a broken send, and it is the most likely generation failure.</li>
     <li><strong>Provenance is recorded.</strong> <code>generatedBy</code> and the approving user are stored on the entry, so any later review can separate machine-written copy from hand-written copy.</li>
   </ul>
   <p>Availability of the AI actions feature on EG's plan needs confirming before this is committed. If it isn't available, the same flow runs through an external generation step writing drafts via the management API — more moving parts, same gates.</p>
@@ -41,7 +108,7 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
 </Section>
 
 
-<Section n="02" id="validation" title="Validation plan">
+<Section n="03" id="validation" title="Validation plan">
 <div data-origin="uc1:validation:*">
   <p class="sec-note">The seven points you listed, each with the evidence it produces and the condition that decides pass or fail. Every one is machine-checkable except the two where the judgement is genuinely editorial.</p>
   <div class="scroll">
@@ -56,7 +123,7 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
       <tr>
         <td><strong>Automatic generation for tone and channel</strong></td>
         <td>AI action generates tone variants from the approved base — partner copy and a briefing each — into draft state, then every variant is checked against the email, CRM and VMC channel profiles.</td>
-        <td>Generated copy uses every variable declared on the message and no other; the placeholder check rejects any output that drops or renames one; the partner tone survives into every channel, including the CRM briefing; the author can accept, edit or reject without leaving the editor; provenance is recorded on the entry; the number of variants that needed a hand-authored override is reported — that count is the CMS-01 result.</td>
+        <td>Generated copy uses every variable declared on the proof point and no other; the placeholder check rejects any output that drops or renames one; the partner tone survives into every channel, including the CRM briefing; the author can accept, edit or reject without leaving the editor; provenance is recorded on the entry; the number of variants that needed a hand-authored override is reported — that count is the CMS-01 result.</td>
       </tr>
       <tr>
         <td><strong>Translation into five locales</strong></td>
@@ -91,22 +158,22 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
 </Section>
 
 
-<Section n="03" id="sizing" title="POC content sizing" nav="POC sizing">
+<Section n="04" id="sizing" title="POC content sizing" nav="POC sizing">
 <div>
   <p class="sec-note">Small enough to author by hand in the pilot, large enough that NBA is choosing between real options rather than fetching one hardcoded entry.</p>
   <div class="scroll">
   <table>
     <thead><tr><th style="width:26%">Dimension</th><th style="width:18%">POC</th><th style="width:20%">Plausible production</th><th>Note</th></tr></thead>
     <tbody>
-      <tr><td>Opportunities</td><td class="ref">1</td><td class="ref">10–20</td><td>Travel Corridors reused, per the pilot parameters. A tag on the message, not an entry.</td></tr>
-      <tr><td>Messages per opportunity</td><td class="ref">2</td><td class="ref">3–5</td><td>Two proof points is enough to show the message/variant split is real.</td></tr>
+      <tr><td>Opportunities</td><td class="ref">1</td><td class="ref">10–20</td><td>Travel Corridors reused, per the pilot parameters. A tag on the proof point, not an entry.</td></tr>
+      <tr><td>Proof points per opportunity</td><td class="ref">2</td><td class="ref">3–5</td><td>Two is enough to show the proof point/variant split is real.</td></tr>
       <tr><td>Tones</td><td class="ref">3</td><td class="ref">3–4</td><td>Educational, familiar, data-led.</td></tr>
       <tr><td>Segments</td><td class="ref">2</td><td class="ref">6</td><td>Two of the six NBS segments; the model doesn't change with six.</td></tr>
-      <tr><td><strong>Variant entries</strong></td><td class="ref">12</td><td class="ref">540–2,400</td><td>messages × tones × segments.</td></tr>
+      <tr><td><strong>Variant entries</strong></td><td class="ref">12</td><td class="ref">540–2,400</td><td>proof points × tones × segments.</td></tr>
       <tr><td>Channels</td><td class="ref">3</td><td class="ref">4+</td><td>email, crm, vmc — one channel profile each. Configuration, not copy.</td></tr>
       <tr><td><strong>Channel overrides</strong></td><td class="ref">measured</td><td class="ref">measured</td><td>Only where a variant's copy cannot fit a profile. Their count is the CMS-01 result, not something to plan for.</td></tr>
       <tr><td>Locales</td><td class="ref">5</td><td class="ref">20+</td><td>en-US, ar, th, de, ja.</td></tr>
-      <tr><td><strong>Localised units to review</strong></td><td class="ref">130</td><td class="ref">22,200–98,000</td><td>(variants × 2 + messages) × locales: every variant's partner copy and briefing, plus every message's default copy. Overrides add to it. This is the line that should drive the governance conversation.</td></tr>
+      <tr><td><strong>Localised units to review</strong></td><td class="ref">130</td><td class="ref">22,200–98,000</td><td>(variants × 2 + proof points) × locales: every variant's partner copy and briefing, plus every proof point's default copy. Overrides add to it. This is the line that should drive the governance conversation.</td></tr>
     </tbody>
   </table>
   </div>
@@ -115,7 +182,7 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
 </Section>
 
 
-<Section n="04" id="open" title="Open questions raised by this design" nav="Open questions">
+<Section n="05" id="open" title="Open questions raised by this design" nav="Open questions">
 <div data-origin="uc1:open:*">
   <p class="sec-note">Ten questions arising from the production concerns in <a href="/sessions/proof-point-delivery/">Session 1</a>, additional to the twenty-seven raised with EG (Q1–Q26, Q6b). Each carries the working assumption the design currently runs on, so nothing is blocked waiting for an answer — but each assumption is one someone should confirm rather than inherit.</p>
   <div class="scroll">
@@ -131,7 +198,7 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
       <tr><td class="n">DQ-7</td><td>Is partner web authenticated — does the page know which partner is viewing?</td><td>Yes</td><td>If not, partner web cannot personalise at all and drops out of the pattern entirely</td></tr>
       <tr><td class="n">DQ-8</td><td>For pull surfaces, does NBA expose a decision lookup, or are decisions precomputed per partner?</td><td>Precomputed, refreshed on NBA's cadence</td><td>The only architectural difference between the push and pull surfaces. A real-time decisioning call in a page-render path is a much larger commitment</td></tr>
       <tr><td class="n">DQ-9</td><td>Who operates and supports the Content Resolution API?</td><td>Undecided — Globant or EG</td><td>SLA, on-call rota, runbook ownership, severity definitions and alert routing all follow from it</td></tr>
-      <tr><td class="n">DQ-10</td><td>Where is the service hosted, and is it internet-facing?</td><td>EG infrastructure, internal-only</td><td>Decides the cache topology set out in <a href="/sessions/proof-point-delivery/#performance">Performance at production volume</a> — nginx inside the perimeter versus a CDN in front</td></tr>
+      <tr><td class="n">DQ-10</td><td>Where is the Content Resolution API hosted: on Akamai, or as a Contentful app?</td><td>One of the two, on EG's accounts. Internet-facing either way</td><td>Who runs the platform and which limits apply: EdgeWorkers on EG's Akamai account, the one in front of partner web, or an app inside EG's Contentful organisation. Neither puts a server on EG's infrastructure</td></tr>
     </tbody>
   </table>
   </div>
@@ -139,13 +206,31 @@ import uc1Fragment3 from '../fragments/uc1-3.html?raw';
 </Section>
 
 
-<Section n="05" id="risks" title="Risks carried by this design" nav="Risks">
+<Section n="06" id="risks" title="Risks carried by this design" nav="Risks">
   <div class="scroll">
   <table>
     <thead data-origin="uc1:risks:0"><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
     <tbody>
+      <tr data-origin="uc1:risks:1"><td><strong>Grammatical agreement deferred out of the POC</strong></td><td>CMS-47 is demonstrated rather than proven, and a value of 1 produces visibly wrong copy in every locale that inflects.</td><td>Use values above 1 in pilot content so the demo isn't undermined by an avoidable artefact, and state the deferral in the readout rather than leaving EG to notice it. Scope the production solution in the same conversation.</td></tr>
+      <tr data-origin="uc1:risks:2"><td><strong>SFMC cannot make a per-recipient call at send time</strong></td><td>The headline pattern — fetch by ID at send — is unprovable in its stated form.</td><td>Prove the pattern on a seed send, and design the production path as pre-send hydration of a data extension. Decide this before build, not after the first failed send.</td></tr>
       <tr data-origin="uc1:risks:3"><td><strong>AI actions unavailable on EG's plan</strong></td><td>Automatic generation of tone variants and briefings moves outside the platform.</td><td>Same flow through an external generation step writing drafts via the management API. More moving parts, identical gates.</td></tr>
+      <tr data-origin="uc1:risks:4"><td><strong>The resolution service reads as scope creep</strong></td><td>EG hears "you want to build middleware for a CMS evaluation".</td><td>Frame it as what it is: the place the consistency and immutability guarantees are enforced, and the reason a send of any size never touches the CMS. Without it, three of the seven validation points cannot pass. <a href="/sessions/proof-point-delivery/#ownership">The ownership topic</a> names who builds, hosts and supports it, which is usually the real question behind the objection.</td></tr>
+      <tr data-origin="uc1:risks:5"><td><strong>NBA cannot consume the variant index within pilot constraints</strong></td><td>Variant selection becomes hardcoded and the decisioning hand-off is simulated.</td><td>Acceptable for a POC if declared up front. Not acceptable if discovered at the readout — it would invalidate the tagging and taxonomy result.</td></tr>
+      <tr data-origin="uc1:risks:6"><td><strong>Support ownership unresolved at go-live</strong></td><td>A live service with no pager, no runbook and no severity definitions. Fallback rates can rise unnoticed for weeks.</td><td>Name the support owner during design rather than at handover. The builder is named and the hosting narrowed to Akamai or a Contentful app; support is the one owner still missing.</td></tr>
+      <tr data-origin="uc1:risks:7"><td><strong>UC2 coupling discovered late</strong></td><td>Partner web consumes the same resolver, so UC2's content model needs a proof-point block it does not have. Found during the UC2 build, it is rework on both sides.</td><td>Add the block to the UC2 model now and put the dependency on both plans.</td></tr>
       <tr data-origin="uc1:risks:8"><td><strong>Translation route undecided</strong></td><td>Phase C has no implementation and the locale gate cannot be exercised.</td><td>Needs an answer before build starts. A marketplace connector is days; a Babel Prime connector is a workstream.</td></tr>
+      <tr><td><strong>Trace volume</strong></td><td>One record per resolution, in both options: a 1M send writes at least 1M records, plus every CRM and VMC view.</td><td>Confirm the log system, its retention and its intake before build.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>If EG chooses option B</h3>
+  <p>Two risks apply only to <a href="/sessions/proof-point-delivery/#flow">option B</a>, where the resolver finds the variant for NBA's decision.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>The CRM briefs copy the partner never saw</strong></td><td>An author republishes between the send and the Market Manager's view. The briefing describes version 15 while the email carried version 14.</td><td>The trace shows both, with different <code>consistencyKey</code> values. Where it matters, the CRM sends the reference the email received, which means that reference has to travel with the send record.</td></tr>
+      <tr><td><strong>Gaps in the variants go unnoticed</strong></td><td>A segment and tone with no variant receive the default copy on every send, and nobody is told.</td><td>Report the default-copy rate per proof point, segment and tone from the trace, and alert above a threshold agreed with EG content.</td></tr>
     </tbody>
   </table>
   </div>

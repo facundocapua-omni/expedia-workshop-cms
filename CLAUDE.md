@@ -33,14 +33,17 @@ make xlsx | make check   # regenerate / sanity-check the UC2 workbook from model
   collections, sorts by `compareIds`, and runs `assertValid` for the cross-collection rules
   zod can't express. Pure derivations on top of it: `buildRegistry` (ID → label, status,
   href), `computeFacts` (counts), `buildAgenda` (the `/decide` view).
-- **Sessions.** `/sessions/<slug>/` walks the session's `topics` in agenda order. For each topic it
-  renders the topic's MDX (or the discussion prompt when `prompt: true`), the optional `see`
-  link, and then, under "To settle here", the questions in `settles` and the decisions in
-  `decisions`, plus any decision whose `resolves` names one of those questions
-  (`topicDecisions`). A decision recorded at the workshop therefore shows up under its topic
-  without editing the session. The last section lists the expected outcomes and what
-  `stillOpen` (`src/lib/sessions.ts`) leaves on the agenda. A question is settled in one topic at most, and
-  a settled question carries no `idea`/`section`. "Discussed in" comes from `discussedIn()`.
+- **Sessions.** Globant presents them, so a session page shows no questions. `/sessions/<slug>/`
+  walks the session's `topics` in agenda order. For each topic it renders the topic's MDX (or the
+  discussion prompt when `prompt: true`) and the optional `see` link. A topic with `hidden: true`
+  keeps its material but is left off the page and the topic count (`visibleTopics()`), and cannot
+  settle a question. There is no agenda list, no expected outcomes and no list of decisions: EG and
+  GL track the first two in other documents,
+  and decisions live on `/decide` and the decisions register, so the page is only the topics. `settles` places a
+  question in the topic whose material covers it: `/decide` and the questions register link to
+  that topic as "Discussed in" (`discussedIn()`). A question is settled in one topic at most, and
+  a settled question carries no `idea`/`section`. Session material cites decisions but never a
+  question ID (`tests/session-material.test.ts`, which also scans the fragments a topic imports).
   UC1 and UC2 (`src/content/ideas/`) keep only the material no session uses yet.
 - **ID linking and page index happen after rendering**, in `src/middleware.ts` →
   `enhanceHtml` (`src/lib/enhance.ts`). It runs in dev and during static prerendering. Astro 7
@@ -51,7 +54,7 @@ make xlsx | make check   # regenerate / sanity-check the UC2 workbook from model
   automatically.
 - **Layouts.** `Base.astro` holds the top bar, the registry JSON (`script#idref-data`) and
   the three client scripts (`src/scripts/{tooltips,present,search}.ts`). `Doc.astro` holds
-  the masthead (with a session's outcomes), index and `main[data-pagefind-body]`, and is used by
+  the masthead, index and `main[data-pagefind-body]`, and is used by
   sessions, ideas, `/decide` and the registers.
 - **Numbers from data** are `<Fact k="…"/>` in MDX bodies, and `{{key}}` in frontmatter and
   `Section` titles (`interpolateFacts`). Unknown keys fail the build.
@@ -77,7 +80,7 @@ make xlsx | make check   # regenerate / sanity-check the UC2 workbook from model
   scripts/verify-fidelity.mjs --pieces <doc>:<section>` lists them). A wording change or a
   retired piece needs an entry in `scripts/fidelity-allowlist.json`, keyed by origin.
 - `verify-anchors` also fails on an id used twice on a page. A question appears once per page as
-  a `QuestionItem`; the closing section of a session lists IDs as plain text on purpose.
+  a `QuestionItem`.
 
 ## Conventions that matter
 
@@ -95,22 +98,19 @@ make xlsx | make check   # regenerate / sanity-check the UC2 workbook from model
 ## Adding a session
 
 1. Append the session's agenda text, as pasted, to `sources/workshop-agenda.md`.
-2. Write `src/content/sessions/<slug>.yaml`, copying title, track, owner, bullets and outcomes
-   literally (`tests/agenda-source.test.ts` checks them, in order).
+2. Write `src/content/sessions/<slug>.yaml`, copying title and bullets literally
+   (`tests/agenda-source.test.ts` checks them, in order). Leave the track, owner and outcomes out
+   (the schema rejects them); a session is shown as "Session N". A bullet can be left out when a topic is dropped (Session 1 has no
+   resolution-layer topic), never reworded.
 3. Add one MDX per topic with material under `src/content/topics/<slug>/`, moving blocks with
    their `data-origin`. A topic with no material is `prompt: true` and has no file.
 4. Take `idea`/`section` off the questions it settles.
 5. Run `pnpm test && pnpm build && pnpm verify`.
 
-Still to add: *Solution overview, plan and target dates*.
-
 ## Known couplings
-
-- The session 3 owner is copied as written in the agenda ("ContenExceltful"). Confirm the
-  spelling with the agenda owner before the workshop, and change it in the YAML and the source
-  together.
 
 - UC2 needs a proof-point block once EG confirms partner web is in scope (it consumes the UC1
   Content Resolution API).
-- The UC1 resolver is the only custom runtime component. Support is undecided (DQ-9).
+- The UC1 resolver is the only custom runtime component. It runs on Akamai or as a Contentful app,
+  never on EG infrastructure (D-09; EG chooses, DQ-10). Support is undecided (DQ-9).
 - Grammatical agreement is deferred (D-06) and must be raised at the workshop.

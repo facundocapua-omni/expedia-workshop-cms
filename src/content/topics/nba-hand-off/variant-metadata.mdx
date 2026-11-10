@@ -1,33 +1,33 @@
-import messageModel from '../../fragments/message-model.html?raw';
+import proofPointModel from '../../fragments/proof-point-model.html?raw';
 
   <div data-origin="uc1:position:2" class="decide">
-    <h4><span class="stamp">Q2</span>Option A: NBA selects the variant; Contentful never decides</h4>
+    <h4>Option A: NBA selects the variant; Contentful never decides</h4>
     <p>NBA reads a <strong>variant index</strong> published out of Contentful — every variant with its segment tags, tone, available channels and translated locales — and picks one. The content platform is asked for a specific thing by identifier and returns it. No audience rules, no conditional blocks, no personalisation engine inside the CMS.</p>
     <p>This matches the pilot parameters as written, keeps the personalisation licence out of the critical path, and makes the fetch deterministic and cacheable. The cost is a new obligation the source document doesn't mention: NBA cannot choose between variants it has never been told about, so the index feed is a first-class deliverable, not plumbing.</p>
   </div>
 
   <div class="decide">
-    <h4><span class="stamp">Q2</span>Option B: NBA sends the decision; the resolver finds the variant</h4>
-    <p>NBA sends which <strong>message</strong> to tell, for which segment and in which tone, and never sees the variants. The Content Resolution API looks up the published variant written for that segment and tone and serves its latest version; with no such variant, it serves the message's default copy. Contentful still decides nothing. The full comparison is in <a href="/sessions/proof-point-delivery/#resolution-layer">Session 1, under the resolution layer</a>.</p>
-    <p>It removes the index: NBA needs only the shared taxonomy, so the index risk below does not apply. In exchange, NBA no longer knows which variant went out until the served-variant event tells it, and a republished variant reaches the next fetch with nothing to do in NBA. It is not the alternative further down either: there, Contentful resolves segment and tone through a personalisation product; here, the resolver looks up the copy written for a decision NBA has already made.</p>
+    <h4>Option B: NBA sends the decision; the resolver finds the variant</h4>
+    <p>NBA sends which <strong>proof point</strong> to tell, for which segment and in which tone, and never sees the variants. The Content Resolution API looks up the published variant written for that segment and tone and serves its latest version; with no such variant, it serves the proof point's default copy. Contentful still decides nothing. The full comparison is in <a href="/sessions/proof-point-delivery/#flow">Session 1, under the end-to-end flow</a>.</p>
+    <p>It removes the index: NBA needs only the shared taxonomy, so there is no index feed for it to consume. In exchange, NBA no longer knows which variant went out until the served-variant event tells it, and a republished variant reaches the next fetch with nothing to do in NBA. Nor is it Contentful resolving segment and tone through a personalisation product: the resolver looks up the copy written for a decision NBA has already made.</p>
   </div>
 
 <h3>Content model</h3>
 
 <div>
-  <p class="sec-note">Two content types plus channel profiles and taxonomy. A <strong>message</strong> is the reusable unit — the proof point is this pilot's example, not the model — and its variants are referenced entries rather than a variant dimension, because core entries have no such dimension. That is the hand-modelled route, and it is deliberate here rather than a fallback.</p>
+  <p class="sec-note">The model lives in its own Contentful space, <code>proofPoints</code>: two content types plus channel profiles, tagged from a shared taxonomy. A <strong>proof point</strong> is the reusable unit, and its variants are referenced entries rather than a variant dimension, because core entries have no such dimension. That is the hand-modelled route, and it is deliberate here rather than a fallback.</p>
 
   <div class="fig">
-    <Fragment set:html={messageModel} />
+    <Fragment set:html={proofPointModel} />
   </div>
-  <p class="cap">Figure 1 — Content model. The message declares its variables and carries the default copy; the variant is the addressable unit, whichever side selects it; channel profiles are configuration, three entries in total.</p>
+  <p class="cap">Figure 1 — Content model. The proof point declares its variables and carries the default copy; the variant is the addressable unit, whichever side selects it; channel profiles are configuration, three entries in total.</p>
 
   <h3>Why the variant is the addressable unit</h3>
-  <p>NBA's decision is "this message, this segment, this tone", and exactly one published variant answers it. In option A NBA makes that lookup itself, from the index, and hands off the variant; in option B the resolver makes it when a channel fetches. Either way the variant is what gets served, versioned and traced, and the lookup happens in one place — never in Contentful, and never in each channel independently, which is the drift problem the pilot exists to solve. Channel and locale are narrower: they don't change <em>which</em> message is being told, only how it is dressed, so they belong as parameters on the fetch rather than in the identity.</p>
+  <p>NBA's decision is "this proof point, this segment, this tone", and exactly one published variant answers it. In option A NBA makes that lookup itself, from the index, and hands off the variant; in option B the resolver makes it when a channel fetches. Either way the variant is what gets served, versioned and traced, and the lookup happens in one place — never in Contentful, and never in each channel independently, which is the drift problem the pilot exists to solve. Channel and locale are narrower: they don't change <em>which</em> message is being told, only how it is dressed, so they belong as parameters on the fetch rather than in the identity.</p>
 
-  <h3>A generic model, with the proof point as the example</h3>
-  <p>Nothing in the two types knows what a proof point is. The message declares its <strong>variables</strong> — name, type, format and a sample value — and every variant's copy may use only the variables its message declares: the resolver checks that before publish and again at substitution, so a variant that writes <code>\{view\}</code> for <code>\{views\}</code> never reaches a channel. A tip, an alert or an onboarding nudge is another message with other variables, not another content type. The message's kind and the NBA opportunity it serves (Travel Corridors in the pilot) are taxonomy tags, so a new opportunity is a tag, not a model change.</p>
-  <p>Every message carries a mandatory <strong>default copy</strong> — the "mandatory default entry" that CMS-31 tests variants on top of. It uses no variables and makes no partner-specific claim, which makes it the fallback when no variant can be served.</p>
+  <h3>Variables declared on the proof point</h3>
+  <p>Nothing in the two types is specific to one proof point. Each proof point declares its <strong>variables</strong> — name, type, format and a sample value — and every variant's copy may use only the variables its proof point declares: the resolver checks that before publish and again at substitution, so a variant that writes <code>\{view\}</code> for <code>\{views\}</code> never reaches a channel. A new proof point is a new entry with its own variables, not a new content type. The NBA opportunity it serves (Travel Corridors in the pilot) is a taxonomy tag, so a new opportunity is a tag, not a model change.</p>
+  <p>Every proof point carries a mandatory <strong>default copy</strong> — the "mandatory default entry" that CMS-31 tests variants on top of. It uses no variables and makes no partner-specific claim, which makes it the fallback when no variant can be served.</p>
 
   <h3>Channel profiles instead of per-channel copy</h3>
   <p>Each channel has one profile: the audience it speaks to and the shape its copy must fit — length limits and allowed markup. Email and VMC speak to the partner and receive the variant's headline and body; CRM speaks to the Market Manager and receives the variant's <strong>briefing</strong>, written in the same tone and usable as a talking point. The resolver picks the copy by audience and checks it against the profile; only a variant whose copy cannot fit a channel carries an authored override for it.</p>
@@ -35,21 +35,4 @@ import messageModel from '../../fragments/message-model.html?raw';
 
   <h3>Approval state on the entry</h3>
   <p>The <code>approvals[]</code> field records who signed off on what and when — variant copy, briefing, per-locale translation, overrides. It exists because the audit requirement is about editorial accountability, not just field history: "who approved the Japanese version of the familiar-tone variant" is the question that gets asked, and version history alone answers it awkwardly.</p>
-</div>
-
-<h3>Alternatives considered</h3>
-
-  <div data-origin="uc1:alternatives:3" class="decide risk">
-    <h4>Contentful resolving segment and tone to a variant</h4>
-    <p>Fewer round trips and closer to how personalisation products work. Not taken because it contradicts the stated parameter that NBA decides, pulls a licensed personalisation capability onto the critical path, and makes the fetch non-deterministic and harder to cache. Worth revisiting after the pilot if EG wants decisioning closer to the content.</p>
-  </div>
-
-<h3>Risks carried by this design</h3>
-<div class="scroll">
-<table>
-  <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
-  <tbody>
-      <tr data-origin="uc1:risks:5"><td><strong>NBA cannot consume the variant index within pilot constraints</strong></td><td>Variant selection becomes hardcoded and the decisioning hand-off is simulated.</td><td>Acceptable for a POC if declared up front. Not acceptable if discovered at the readout — it would invalidate the tagging and taxonomy result.</td></tr>
-  </tbody>
-</table>
 </div>

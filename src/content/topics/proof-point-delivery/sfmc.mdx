@@ -1,11 +1,52 @@
-<p class="sec-note">The send-time fetch is interactions 5 and 6 of the <a href="#flow">consumption flow</a>.</p>
+import sfmcSendTime from '../../fragments/sfmc-send-time.html?raw';
+import wbFlow from '../../fragments/sfmc-wb-flow.html?raw';
+import wbPayload from '../../fragments/sfmc-wb-payload.html?raw';
+import wbMergeTags from '../../fragments/sfmc-wb-merge-tags.html?raw';
+import wbModel from '../../fragments/sfmc-wb-model.html?raw';
 
-<h3>Risks carried by this design</h3>
-<div class="scroll">
-<table>
-  <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
-  <tbody>
-      <tr data-origin="uc1:risks:2"><td><strong>SFMC cannot make a per-recipient call at send time</strong></td><td>The headline pattern — fetch by ID at send — is unprovable in its stated form.</td><td>Prove the pattern on a seed send, and design the production path as pre-send hydration of a data extension. Decide this before build, not after the first failed send.</td></tr>
-  </tbody>
-</table>
+<p class="sec-note">Figures 13 to 16 redraw the whiteboard from the workshop: the send from end to end, what NBA hands over, how merge tags fill the copy, and the content model behind it.</p>
+
+<h3>The send, end to end</h3>
+
+<div class="legend"><span><span class="sw sw1"></span>Content platform</span> <span><span class="sw sw3"></span>Resolution layer</span> <span><span class="sw sw2"></span>Decisioning</span> <span><span class="sw sw4"></span>Channels</span></div>
+
+<div class="fig">
+  <Fragment set:html={wbFlow} />
 </div>
+<p class="cap">Figure 13 — The send, end to end. Whenever content changes in Contentful, the Content Resolution API pushes all of it to a Marketing Object in SFMC. At send time SFMC reads the Marketing Object, replaces the variables with the values NBA sent and sends the email. Partner web reads the same content through the same API. When no variant can be served, the default content goes out.</p>
+
+<h3>What NBA hands over</h3>
+
+<div class="fig">
+  <Fragment set:html={wbPayload} />
+</div>
+<p class="cap">Figure 14 — What NBA hands over. The payload carries the values; the key names the content. Proof point name, segment and tone resolve to one entry ID.</p>
+
+<h3>Merge tags in the copy</h3>
+
+<div class="legend"><span><span class="sw sw1"></span>From Contentful, as merge tag entries</span> <span><span class="sw sw2"></span>From NBA's payload, at send time</span></div>
+
+<div class="fig">
+  <Fragment set:html={wbMergeTags} />
+</div>
+<p class="cap">Figure 15 — Merge tags in the copy. Dynamic tags are entries of their own, with a default and a replacement per locale; the opportunity name and the data point take NBA's values when SFMC builds the email.</p>
+
+<h3>The content model behind it</h3>
+
+<div class="fig">
+  <Fragment set:html={wbModel} />
+</div>
+<p class="cap">Figure 16 — The content model behind it. Merge tags and policies / legal copy sit in a shared Expedia space, and the taxonomy's tags work across spaces. A proof point breaks down by channel, variant and language.</p>
+
+<h3>Interactions 5 and 6, zoomed in</h3>
+<p class="sec-note">The send-time fetch is interactions 5 and 6 of the <a href="#flow">consumption flow</a>. The figure below zooms in on them, with the decision that reaches SFMC before the send and the signal that goes back to NBA after it.</p>
+
+<div class="legend"><span><span class="sw sw3"></span>Resolution layer</span> <span><span class="sw sw2"></span>Decisioning</span> <span><span class="sw sw4"></span>Channels</span></div>
+
+<div class="fig">
+  <Fragment set:html={sfmcSendTime} />
+</div>
+<p class="cap">SFMC at send time, zoomed in from Figure 3, with the same numbering. The three steps on the Content Resolution API happen inside the one call, and none of them reads Contentful. Solid arrows are synchronous requests; dashed are asynchronous.</p>
+
+<h3>Under option B</h3>
+<p>In <a href="#flow">option B</a>, 4 carries the proof point, segment and tone in place of the reference. Inside the call, the resolver first finds the published variant written for that decision and its latest version, then reads the snapshot as above; 6 returns the reference it chose. The rest of the send is the same.</p>

@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { loadSiteData } from '../lib/data';
 import { computeFacts, interpolateFacts } from '../lib/facts';
-import { stillOpen } from '../lib/sessions';
+import { visibleTopics } from '../lib/sessions';
 
 const data = await loadSiteData();
 const facts = computeFacts(data);
@@ -19,16 +19,13 @@ const ideas = (await getCollection('ideas')).sort((a, b) => a.data.order - b.dat
     <main>
       <h2 class="home-h">Sessions</h2>
       <div class="cards">
-        {data.sessions.map((s) => {
-          const open = stillOpen(s, data.questions);
-          return (
-            <a class="card session" href={`/sessions/${s.slug}/`}>
-              <p class="kicker">Session {s.order} · {s.track}</p>
-              <h3>{s.title}</h3>
-              <p>Owner: {s.owner} · {s.topics.length} topics · {open.toConfirm.length + open.toDecide.length} to settle</p>
-            </a>
-          );
-        })}
+        {data.sessions.map((s) => (
+          <a class="card session" href={`/sessions/${s.slug}/`}>
+            <p class="kicker">Session {s.order}</p>
+            <h3>{s.title}</h3>
+            <p>{visibleTopics(s).length} topics</p>
+          </a>
+        ))}
       </div>
       <h2 class="home-h">Reference material</h2>
       <div class="cards">

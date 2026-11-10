@@ -1,6 +1,7 @@
 import uc1Fragment4 from '../../fragments/uc1-4.html?raw';
 import uc1Fragment5 from '../../fragments/uc1-5.html?raw';
 import optionBFlow from '../../fragments/option-b-flow.html?raw';
+import optionB from '../../fragments/option-b-decision.html?raw';
 
 <div data-origin="uc1:consumption:*">
   <p class="sec-note">Nine interactions, and a trace of each resolution. Two of them — the variant index and the served-variant signal — are not in the source document's flow, and the pattern does not work without them.</p>
@@ -17,7 +18,7 @@ import optionBFlow from '../../fragments/option-b-flow.html?raw';
     <thead><tr><th style="width:5%">#</th><th style="width:18%">From → To</th><th style="width:29%">Request</th><th>What moves, and why it matters</th></tr></thead>
     <tbody>
       <tr><td class="n">1</td><td>Contentful → Resolver</td><td class="ref">webhook Entry.publish</td><td>Triggers a snapshot per variant + version + locale + channel, and refreshes the variant index. Asynchronous, so nothing on the read path depends on it completing.</td></tr>
-      <tr><td class="n">2</td><td>Resolver → Contentful</td><td class="ref">GET /entries/\{id\}?locale=*</td><td>Pulls the full localised variant, its message and the channel profiles. Happens on publish and on cold miss only — never on the per-send path.</td></tr>
+      <tr><td class="n">2</td><td>Resolver → Contentful</td><td class="ref">GET /entries/\{id\}?locale=*</td><td>Pulls the full localised variant, its proof point and the channel profiles. Happens on publish and on cold miss only — never on the per-send path.</td></tr>
       <tr><td class="n">3</td><td>Resolver → NBA</td><td class="ref">GET /index/variants</td><td>The catalogue NBA chooses from: variantRef, segments, tone, channels available, locales translated, current version. <strong>Not in the source flow.</strong> Without it NBA is selecting blind.</td></tr>
       <tr><td class="n">4</td><td>NBA → SFMC</td><td class="ref">journey event / DE row</td><td>The decision payload: reference, partner, locale, parameters. No channel — SFMC knows it is email. The same payload reaches every channel, and that sameness is what makes the consistency claim testable.</td></tr>
       <tr><td class="n">5</td><td>SFMC → Resolver</td><td class="ref">GET /v1/content/\{ref\}<br />?locale&amp;channel&amp;params</td><td>Fetch at send time, initiated by the channel. Single call, static bearer token, no SDK — deliberately shaped for what an email platform can actually do inside a send.</td></tr>
@@ -35,8 +36,32 @@ import optionBFlow from '../../fragments/option-b-flow.html?raw';
   <p>Returning the template alongside the substituted string costs nothing and makes every substitution failure debuggable after the fact. The <code>consistencyKey</code> is what turns "the same content everywhere" from a visual judgement into an assertion a test can make.</p>
 </div>
 
+<h3>Who selects the variant: two options for EG</h3>
+
+<div>
+  <p class="sec-note">Figure 3 and its table describe option A, where NBA chooses the variant. There is a second option: NBA sends the decision — which proof point, for which segment, in which tone — and the Content Resolution API serves the published variant written for it. Both keep the resolution layer, and in both Contentful decides nothing. They differ on who picks the variant and on which version a channel receives. EG chooses between them.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:22%"></th><th style="width:39%">A — NBA selects the variant</th><th>B — the resolver finds the variant for NBA's decision</th></tr></thead>
+    <tbody>
+      <tr><td><strong>NBA sends</strong></td><td>A content reference, variant and version: <code>cr:1:7KxQ2mVn@14</code></td><td>The proof point, segment and tone, with partner, locale and parameters</td></tr>
+      <tr><td><strong>NBA needs</strong></td><td>The variant index, read before every decision</td><td>Only the shared taxonomy: proof points, segments and tones</td></tr>
+      <tr><td><strong>Who picks the variant</strong></td><td>NBA, from the index</td><td>The resolver, by lookup: one published variant per proof point, segment and tone</td></tr>
+      <tr><td><strong>Version served</strong></td><td>The one in the reference, pinned</td><td>The latest published, unless the channel sends a reference</td></tr>
+      <tr><td><strong>Across channels</strong></td><td>Identical copy on every surface, whenever each one fetches</td><td>The same decision on every surface. A republish between two fetches gives them different copy, and the trace records both</td></tr>
+      <tr><td><strong>No variant for a segment and tone</strong></td><td>NBA cannot choose what the index does not list</td><td>The proof point's default copy goes out, and the response says so</td></tr>
+      <tr><td><strong>Traceability</strong></td><td>One record per resolution in EG's log system, beside a reference that already names the exact content</td><td>The same record, and the only one: two surfaces can resolve the same decision to different versions</td></tr>
+      <tr><td><strong>A corrected variant reaches the channels</strong></td><td>When NBA picks up the new version from the index</td><td>On the next fetch after it is published, with nothing to do in NBA</td></tr>
+      <tr><td><strong>Custom build</strong></td><td>The resolver and the variant index feed</td><td>The resolver, with selection, and no index feed</td></tr>
+      <tr><td><strong>Work in NBA</strong></td><td>Reading the index and emitting a reference</td><td>Adding proof point, segment and tone to its payload</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
 <h3>Under option B</h3>
-<p>Figure 3 and the table above describe option A. Figure 4 is the same flow under <a href="#resolution-layer">option B</a>.</p>
+<p>Figure 4 is the flow of Figure 3 under option B.</p>
 
 <div class="fig">
   <Fragment set:html={optionBFlow} />
@@ -45,10 +70,25 @@ import optionBFlow from '../../fragments/option-b-flow.html?raw';
 
 <p>Interactions 2, 9 and the trace are the same in both options. The others change:</p>
 <ul class="tight">
-  <li><strong>1</strong> moves the latest-version pointer for each message, segment and tone instead of refreshing an index.</li>
+  <li><strong>1</strong> moves the latest-version pointer for each proof point, segment and tone instead of refreshing an index.</li>
   <li><strong>3 goes away.</strong> NBA reads no variant index; it needs only the shared taxonomy.</li>
-  <li><strong>4 carries the decision.</strong> Message, segment and tone travel in place of the content reference, with the same partner, locale and parameters.</li>
+  <li><strong>4 carries the decision.</strong> Proof point, segment and tone travel in place of the content reference, with the same partner, locale and parameters.</li>
   <li><strong>5, 7 and 8 resolve when they fetch</strong>, to the latest published version. A channel that needs exactly what an earlier fetch returned sends the reference from that response.</li>
   <li><strong>6 returns the reference the resolver chose</strong>, where in option A it echoes the one NBA sent.</li>
 </ul>
 <p>Interaction 9 stays, and matters more: it is how NBA learns which variant its decision became.</p>
+
+<h3>Option B in detail</h3>
+<div>
+  <Fragment set:html={optionB} />
+  <ul class="tight">
+    <li><strong>A reference wins.</strong> If the fetch carries <code>ref</code>, the resolver serves exactly that variant and version, as in option A. That is also how anyone replays what was sent.</li>
+    <li><strong>Otherwise, the one variant written for the decision.</strong> The resolver looks up the published variant of the proof point for that segment and tone and serves its latest published version. Publishing a second variant for the same proof point, segment and tone is blocked at authoring, so the lookup never has to choose between two.</li>
+    <li><strong>No such variant: the proof point's default copy.</strong> Reported as <code>selection: "default"</code>. No other variant is tried, so what goes out is either the copy written for this segment and tone or the approved generic copy, never a guess between them.</li>
+    <li><strong>Missing translation: the variant in the source locale.</strong> Reported with <code>fallbackApplied</code>, as in option A. The partner gets the specific message in English rather than generic copy in their language.</li>
+  </ul>
+  <p>Nobody filters by channel before the fetch, so publishing also checks that every variant fits every channel profile, or carries an override for the one it does not fit.</p>
+  <p>As in option A, every resolution writes one record to EG's log system, here with the decision in it: partner, channel, proof point, segment, tone, locale requested and served, the variant and version served or the default copy, and the <code>consistencyKey</code>. It is written off the request path. In this option the trace is the only answer to "what did this partner see, and where", because two surfaces can resolve the same decision to different versions. Channels still emit the served-variant event, and it becomes the only way NBA learns which variant its decision turned into.</p>
+  <p>Option B is not the alternative where Contentful resolves segment and tone through a personalisation product (<a href="/ideas/uc1-solution-architecture/#resolution-layer">UC1, alternatives considered</a>). Here NBA still decides what to say and in which tone. The resolver only finds the copy written for that decision, with a lookup that gives the same answer every time for the same published content.</p>
+
+</div>

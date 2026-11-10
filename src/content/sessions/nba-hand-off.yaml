@@ -1,33 +1,20 @@
 title: "NBA hand-off: variant metadata, payload and feedback loop"
 short: NBA hand-off
-track: Cross-channel proof points
-owner: Globant w/ Contentful
 order: 2
-outcomes:
-  - High-level understanding of how NBA would read content data and metadata from the platform
-  - Considerations for a future NBA build identified
-  - NBA follow-ups logged (NBA Engineering not attending)
 topics:
   - agenda: How NBA reads variant metadata to choose a proof point variant
     id: variant-metadata
     nav: Variant metadata
     settles: [Q2, Q17]
-    decisions: [D-02]
   - agenda: Shared taxonomy between the CMS and NBA
     id: taxonomy
     nav: Shared taxonomy
     settles: [Q6b]
-    decisions: [D-05]
   - agenda: Contents of the notification payload sent to channels
     id: payload
     nav: Notification payload
     settles: [Q1, Q3, Q16, Q20]
-    decisions: [D-01, D-03]
   - agenda: Reporting the served variant back to NBA, including fallbacks
     id: served-variant
     nav: Served variant
     settles: [Q15]
-    prompt: true
-    see:
-      href: /sessions/proof-point-delivery/#flow
-      label: "Session 1: the served-variant event, interaction 9 of the consumption flow"

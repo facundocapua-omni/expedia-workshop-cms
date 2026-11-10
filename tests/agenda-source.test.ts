@@ -14,14 +14,19 @@ describe('session text is copied literally from sources/workshop-agenda.md', () 
   });
   for (const s of sessions) {
     // A session's block in the source runs from its title to the next blank line: title, track,
-    // owner, the content bullets, then the expected outcomes. The YAML must match it line for line,
-    // so a bullet dropped, added or reordered on either side fails.
-    it(`${s.file}: title, track, owner, bullets and outcomes match the agenda exactly`, () => {
+    // owner, the content bullets, then the expected outcomes. The site keeps only the title and the
+    // bullets, and may leave a bullet out, but never rewords or reorders one.
+    it(`${s.file}: title and bullets match the agenda exactly`, () => {
       const start = SOURCE.indexOf(s.title);
       expect(start, `title "${s.title}"`).toBeGreaterThanOrEqual(0);
       const stop = SOURCE.indexOf('', start);
       const block = SOURCE.slice(start, stop === -1 ? SOURCE.length : stop);
-      expect([s.title, s.track, `Owner: ${s.owner}`, ...s.topics.map((t: { agenda: string }) => t.agenda), ...s.outcomes]).toEqual(block);
+      let from = 3;
+      for (const { agenda } of s.topics as { agenda: string }[]) {
+        const at = block.indexOf(agenda, from);
+        expect(at, `bullet "${agenda}", in agenda order`).toBeGreaterThanOrEqual(from);
+        from = at + 1;
+      }
     });
   }
 });

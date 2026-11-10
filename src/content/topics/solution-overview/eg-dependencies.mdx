@@ -1,0 +1,57 @@
+import resourcing from '../../fragments/so-eg-resourcing.html?raw';
+
+<p class="sec-note">The plan holds if EG can provide what follows on time. Most of it is decisions and access rather than effort, and the effort falls on a few roles in a few phases.</p>
+
+<h3>Constraints the plan works within</h3>
+<ul class="tight">
+  <li><strong>The AEM contract end does not move.</strong> Every partner web date is planned backwards from it (D-33).</li>
+  <li><strong>The non-parity enhancements set the model.</strong> Content migrates once, into the enhanced model (D-27), so the design dates of the enhancements are on the critical path.</li>
+  <li><strong>AEM stays in production until the last business case moves</strong>, with no new features from scope sign-off, and each business case's content frozen in both systems during its ramp (D-29).</li>
+  <li><strong>The resolver runs on Akamai or as a Contentful app</strong> (D-09), on EG's accounts rather than EG's infrastructure, under EG's security and release processes.</li>
+  <li><strong>EG's security requirements apply to the resolver and the front end</strong>, and EG reviews both before go-live.</li>
+  <li><strong>NBA engineering was not at the workshop.</strong> What NBA has to do is logged for them in <a href="/sessions/nba-hand-off/">Session 2</a>, and proof points do not go live without it.</li>
+</ul>
+
+<h3>Decisions EG owes</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:44%">Decision</th><th style="width:20%">Needed by</th><th>Discussed in</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Who selects the variant</strong>: NBA (option A), or the resolver from NBA's decision (option B)</td><td>Before the resolver build</td><td><a href="/sessions/proof-point-delivery/#flow">Session 1 › End-to-end flow</a></td></tr>
+    <tr><td><strong>Where the resolver runs</strong>: Akamai or a Contentful app</td><td>M1</td><td><a href="/sessions/proof-point-delivery/#ownership">Session 1 › Build, host, support</a></td></tr>
+    <tr><td><strong>Who operates and supports the resolver</strong></td><td>M2</td><td><a href="/sessions/proof-point-delivery/#ownership">Session 1 › Build, host, support</a></td></tr>
+    <tr><td><strong>The translation route</strong></td><td>Before the first translated locale</td><td><a href="#architecture">Target architecture</a></td></tr>
+    <tr><td><strong>The Contentful tier and add-ons</strong></td><td>M1</td><td><a href="#build-vs-configure">Build vs. configure</a></td></tr>
+    <tr><td><strong>AWS hosting for the front end, and Akamai</strong> as EG's CDN</td><td>M1</td><td><a href="/sessions/partner-web-display-layer/#front-end">Session 3 › Front end approach</a></td></tr>
+    <tr><td><strong>AEM contract end, notice period and extension terms</strong></td><td>Every partner web date, and M6</td><td><a href="/sessions/aem-migration/#timing">Session 4 › AEM contract end</a></td></tr>
+    <tr><td><strong>The non-parity enhancements and their model</strong></td><td>M3</td><td><a href="/sessions/partner-web-display-layer/#components">Session 3 › Components and design system</a></td></tr>
+    <tr><td><strong>The disposition of every piece of content</strong></td><td>M4</td><td><a href="/sessions/aem-migration/#content-scope">Session 4 › Content scope</a></td></tr>
+    <tr><td><strong>SEO, tracking, consent, accessibility and security requirements</strong></td><td>The partner web build</td><td><a href="/sessions/partner-web-display-layer/#requirements">Session 3 › SEO, consent, security</a></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Access EG provides</h3>
+<ul class="tight">
+  <li><strong>Contentful</strong>: the organisation and the two spaces, with roles for Globant.</li>
+  <li><strong>AWS environments and Akamai</strong>: EG's AWS account for the front end and EG's Akamai account, with delegated access for Globant (D-34), and DNS (D-35).</li>
+  <li><strong>The resolver's platform</strong>: EdgeWorkers on EG's Akamai account, or an app in EG's Contentful organisation, and intake into EG's log system.</li>
+  <li><strong>Test environments</strong> in NBA, SFMC, CRM and VMC.</li>
+  <li><strong>AEM</strong>: read access to content and the site index, for discovery and the migration pipeline.</li>
+  <li><strong>Figma</strong>: the design files, including the non-parity enhancements.</li>
+</ul>
+
+<h3>EG resourcing</h3>
+<p>Figure 12 is Globant's starting estimate of where EG's people are needed. It shows the shape, not the headcount: discovery and the first business case turn it into numbers.</p>
+
+<div class="fig">
+  <Fragment set:html={resourcing} />
+</div>
+<p class="cap">Figure 12 — EG roles across the phases of <a href="#phases">Figure 11</a>, in the same order. The length of each bar is the share of the role's time in that phase; hover a bar for its phase and level. 24/7 support, if EG chooses it, runs alongside continuous enhancement and is shown with it.</p>
+
+<p>Three roles gate the plan more than any other:</p>
+<ul class="tight">
+  <li><strong>Web Ops</strong>, in discovery, training and every ramp. They decide what happens to each piece of content, learn to manage it in Contentful, and check every business case as it moves.</li>
+  <li><strong>NBA engineering and the channel engineers</strong>, during the build. M2 needs their work in NBA, SFMC, CRM and VMC.</li>
+  <li><strong>A native reviewer per locale</strong>, as proof points scale. No translated variant goes out without one.</li>
+</ul>

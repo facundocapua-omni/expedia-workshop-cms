@@ -5,13 +5,13 @@ import timeline from '../../fragments/mig-timeline.html?raw';
 <div class="fig">
   <Fragment set:html={timeline} />
 </div>
-<p class="cap">Figure 8 — Timeline, planned backwards from the AEM contract end. Relative, not to scale: the dates follow once Q27, Q34 and Q35 are answered. Business cases overlap once the pipeline is proven.</p>
+<p class="cap">Figure 8 — Timeline, planned backwards from the AEM contract end. Relative, not to scale: the dates follow once the enhanced model's freeze date, the rollback window and the AEM contract terms are known. Business cases overlap once the pipeline is proven.</p>
 
 <h3>What drives the dates</h3>
 <ul class="tight">
   <li><strong>A ramp takes about five weeks per business case</strong> — preparation and freeze, wave 0, 20%, 50%, 100% — because each step waits for a full weekly traffic cycle. Once the pipeline is proven, the ramps of different business cases can overlap; the limits are EG's QA capacity and how many content freezes can run at once.</li>
-  <li><strong>The last business case</strong> reaches 100% no later than <em>contract end − buffer − rollback window</em> (Q34, Q35).</li>
-  <li><strong>The brand refresh is on the critical path.</strong> Bulk migration waits for the refreshed model (D-27), so a slip there moves every date after it (Q27).</li>
+  <li><strong>The last business case</strong> reaches 100% no later than <em>contract end − buffer − rollback window</em>.</li>
+  <li><strong>The non-parity enhancements are on the critical path.</strong> Bulk migration waits for the enhanced model (D-27), so a slip there moves every date after it.</li>
 </ul>
 
 <h3>Order of business cases</h3>

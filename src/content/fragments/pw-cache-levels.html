@@ -1,0 +1,61 @@
+<svg class="dg" viewBox="0 0 900 310" role="img" aria-label="Four cache levels between a visitor and Contentful. Level 1, the EG CDN, routes and redirects but holds no pages. Level 2, the page cache, holds the public pages and the front end's static files. Level 3, the Next.js data cache, holds the Contentful responses the public pages are built from. Level 4, the Contentful CDN, holds delivery API responses. A public page is served from level 2; a private page passes levels 1 and 2 without being stored and is rendered by Next.js from content read at level 4. On publish, Contentful refreshes level 4 and its webhook refreshes levels 3 and 2; level 1 has nothing to purge.">
+      <defs>
+        <marker id="pwcachea" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--accent)"/>
+        </marker>
+        <marker id="pwcacheg" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--ok)"/>
+        </marker>
+        <marker id="pwcaches" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--ink-soft)"/>
+        </marker>
+      </defs>
+
+      <rect x="15" y="14" width="200" height="104" rx="4" fill="var(--warm-soft)" stroke="var(--warm)"/>
+      <text x="29" y="38" font-size="13" font-weight="600" fill="var(--ink)">1 · EG CDN</text>
+      <text x="29" y="62" font-size="11" fill="var(--ink)" font-weight="600">holds no pages</text>
+      <text x="29" y="80" font-size="10.5" fill="var(--ink-soft)">routes each path to AEM or the front end</text>
+      <text x="29" y="98" font-size="10.5" fill="var(--ink-soft)">serves the redirects</text>
+      <rect x="235" y="14" width="200" height="104" rx="4" fill="var(--ok-soft)" stroke="var(--ok)"/>
+      <text x="249" y="38" font-size="13" font-weight="600" fill="var(--ink)">2 · Page cache</text>
+      <text x="249" y="62" font-size="11" fill="var(--ink)" font-weight="600">public pages (ISR)</text>
+      <text x="249" y="80" font-size="10.5" fill="var(--ink-soft)">the front end's scripts, styles</text>
+      <text x="249" y="98" font-size="10.5" fill="var(--ink-soft)">and fonts</text>
+      <rect x="455" y="14" width="200" height="104" rx="4" fill="var(--card)" stroke="var(--ok)"/>
+      <text x="469" y="38" font-size="13" font-weight="600" fill="var(--ink)">3 · Next.js data cache</text>
+      <text x="469" y="62" font-size="11" fill="var(--ink)" font-weight="600">the Contentful responses</text>
+      <text x="469" y="80" font-size="10.5" fill="var(--ink-soft)">the public pages are built from</text>
+      <rect x="675" y="14" width="200" height="104" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="689" y="38" font-size="13" font-weight="600" fill="var(--ink)">4 · Contentful CDN</text>
+      <text x="689" y="62" font-size="11" fill="var(--ink)" font-weight="600">delivery API responses</text>
+      <text x="689" y="80" font-size="10.5" fill="var(--ink-soft)">run by Contentful</text>
+
+      <text x="15" y="146" font-size="11" font-weight="600" fill="var(--ink)">Public page (ISR)</text>
+      <line x1="15" y1="158" x2="335" y2="158" stroke="var(--ok)" stroke-width="1.4"/>
+      <circle cx="115" cy="158" r="5" fill="var(--card)" stroke="var(--ok)" stroke-width="1.6"/>
+      <text x="115" y="176" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">passes through</text>
+      <circle cx="335" cy="158" r="6" fill="var(--ok)" stroke="var(--ok)" stroke-width="1.6"/>
+      <text x="335" y="176" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">served from here</text>
+      <text x="15" y="206" font-size="11" font-weight="600" fill="var(--ink)">Private page (SSR)</text>
+      <line x1="15" y1="218" x2="775" y2="218" stroke="var(--accent)" stroke-width="1.4"/>
+      <circle cx="115" cy="218" r="5" fill="var(--card)" stroke="var(--accent)" stroke-width="1.6"/>
+      <text x="115" y="236" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">passes through</text>
+      <circle cx="335" cy="218" r="5" fill="var(--card)" stroke="var(--accent)" stroke-width="1.6"/>
+      <text x="335" y="236" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">passes through, never stored</text>
+      <circle cx="555" cy="218" r="5" fill="var(--card)" stroke="var(--accent)" stroke-width="1.6"/>
+      <text x="555" y="236" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">Next.js renders it</text>
+      <circle cx="775" cy="218" r="6" fill="var(--accent)" stroke="var(--accent)" stroke-width="1.6"/>
+      <text x="775" y="236" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">content read from here</text>
+
+      <text x="15" y="270" font-size="11" font-weight="600" fill="var(--ink)">When an author publishes</text>
+      <line x1="767" y1="282" x2="347" y2="282" stroke="var(--ink-soft)" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#pwcaches)"/>
+      <circle cx="775" cy="282" r="6" fill="var(--accent)"/>
+      <text x="775" y="300" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">Contentful refreshes it</text>
+      <circle cx="555" cy="282" r="6" fill="var(--ok)"/>
+      <text x="555" y="300" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">refreshed by the webhook</text>
+      <circle cx="335" cy="282" r="6" fill="var(--ok)"/>
+      <text x="335" y="300" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">pages using the entry regenerated</text>
+      <text x="665" y="276" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">publish webhook</text>
+      <circle cx="115" cy="282" r="5" fill="var(--card)" stroke="var(--warm)" stroke-width="1.6"/>
+      <text x="115" y="300" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">nothing to purge</text>
+    </svg>

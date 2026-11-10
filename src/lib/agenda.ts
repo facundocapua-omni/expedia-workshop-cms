@@ -9,6 +9,7 @@ export const AGENDA_GROUPS: { group: QuestionGroup; title: string }[] = [
   { group: 'uc1-design', title: 'UC1 design' },
   { group: 'uc2-model', title: 'UC2 content model' },
   { group: 'migration', title: 'AEM migration' },
+  { group: 'partner-web', title: 'Partner web platform' },
 ];
 
 export interface AgendaGroup {

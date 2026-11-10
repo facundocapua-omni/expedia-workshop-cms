@@ -21,13 +21,3 @@
   <p>The Next.js partner-web application built for Use Case 2 consumes this same Content Resolution API. That has a consequence worth stating plainly rather than discovering during the UC2 build: <strong>UC2's content model needs a proof-point block it does not have today</strong>, and the two workstreams stop being independent at that point. The block itself is small — a reference to a content reference plus a placement — but the dependency is real and it should appear on both plans.</p>
   <p>The upside is the reason for doing it: a fourth surface costs one channel profile and a client that speaks the same API. It costs nothing in the content model, nothing in the decisioning, and nothing in the consistency guarantee, because all three already treat channel as a parameter rather than a dimension.</p>
 </div>
-
-<h3>Risks carried by this design</h3>
-<div class="scroll">
-<table>
-  <thead><tr><th style="width:26%">Risk</th><th style="width:37%">Consequence if it lands</th><th>Mitigation</th></tr></thead>
-  <tbody>
-      <tr data-origin="uc1:risks:7"><td><strong>UC2 coupling discovered late</strong></td><td>Partner web consumes the same resolver, so UC2's content model needs a proof-point block it does not have. Found during the UC2 build, it is rework on both sides.</td><td>Add the block to the UC2 model now and put the dependency on both plans.</td></tr>
-  </tbody>
-</table>
-</div>

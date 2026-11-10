@@ -1,0 +1,45 @@
+import architecture from '../../fragments/so-architecture.html?raw';
+
+<p class="sec-note">Two tracks, one content platform. Proof points and partner web each have their own Contentful space and their own consumers. They meet in one place: partner web shows proof points through the same resolver as every other channel.</p>
+
+<div class="legend"><span><span class="sw sw1"></span>Contentful</span> <span><span class="sw sw3"></span>Built by Globant</span> <span><span class="sw sw2"></span>EG systems</span></div>
+
+<div class="fig">
+  <Fragment set:html={architecture} />
+</div>
+<p class="cap">Figure 9 — Target architecture, once AEM is retired. It reads left to right, as a request does: from the channel where traffic arrives to Contentful. Partner web and the headless channels read two APIs: proof points from the Content Resolution API, the rest of the content from Contentful. A dashed outline is still to decide: the translation route. A dashed arrow is asynchronous or conditional: the trace is written off the request path, and the variant index exists only under option A.</p>
+
+<ul class="tight">
+  <li><strong>One content platform, two spaces.</strong> The <code>proofPoints</code> space holds the proof points, their variants and the channel profiles. The partner web space holds the pages of every partner site. Both are authored, approved and versioned in Contentful, and neither decides anything (D-02).</li>
+  <li><strong>One resolver for every channel.</strong> SFMC, CRM, VMC, partner web and the headless channels all fetch proof points from the Content Resolution API by the same reference, so every surface receives the same copy (D-03, D-04, D-07). It runs on Akamai or as a Contentful app, on EG's accounts (D-09).</li>
+  <li><strong>NBA decides, outside the platform.</strong> It sends its decision to the channels, and learns what was actually served from the served-variant event.</li>
+  <li><strong>Partner web is a front end in front of Contentful.</strong> Visitors reach the partner sites on their current domains through Akamai, EG's CDN, which forwards to the Next.js front end, hosted by EG on AWS (D-34, D-35). The front end fetches the proof points from the Content Resolution API and the rest of the page from Contentful.</li>
+  <li><strong>Headless channels read the same two APIs.</strong> Any other client, with no Globant front end in between, fetches proof points from the Content Resolution API and the rest of its content from Contentful, as partner web does.</li>
+</ul>
+
+<h3>Key integrations</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:22%">Between</th><th style="width:32%">What moves</th><th style="width:22%">Status</th><th>Discussed in</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Contentful → resolver</strong></td><td>Publish events. The resolver snapshots every published variant</td><td>Decided (D-04)</td><td><a href="/sessions/proof-point-delivery/#flow">Session 1 › End-to-end flow</a></td></tr>
+    <tr><td><strong>Resolver → NBA</strong></td><td>The variant index NBA chooses from, under option A only</td><td>EG chooses A or B</td><td><a href="/sessions/proof-point-delivery/#flow">Session 1 › End-to-end flow</a></td></tr>
+    <tr><td><strong>NBA → channels</strong></td><td>The decision: a content reference, or the proof point, segment and tone, with partner, locale and parameters</td><td>Decided (D-03)</td><td><a href="/sessions/nba-hand-off/#payload">Session 2 › Notification payload</a></td></tr>
+    <tr><td><strong>SFMC, CRM, VMC → resolver</strong></td><td>A fetch by reference, at send time or when the record is opened</td><td>Decided (D-03)</td><td><a href="/sessions/proof-point-delivery/#sfmc">Session 1 › SFMC at send time</a></td></tr>
+    <tr><td><strong>Channels → NBA</strong></td><td>The served-variant event: what each partner actually received</td><td>To agree with NBA engineering</td><td><a href="/sessions/nba-hand-off/#served-variant">Session 2 › Served variant</a></td></tr>
+    <tr><td><strong>Resolver → EG log system</strong></td><td>One record per resolution: who received what, where and when</td><td>Log system to confirm</td><td><a href="/sessions/proof-point-delivery/#flow">Session 1 › End-to-end flow</a></td></tr>
+    <tr><td><strong>Contentful ↔ translation</strong></td><td>Source copy out, approved translations back into each locale</td><td>Open, below</td><td>This topic</td></tr>
+    <tr><td><strong>Contentful → front end</strong></td><td>Everything on the page but the proof points: published content, and drafts in the live preview</td><td>Decided (D-38)</td><td><a href="/sessions/partner-web-display-layer/#preview">Session 3 › Live preview</a></td></tr>
+    <tr><td><strong>Front end → resolver</strong></td><td>Proof points on partner web, fetched with <code>channel=web</code></td><td>Decided (D-07)</td><td><a href="/sessions/proof-point-delivery/#surfaces">Session 1 › Partner web and VMC</a></td></tr>
+    <tr><td><strong>Headless channels → resolver and Contentful</strong></td><td>Proof points from the resolver, the rest of the content from Contentful</td><td>As for partner web (D-07)</td><td>This topic</td></tr>
+    <tr><td><strong>Akamai → front end</strong></td><td>Every request to a partner site, and the redirects</td><td>Decided (D-35)</td><td><a href="/sessions/partner-web-display-layer/#front-end">Session 3 › Front end approach</a></td></tr>
+    <tr><td><strong>Figma → Contentful and code</strong></td><td>Every component: its content type and its front-end code</td><td>Decided (D-40)</td><td><a href="/sessions/partner-web-display-layer/#components">Session 3 › Components and design system</a></td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="decide risk">
+  <h4><span class="stamp">open</span>The translation route is the one integration still to choose</h4>
+  <p>Translations can come through a connector from the Contentful marketplace, through EG's Babel Prime, or both. A marketplace connector is configuration. A Babel Prime connector is a build, and whoever builds it also maintains it (<a href="#build-vs-configure">Build vs. configure</a>).</p>
+  <p>Either way, a translation is written into its locale only once a reviewer approves it, so an unapproved locale is served in the source language and reported as such. The route is needed before the first locale beyond the source language goes live.</p>
+</div>

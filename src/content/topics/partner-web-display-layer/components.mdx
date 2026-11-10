@@ -1,5 +1,37 @@
-import Fact from '../../../components/Fact.astro';
+import flow from '../../fragments/pw-component-flow.html?raw';
+import enhancements from '../../fragments/pw-enhancements.html?raw';
 
-  <p data-origin="uc2:summary:3">Every content type has a matching component in the Next.js and Tailwind front end built alongside it, so the <Fact k="contentTypes" /> types resolve to <Fact k="authorableBlocks" /> block components, one section wrapper and two route-level page components. The container decision pays off twice over there: presentation props become a single class map on one component instead of being restated seventeen times, and <code>section.blocks</code> resolves through one registry, so a new type later is a content-model change plus one registry entry.</p>
+<p class="sec-note">Every component starts in Figma. Everything else is derived from the design, so the content model, the authoring guidance and the code describe the same component.</p>
 
-<p class="sec-note">The content types themselves are in the <a href="/ideas/uc2-content-model/#types">UC2 content model</a>.</p>
+<div class="decide">
+  <h4>Figma is the source of every component</h4>
+  <p>A component is designed in Figma first. The component matrix, the content type and the authoring manual are derived from that design, and the component is implemented in Next.js after them, bound to its content type (D-40).</p>
+</div>
+
+<div class="legend"><span><span class="sw sw2"></span>EG design</span> <span><span class="sw sw1"></span>Contentful</span> <span><span class="sw sw3"></span>Front end</span></div>
+
+<div class="fig">
+  <Fragment set:html={flow} />
+</div>
+<p class="cap">How a component reaches authors. The design comes first, and the content model, the guidance and the code are derived from it, so all four describe the same component.</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th style="width:22%">Artifact</th><th>What it holds</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Component matrix</strong></td><td>Every component, what it is made of, and the content type it maps to</td></tr>
+    <tr><td><strong>Content type</strong></td><td>The fields authors fill in Contentful, with their validations</td></tr>
+    <tr><td><strong>Authoring manual</strong></td><td>When to use the component, which variant to pick, and what to write</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Implementation comes last on purpose. The fields are decided from the design before anything is built, so the model is not shaped by one implementation, and the authoring manual is ready when the component reaches authors. A new component or a new variant goes through the same steps.</p>
+
+<h3>The non-parity enhancements</h3>
+<p>The non-parity enhancements, what partner web gains beyond parity with today's site, enter through the same flow. A visual change updates the design tokens, and pages follow without touching content. A change to what a component is made of goes back through the matrix and the content type, which is the case the <a href="/sessions/aem-migration/#content-scope">AEM migration</a> plans around (D-27).</p>
+
+<div class="fig">
+  <Fragment set:html={enhancements} />
+</div>
+<p class="cap">The two kinds of change a non-parity enhancement can bring. A visual change stays in the design tokens; a structural change goes back through the model, and content moves into it once.</p>

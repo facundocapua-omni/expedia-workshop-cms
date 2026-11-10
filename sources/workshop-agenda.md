@@ -36,7 +36,7 @@ Owner: ContenExceltful w/ Globant
 Front end approach: who builds, hosts and maintains it
 Rendering, caching and page performance
 Live preview and visual editing
-Mapping content types to front end components and the design system, including the 2027 brand refresh
+Mapping content types to front end components and the design system, including the non-parity enhancements
 What Web Ops can change without engineering versus what needs a developer
 Running multiple partner sites from one instance
 SEO, tracking, consent, accessibility and EG security requirements
@@ -56,3 +56,12 @@ Timing against the AEM contract end
 Migration approach and phasing understood
 Code freeze and coexistence rules clear for Web Ops planning
 Cutover risks identified
+
+
+Solution overview, plan and target dates
+Both tracks
+Owner: Globant
+High-level target architecture and key integrations
+Build vs. configure
+High-level phases and milestones
+Key constraints and dependencies on EG, including EG resourcing

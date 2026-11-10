@@ -2,9 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import Doc from '../../layouts/Doc.astro';
 import Section from '../../components/Section.astro';
-import QuestionItem from '../../components/QuestionItem.astro';
 import { loadSiteData } from '../../lib/data';
-import { stillOpen, topicDecisions } from '../../lib/sessions';
+import { visibleTopics } from '../../lib/sessions';
 
 export async function getStaticPaths() {
   const data = await loadSiteData();
@@ -14,60 +13,24 @@ export async function getStaticPaths() {
 const data = await loadSiteData();
 const session = data.sessions.find((s) => s.slug === Astro.props.slug)!;
 const materials = new Map((await getCollection('topics')).map((entry) => [entry.id, entry]));
-const questionById = new Map(data.questions.map((q) => [q.id, q]));
-const topics = await Promise.all(session.topics.map(async (topic) => {
+const topics = await Promise.all(visibleTopics(session).map(async (topic) => {
   const entry = materials.get(`${session.slug}/${topic.id}`);
   return {
     ...topic,
     Material: entry ? (await render(entry)).Content : undefined,
-    questions: topic.settles.map((id) => questionById.get(id)!),
-    decisionItems: topicDecisions(topic, data.decisions),
   };
 }));
 const n = (i: number) => String(i).padStart(2, '0');
-const open = stillOpen(session, data.questions);
 ---
 <Doc
   title={session.title}
-  kicker={`Session ${session.order} · ${session.track}`}
-  meta={[`Owner: ${session.owner}`]}
-  outcomes={session.outcomes}
+  kicker={`Session ${session.order}`}
   kind="session"
 >
-  <Section n="01" id="agenda" title="Agenda">
-    <ol class="agenda-list">
-      {topics.map((t) => <li><a href={`#${t.id}`}>{t.agenda}</a> {t.prompt && <span class="st st-discussion">discussion</span>}</li>)}
-    </ol>
-  </Section>
   {topics.map(({ Material, ...t }, i) => (
-    <Section n={n(i + 2)} id={t.id} title={t.agenda} nav={t.nav}>
+    <Section n={n(i + 1)} id={t.id} title={t.agenda} nav={t.nav}>
       {Material ? <Material /> : <p class="sec-note prompt">No prepared material — for discussion.</p>}
       {t.see && <p class="see">See also <a href={t.see.href}>{t.see.label}</a></p>}
-      {(t.questions.length > 0 || t.decisionItems.length > 0) && (
-        <div class="settle">
-          <h3>To settle here</h3>
-          {t.questions.map((q) => <QuestionItem q={q} />)}
-          {t.decisionItems.length > 0 && (
-            <ul class="settle-decisions">{t.decisionItems.map((d) => <li>{d.id} — {d.title}</li>)}</ul>
-          )}
-        </div>
-      )}
     </Section>
   ))}
-  <Section n={n(topics.length + 2)} id="outcomes" title="Expected outcomes">
-    <ul class="outcome-list">{session.outcomes.map((o) => <li>{o}</li>)}</ul>
-    {open.toConfirm.length + open.toDecide.length === 0 && <p class="sec-note">Nothing from this session is still open.</p>}
-    {open.toConfirm.length > 0 && (
-      <>
-        <h3>Still to confirm</h3>
-        <ul class="open-list">{open.toConfirm.map((q) => <li>{q.id} {q.question}</li>)}</ul>
-      </>
-    )}
-    {open.toDecide.length > 0 && (
-      <>
-        <h3>Still to decide</h3>
-        <ul class="open-list">{open.toDecide.map((q) => <li>{q.id} {q.question}</li>)}</ul>
-      </>
-    )}
-  </Section>
 </Doc>

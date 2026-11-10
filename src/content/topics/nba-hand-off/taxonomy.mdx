@@ -1,5 +1,5 @@
   <div class="decide">
-    <h4><span class="stamp">Q6b</span>Tone belongs to the partner; the channel only shapes the copy</h4>
+    <h4><span class="stamp">D-05</span>Tone belongs to the partner; the channel only shapes the copy</h4>
     <p>Tone — educational, familiar, data-led — is a <strong>selection criterion</strong>. NBA chooses it per partner from engagement history, and it stays constant as the partner moves from the email to the portal to a conversation with their Market Manager. That persistence is the benefit EG's own step 5 describes.</p>
     <p>There is no second voice. What changes between surfaces is shape, not voice: each channel profile fixes length and allowed markup, and the CRM profile addresses a different reader — the Market Manager — who receives the variant's briefing, written in the same tone.</p>
     <p>Channel therefore never enters variant selection. It is supplied on the fetch, picks a channel profile, and in option A acts as an availability filter on the index — a constraint, not a criterion. The table below sets the dimensions out side by side.</p>
@@ -22,13 +22,3 @@
   <p>The CRM surface does not address the partner at all. It briefs a Market Manager on what the partner has already seen, so each variant carries a <strong>briefing</strong> alongside its partner copy — the same message, in the partner's tone, written to be usable as a talking point. The CRM profile declares the <code>internal</code> audience; email and VMC declare <code>partner</code>. Generation prompts and review criteria differ accordingly.</p>
   <p data-origin="uc1:ref:8">Channel constrains without being a criterion: if a variant's copy cannot fit the email profile and has no override, NBA shouldn't dispatch it to email — but that absence never makes a different variant a better fit for the partner. It is a filter on the index, not an input to the choice.</p>
   <p data-origin="uc1:ref:9">Channel still earns its place in the pilot, for a different reason. Without it, cross-channel consistency is trivially true — one string fetched three times proves nothing. With it, the claim becomes that one authored source yields three differently-shaped outputs carrying the same message, which is CMS-01 and CMS-06 tested together. That is why <code>consistencyKey</code> covers variant, version, locale and parameters but deliberately excludes the channel shaping.</p>
-
-<h3>Alternatives considered</h3>
-
-  <div data-origin="uc1:alternatives:0" class="decide risk">
-    <h4>Tone and channel as a single dimension</h4>
-    <p>The argument for it is real: the channel does determine the voice of a communication, so a separate tone dimension could look redundant. Collapsing the two would simplify the model and cut the variant count by roughly a third.</p>
-    <p>Not adopted, because it works against the source document's thesis rather than simplifying it. Step 5 states that the CRM shows the Market Manager the same tone of voice the partner already received, and the partner walkthrough presents persistent, persona-matched framing as the benefit being tested. If tone is a property of the channel, a partner's voice changes every time they move between the email, the portal and a call — the drift the pilot exists to eliminate.</p>
-    <p>It would also cost three capability results at once: CMS-19 loses half its pass condition because tone stops being decisioning metadata, CMS-31's criterion collapses from segment plus tone to segment alone, and CMS-06 becomes trivially satisfiable since no cross-channel constant remains.</p>
-    <p>The observation underneath it is kept: a channel does impose something — a shape, and for CRM a different reader — and both are modelled, as the channel profile and the variant's briefing, without a second voice. Should EG's operating model genuinely treat tone as channel-determined, the change is one field plus a re-scoping of those three capabilities — an explicit client decision, which is why it is raised as a question rather than assumed either way.</p>
-  </div>

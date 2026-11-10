@@ -23,6 +23,8 @@ pre .k{color:var(--accent)}
 .fig{margin:0 0 10px;border:1px solid var(--rule);border-radius:4px;background:var(--card);padding:18px 16px;overflow-x:auto}
 .fig svg{display:block;width:100%;height:auto;min-width:640px}
 .dg text{font-family:var(--sans)}
+.fig[data-focus=trace] .dg>:not(defs,.f-trace){opacity:.25}
+.fig[data-focus=trace] .f-trace line{stroke-width:2.2}
 .cap{font-size:.84375rem;color:var(--ink-soft);margin:0 0 26px;max-width:74ch}
 
 .decide{border:1px solid var(--rule);border-left:3px solid var(--ok);background:var(--card);border-radius:3px;padding:16px 18px;margin:0 0 12px}
@@ -41,7 +43,7 @@ ul.tight strong{color:var(--ink)}
 
 .legend{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:.8125rem;color:var(--ink-soft);margin:0 0 24px}
 .sw{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;vertical-align:0}
-.sw1{background:var(--accent)} .sw2{background:var(--warm)} .sw3{background:var(--ok)} .sw4{background:var(--flag)}
+.sw0{background:var(--ink-soft)} .sw1{background:var(--accent)} .sw2{background:var(--warm)} .sw3{background:var(--ok)} .sw4{background:var(--flag)}
 
 .pill{font-family:var(--mono);font-size:.65625rem;padding:2px 7px;border-radius:3px;white-space:nowrap}
 .p-merge{background:var(--ok-soft);color:var(--ok)}

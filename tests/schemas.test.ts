@@ -51,22 +51,29 @@ describe('uniqueById', () => {
 
 describe('sessionSchema', () => {
   const valid = {
-    id: 'nba-hand-off', title: 'NBA hand-off', short: 'NBA hand-off', track: 'Cross-channel proof points',
-    owner: 'Globant w/ Contentful', order: 2, outcomes: ['NBA follow-ups logged'],
+    id: 'nba-hand-off', title: 'NBA hand-off', short: 'NBA hand-off',
+    order: 2,
     topics: [{ agenda: 'Contents of the notification payload sent to channels', id: 'payload', nav: 'Notification payload' }],
   };
 
   it('fills topic defaults', () => {
     expect(sessionSchema.parse(valid).topics[0]).toEqual({
       agenda: 'Contents of the notification payload sent to channels', id: 'payload', nav: 'Notification payload',
-      settles: [], decisions: [], prompt: false,
+      settles: [], prompt: false, hidden: false,
     });
   });
   it('rejects a misspelt topic key instead of dropping it', () => {
     expect(sessionSchema.safeParse({ ...valid, topics: [{ ...valid.topics[0], setles: ['Q1'] }] }).success).toBe(false);
   });
-  it('rejects a session without outcomes', () => {
-    expect(sessionSchema.safeParse({ ...valid, outcomes: [] }).success).toBe(false);
+  it('rejects an owner or a track, which the site does not show', () => {
+    expect(sessionSchema.safeParse({ ...valid, owner: 'Globant w/ Contentful' }).success).toBe(false);
+    expect(sessionSchema.safeParse({ ...valid, track: 'Cross-channel proof points' }).success).toBe(false);
+  });
+  it('rejects outcomes, which are tracked outside the site', () => {
+    expect(sessionSchema.safeParse({ ...valid, outcomes: ['NBA follow-ups logged'] }).success).toBe(false);
+  });
+  it('rejects a topic decisions list, since decisions live on /decide and the register', () => {
+    expect(sessionSchema.safeParse({ ...valid, topics: [{ ...valid.topics[0], decisions: ['D-02'] }] }).success).toBe(false);
   });
   it('rejects a topic id that is not a lower-case slug', () => {
     expect(sessionSchema.safeParse({ ...valid, topics: [{ ...valid.topics[0], id: 'Payload' }] }).success).toBe(false);
